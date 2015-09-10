@@ -31,3 +31,5 @@
 #Other junk
 build/
 lexer
+cool
+*.cl-lex
