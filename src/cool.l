@@ -1,16 +1,12 @@
 %{
 
-/* An XML scanner that checks for unbalanced tags and syntax errors.
- * If the input XML file is syntactically correct, prints out number of
- * elements.
- */
-
 #include <list>
 #include <cstdio>
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stack>
+#include <iostream>
 
 // If you want to disable DEBUGGING, comment out the next line
 // and uncomment the one after.
@@ -22,98 +18,127 @@ using namespace std;
 
 
 // Put here any variables that you may need in the actions.
-int nelements = 0;
-std::stack<char*> elemstack;
+
+void out(const char *output);
+void printline();
+
+void out(const char *output) {
+  std::cout << output << std::endl;
+}
+
+void printline() {
+  std::cout << yylineno << std::endl;
+}
+
+
 
 %}
 
 %option yylineno
 %option noyywrap
+%option stack
 
 /* Chars allowable in element and attribute names */
-NAME        [a-zA-Z][a-zA-Z0-9:._]*
+IDENTIFIER  [a-z][a-zA-Z0-9:._]*
+TYPE        [A-Z][a-zA-Z0-9:._]*
 
 /* Start conditions */
-%x NEWELEMENT
+%x CLASS_START
+%x CLASS_INHERITANCE
+%x INHERITANCE_TYPE
+%x INHERITANCE_END
+%x FEATURE
+%x FEATURE_TYPE
+%x METHOD
+%x ATTRIBUTE
+%x FORMAL
 
 %%
   /* -----------------  RULES ----------------*/
 
+class   { printline(); out("class"); BEGIN(CLASS_START); }
 
-  /* ignore the preamble and any whitespace after it if present.
-   * starts with <? and ends in ?>
-   */
-\<\?.*\?\>[ \t\n\r]*   { /* */ }
+[ \t\n\r]*   { /* consume the whitespace */ }
 
+.       { out(yytext); exit(0); }
 
-  /* Element start tag "<name" */
-\<{NAME}      {
-                 char* elementname = (char*) malloc(yyleng);
-		 strcpy(elementname, yytext+1);
-		 elemstack.push(elementname);
-                 BEGIN(NEWELEMENT);
-                 DEBUG("< (%s) ", elementname);
-		 nelements++;
-               }
+<CLASS_START>{
+  {TYPE}       { printline(); out("type"); out(yytext); BEGIN(CLASS_INHERITANCE); }
 
-  /* Element close tag  "</name>" */
-\<\/{NAME}\>  {
-                 char* elementname = yytext + 2;
-                 yytext[yyleng-1] = '\0'; // Delete the last char('>')
-		 if(strcmp(elementname, elemstack.top()) == 0) {
-                   DEBUG("</ (%s) >", elementname);
-		   free(elemstack.top());
-		   elemstack.pop();
-		 } else {
-		   printf("\nMismatched elements: %s %s\n", elementname, elemstack.top());
-		   exit(1);
-		 }
-               }
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out("Expected class definition."); exit(0); }
+}
 
-\<         { printf("\nInvalid character '%s' on line %d\n",yytext,yylineno); exit(1); }
+<CLASS_INHERITANCE>{
+  inherits     { printline(); out("inherits"); BEGIN(INHERITANCE_TYPE); }
 
-.          {/* absorb things outside of tags */}
-
-  /* Start condition for new element tags. Anything that can go
-   * between "<elementname" and ">" should be defined here.
-   * Also, catch > and /> here.
-   */
-<NEWELEMENT>{
-
-    /* Element start tag closing ">" */
-  \>          { DEBUG("> "); BEGIN(INITIAL); }
-
-    /* Element start tag closing "/>" */
-  \/\>          { DEBUG("/> "); BEGIN(INITIAL); free(elemstack.top()); elemstack.pop(); }
-
-
-    /* Eat up the whitespace in element start tags */
   [ \t\n\r]*   { /* consume the whitespace */ }
 
-    /* Any element attributes */
-  {NAME}=(\"(\\\"|[^\"])+\")|('(\\'|[^'])+') {
-                         char* attrname = yytext;
-                         DEBUG("(%s) ", attrname);
-                       }
+  .       { yyless(0); BEGIN(INHERITANCE_END); }
+}
+<INHERITANCE_TYPE>{
+  {TYPE}       { printline(); out("type"); out(yytext); BEGIN(INHERITANCE_END); }
 
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<INHERITANCE_END>{
+  \{           { printline(); out("lbrace"); BEGIN(FEATURE); }
+  
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<FEATURE>{
+  {IDENTIFIER} { printline(); out("identifier"); out(yytext); BEGIN(FEATURE_TYPE); }
+  
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<FEATURE_TYPE>{
+  \(           { printline(); out("lparen"); BEGIN(METHOD); }
 
-    /* Anything that we can't recognize */
-  .          {
-              printf("\nInvalid character '%s' on line %d\n",yytext,yylineno);
-              exit(1);
-             }
+  :            { printline(); out("colon"); BEGIN(ATTRIBUTE); }
+  
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<ATTRIBUTE>{
+  
+}
+<METHOD>{
+  {IDENTIFIER}//TODO RESUME HERE HI HOW ARE YOU FUTURE ME
 
-} /* End of NEWELEMENT start condition */
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<METHOD_MORE>{
 
-  /* Keep the indentation for better display */
-[ \t\n\r]*     { DEBUG("%s",yytext);}
-<<EOF>>      {
-               if(elemstack.size() > 0) {
-		 printf("\n %d unclosed elements.\n", elemstack.size());
-		 exit(1);
-	       }
-               return 0; // to tell the main that we are done.
-             }
+}
+<FORMAL_START>{
+  {IDENTIFIER} { printline(); out("identifier"); out(yytext); BEGIN(FORMAL_MID); }
 
-  /* Here define a rule to match text between elements */
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { yyless(0); BEGIN(yy_pop_state()); }
+}
+<FORMAL_MID>{
+  :            { printline(); out("colon"); BEGIN(FORMAL_END); }
+
+  [ \t\n\r]*   { /* consume the whitespace */ }
+
+  .       { out(yytext); exit(0); }
+}
+<FORMAL_END>{
+  {TYPE}       { printline(); out("type"); out(yytext); BEGIN(yy_pop_state()); }
+
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
 %%

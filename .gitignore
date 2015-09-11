@@ -33,3 +33,4 @@ build/
 lexer
 cool
 *.cl-lex
+*~

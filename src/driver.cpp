@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 {
   if (argc < 2) {
     printf("Usage: %s file\n",argv[0]);
-    printf("  where file is an XML file to scan\n");
+    printf("  where file is a super Cool file to scan\n");
     exit(-1);
   }
 
@@ -22,5 +22,5 @@ int main(int argc, char** argv)
   }
 
   yylex();
-  printf("# elements in the file %s is %d\n",argv[1],nelements);
 }
+
