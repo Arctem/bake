@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/aburns/Documents/compilers/projects/bake/src/driver.cpp
+stdio.h
+-
+string.h
+-
+stdlib.h
+-
+
