@@ -45,13 +45,30 @@ TYPE        [A-Z][a-zA-Z0-9:._]*
 /* Start conditions */
 %x CLASS_START
 %x CLASS_INHERITANCE
+%x CLASS_END
 %x INHERITANCE_TYPE
 %x INHERITANCE_END
-%x FEATURE
+%x FEATURES
 %x FEATURE_TYPE
+%x FEATURE_END
 %x METHOD
+%x METHOD_TYPE
+%x METHOD_MID
+%x METHOD_PRE_EXPRESSION
+%x METHOD_POST_EXPRESSION
 %x ATTRIBUTE
-%x FORMAL
+%x ATTRIBUTE_MID
+%x ATTRIBUTE_EXPR
+%x FORMAL_START
+%x FORMAL_MID
+%x FORMAL_END
+
+%x EXPRESSION
+
+%x LBRACE
+%x RBRACE
+%x COLON
+%x SEMICOLON
 
 %%
   /* -----------------  RULES ----------------*/
@@ -85,60 +102,133 @@ class   { printline(); out("class"); BEGIN(CLASS_START); }
   .       { out(yytext); exit(0); }
 }
 <INHERITANCE_END>{
-  \{           { printline(); out("lbrace"); BEGIN(FEATURE); }
+  \{           { printline(); out("lbrace"); BEGIN(FEATURES); }
   
   [ \t\n\r]*   { /* consume the whitespace */ }
   
   .       { out(yytext); exit(0); }
 }
-<FEATURE>{
+<FEATURES>{
   {IDENTIFIER} { printline(); out("identifier"); out(yytext); BEGIN(FEATURE_TYPE); }
+
+  \}           { printline(); out("rbrace"); BEGIN(CLASS_END); }
   
   [ \t\n\r]*   { /* consume the whitespace */ }
   
   .       { out(yytext); exit(0); }
 }
 <FEATURE_TYPE>{
-  \(           { printline(); out("lparen"); BEGIN(METHOD); }
+  \(           { printline(); out("lparen"); yy_push_state(FORMAL_START); }
 
   :            { printline(); out("colon"); BEGIN(ATTRIBUTE); }
+
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<FEATURE_END>{
+  ;            { printline(); out("semi"); BEGIN(FEATURES); }
+  
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<CLASS_END>{
+  ;            { printline(); out("semi"); BEGIN(INITIAL); }
   
   [ \t\n\r]*   { /* consume the whitespace */ }
   
   .       { out(yytext); exit(0); }
 }
 <ATTRIBUTE>{
+  {TYPE}       { printline(); out(yytext); BEGIN(ATTRIBUTE_MID); }
   
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<ATTRIBUTE_MID>{
+  \<-          {
+                 printline();
+		 out("larrow");
+		 BEGIN(ATTRIBUTE_EXPR);
+               }
+  
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { yyless(0); BEGIN(FEATURE_END); }
+}
+<ATTRIBUTE_EXPR>{
+  %{ yy_push_state(EXPRESSION); %}
+
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { yyless(0); BEGIN(FEATURE_END); }
 }
 <METHOD>{
-  {IDENTIFIER}//TODO RESUME HERE HI HOW ARE YOU FUTURE ME
+  ,            { printline(); out("comma"); yy_push_state(FORMAL_START); }
+
+  \)           { printline(); out("rparen"); BEGIN(METHOD_MID); }
 
   [ \t\n\r]*   { /* consume the whitespace */ }
   
   .       { out(yytext); exit(0); }
 }
-<METHOD_MORE>{
+<METHOD_MID>{
+  :            { printline(); out("colon"); BEGIN(METHOD_TYPE); }
 
+  
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<METHOD_TYPE>{
+  {TYPE}       { printline(); out("type"); out(yytext); BEGIN(METHOD_PRE_EXPRESSION); }
+  
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<METHOD_PRE_EXPRESSION>{
+  \{           { printline(); out("lbrace"); BEGIN(METHOD_POST_EXPRESSION); }
+  
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
+}
+<METHOD_POST_EXPRESSION>{
+  %{ yy_push_state(EXPRESSION); %}
+  
+  \}           { printline(); out("rbrace"); BEGIN(FEATURE_END); }
+  
+  [ \t\n\r]*   { /* consume the whitespace */ }
+  
+  .       { out(yytext); exit(0); }
 }
 <FORMAL_START>{
   {IDENTIFIER} { printline(); out("identifier"); out(yytext); BEGIN(FORMAL_MID); }
 
   [ \t\n\r]*   { /* consume the whitespace */ }
   
-  .       { yyless(0); BEGIN(yy_pop_state()); }
+  .       { yyless(0); yy_pop_state(); }
 }
 <FORMAL_MID>{
   :            { printline(); out("colon"); BEGIN(FORMAL_END); }
-
+  
   [ \t\n\r]*   { /* consume the whitespace */ }
-
+  
   .       { out(yytext); exit(0); }
 }
 <FORMAL_END>{
-  {TYPE}       { printline(); out("type"); out(yytext); BEGIN(yy_pop_state()); }
+  {TYPE}       { printline(); out("type"); out(yytext); BEGIN(METHOD); }
 
   [ \t\n\r]*   { /* consume the whitespace */ }
   
   .       { out(yytext); exit(0); }
+}
+
+
+<EXPRESSION>{
+
 }
 %%
