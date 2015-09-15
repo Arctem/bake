@@ -1,8 +1,8 @@
-find_package(FLEX)
+find_package(FLEX REQUIRED)
 
-FLEX_TARGET(MyScanner ${CMAKE_CURRENT_SOURCE_DIR}/cool.l ${CMAKE_CURRENT_SOURCE_DIR}/driver.cpp)
+FLEX_TARGET(SCANNER ${CMAKE_CURRENT_SOURCE_DIR}/cool.l ${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp)
 
 add_executable( bake
     driver.cpp
-    ${FLEX_MyScanner_OUTPUTS}
+    ${FLEX_SCANNER_OUTPUTS}
  )
