@@ -28,7 +28,7 @@
 *.app
 
 
-#Other junk
+# Other junk
 build/
 lexer
 cool

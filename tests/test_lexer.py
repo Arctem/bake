@@ -3,6 +3,7 @@ import sys
 import os
 from subprocess import check_output, STDOUT, CalledProcessError
 import difflib
+import codecs
 
 BAKE = "../build/src/bake"
 CL_TEST_DIR = "lexer_tests/" # Directory that contains the .cl files to be tested
@@ -19,10 +20,10 @@ def ref_output(filename):
   # Run the cool compiler. If it fails, it will return a string containing a description of why.
   fail = check_output(cmd, shell = True)
   if fail:
-    return fail.decode("unicode_escape")
+    return fail.decode("latin-1")
 
   # If the lexer succeeded, open the output file and return its contents
-  with open(OUTPUT + filename + ".cl-lex") as output:
+  with codecs.open(OUTPUT + filename + ".cl-lex", encoding="latin-1") as output:
     return output.read()
 
 def bake_output(filename):
@@ -31,9 +32,15 @@ def bake_output(filename):
     Returns a string contianing the output of the lexer
   """
   # Command that runs our lexer on the given file
-  cmd = "{} {}".format(BAKE, CL_TEST_DIR + filename)
+  cmd = "{} -i {} -o {}".format(BAKE, CL_TEST_DIR + filename, OUTPUT + filename + "-lex-bake")
 
-  return check_output(cmd, shell = True).decode("unicode_escape")
+  fail = check_output(cmd, shell = True)
+  if fail:
+    return fail.decode("latin-1")
+
+  # If the lexer succeeded, open the output file and return its contents
+  with codecs.open(OUTPUT + filename + "-lex-bake", encoding="latin-1") as output:
+    return output.read()
 
 def main(args):
   cool_files = [f for f in os.listdir(CL_TEST_DIR) if f.endswith(".cl")] # Get all .cl files in the test directory
