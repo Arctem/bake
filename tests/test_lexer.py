@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import sys
 import os
 from subprocess import check_output, STDOUT, CalledProcessError
 import difflib
@@ -34,7 +35,7 @@ def bake_output(filename):
 
   return check_output(cmd, shell = True).decode("unicode_escape")
 
-def main():
+def main(args):
   cool_files = [f for f in os.listdir(CL_TEST_DIR) if f.endswith(".cl")] # Get all .cl files in the test directory
 
   for f in cool_files:
@@ -47,11 +48,12 @@ def main():
     else:
       print("Don't match")
       
-      for line in difflib.ndiff(bake_o, ref_o):
-        if line[0] == '+':
-          print("Reference lexer: {}".format(line))
-        elif line[0] == '-':
-          print("Bake: {}".format(line))
+      if "-v" in args:
+        for line in difflib.ndiff(bake_o, ref_o):
+          if line[0] == '+':
+            print("Reference lexer: {}".format(line))
+          elif line[0] == '-':
+            print("Bake: {}".format(line))
 
 if __name__ == "__main__":
-  main()
+  main(sys.argv)
