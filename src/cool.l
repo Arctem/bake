@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stack>
-#include <iostream>
 
 // If you want to disable DEBUGGING, comment out the next line
 // and uncomment the one after.
@@ -23,11 +22,11 @@ void out(const char *output);
 void printline();
 
 void out(const char *output) {
-  std::cout << output << std::endl;
+  fprintf(yyout, "%s\n", output);
 }
 
 void printline() {
-  std::cout << yylineno << std::endl;
+  fprintf(yyout, "%d\n", yylineno);
 }
 
 
