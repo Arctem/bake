@@ -158,7 +158,7 @@ while        { printline(); out("while"); }
   \(\*       { yy_push_state(COMMENT); }
 
   \*\)       { yy_pop_state(); }
-  
+
   .          {  }
 }
 %%
