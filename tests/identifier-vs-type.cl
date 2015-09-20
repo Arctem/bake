@@ -8,4 +8,3 @@ nAME Name
 A a
 B b
 c C
-^3
