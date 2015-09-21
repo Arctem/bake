@@ -136,14 +136,14 @@ t[r|R][u|U][e|E]             { printline(); out("true"); }
 
  /* ----------- OTHER BLOCKS ------------ */
  /* ------- Single Line Comment --------- */
-<COMMENT> {
+<COMMENT>{
     \n            { yy_pop_state(); }
     [ \t\n\r]*    { /* consume the whitespace */ }
 
  }
 
  /* ------- Single Line Comment --------- */
-<BLOCK_COMMENT> {
+<BLOCK_COMMENT>{
   /* Ignore everything in comments, but allow nexting comments because we cool. */
   \(\*         { yy_push_state(BLOCK_COMMENT); }
   \*\)         { yy_pop_state(); }
