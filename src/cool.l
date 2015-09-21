@@ -1,5 +1,10 @@
 %{
-
+  /*
+  *   Authors:        Russel White, Melanie Palmer, Will Roosenberger
+  *   Date:           Sept. 20th, 2015
+  *   Description:    Flex lexical anylizer for the COOL language
+  *   Bugs:           None known
+  */
 #include <list>
 #include <cstdio>
 #include <string>
@@ -69,8 +74,8 @@ pool         { printline(); out("pool"); }
 
 
   /* --------------- BOOL Keywords ----------- */
-false        { printline(); out("false"); }
-true         { printline(); out("true"); }
+f[a|A][l|L][s|S][e|E]        { printline(); out("false"); }
+t[r|R][u|U][e|E]             { printline(); out("true"); }
 
 
   /* ----- Integers, Identifiers, Types ------ */

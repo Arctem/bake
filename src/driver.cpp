@@ -1,6 +1,14 @@
+/*
+*   Authors:        Russel White, Will Roosenberger
+*   Date:           Sept. 20th, 2015
+*   Description:    Flex lexical anylizer for the COOL language
+*   Bugs:           None known
+*/
+
 #include <iostream>
 #include <string>
 using namespace std;
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
