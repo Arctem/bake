@@ -12,12 +12,9 @@
 #define DEBUG(...) fprintf (stdout, __VA_ARGS__)
 //#define DEBUG(...)
 
-
 using namespace std;
 
-
-// Put here any variables that you may need in the actions.
-
+ /* Functions used for ease of printing */
 void out(const char *output);
 void printline();
 
@@ -32,10 +29,9 @@ void printline() {
 void errorOut(const char* message) {
   fprintf(stderr, "Error: %d: Lexer: %s\n", yylineno, message);
 }
-
-
 %}
 
+/* Flex options used throughout */
 %option yylineno
 %option noyywrap
 %option stack
@@ -51,80 +47,67 @@ STRING      \"([^\n\Z\"])*\"
 %x BLOCK_COMMENT
 
 %%
-  /* -----------------  RULES ----------------*/
-
-\(\*         { yy_push_state(BLOCK_COMMENT); }
-
---           { yy_push_state(COMMENT); }
-
-\@           { printline(); out("at"); }
-
-case         { printline(); out("case"); }
-
+  /* -----------------  RULES --------------- */
+  /* ---------------- KEYWORDS -------------- */
 class        { printline(); out("class"); }
-
-:            { printline(); out("colon"); }
-
-,            { printline(); out("comma"); }
-
-\/            { printline(); out("divide"); }
-
-\.           { printline(); out("dot"); }
-
-else         { printline(); out("else"); }
-
-=            { printline(); out("equals"); }
-
-esac         { printline(); out("esac"); }
-
-false        { printline(); out("false"); }
-
-fi           { printline(); out("fi"); }
-
-if           { printline(); out("if"); }
-
-in           { printline(); out("in"); }
-
 inherits     { printline(); out("inherits"); }
-
-{INTEGER}    { printline(); out("integer"); out(yytext); }
-
-isvoid       { printline(); out("isvoid"); }
-
-\<-          { printline(); out("larrow"); }
-
-\{           { printline(); out("lbrace"); }
-
-\<=          { printline(); out("le"); }
-
+case         { printline(); out("case"); }
+esac         { printline(); out("esac"); }
+if           { printline(); out("if"); }
+then         { printline(); out("then"); }
+else         { printline(); out("else"); }
+fi           { printline(); out("fi"); }
+in           { printline(); out("in"); }
 let          { printline(); out("let"); }
-
-loop         { printline(); out("loop"); }
-
-\(           { printline(); out("lparen"); }
-
-\<           { printline(); out("lt"); }
-
--            { printline(); out("minus"); }
-
+isvoid       { printline(); out("isvoid"); }
 new          { printline(); out("new"); }
-
 not          { printline(); out("not"); }
-
 of           { printline(); out("of"); }
-
-\+           { printline(); out("plus"); }
-
+while        { printline(); out("while"); }
+loop         { printline(); out("loop"); }
 pool         { printline(); out("pool"); }
 
+
+  /* --------------- BOOL Keywords ----------- */
+false        { printline(); out("false"); }
+true         { printline(); out("true"); }
+
+
+  /* ----- Integers, Identifiers, Types ------ */
+{TYPE}       { printline(); out("type"); out(yytext); }
+{IDENTIFIER} { printline(); out("identifier"); out(yytext); }
+{INTEGER}    {
+
+                printline(); out("integer"); out(yytext);
+             }
+
+
+  /* --------------- Punctuation ------------ */
+\@           { printline(); out("at"); }
+:            { printline(); out("colon"); }
+,            { printline(); out("comma"); }
+\/            { printline(); out("divide"); }
+\.           { printline(); out("dot"); }
+\{           { printline(); out("lbrace"); }
+\(           { printline(); out("lparen"); }
 -\>          { printline(); out("rarrow"); }
-
 \}           { printline(); out("rbrace"); }
-
 \)           { printline(); out("rparen"); }
-
 ;            { printline(); out("semi"); }
 
+  /* ------ Assignments & Comparisions ------ */
+\<-          { printline(); out("larrow"); }
+=            { printline(); out("equals"); }
+\<=          { printline(); out("le"); }
+\<           { printline(); out("lt"); }
+
+  /* -------------- Arthimetic ------------- */
+-            { printline(); out("minus"); }
+\+           { printline(); out("plus"); }
+\~           { printline(); out("tilde"); }
+\*           { printline(); out("times"); }
+
+  /* -------------- Strings --------------- */
 {STRING}     {
                 printline();
                 out("string");
@@ -132,39 +115,40 @@ pool         { printline(); out("pool"); }
                 out(yytext + 1);
              }
 
-then         { printline(); out("then"); }
+  /* -------------- Comments -------------- */
+\(\*         { yy_push_state(BLOCK_COMMENT); }
+--           { yy_push_state(COMMENT); }
 
-\~           { printline(); out("tilde"); }
+  /* ------- Consumes Whitespace  -------- */
+[ \t\n\r]*   { }
 
-\*           { printline(); out("times"); }
+ /* --  Anything is an Invalid Character -- */
+.            {
+                errorOut((string("invalid character: ") + yytext).c_str());
+                out(yytext);
+                exit(-1);
+              }
 
-true         { printline(); out("true"); }
+ /* ----------- OTHER BLOCKS ------------ */
+ /* ------- Single Line Comment --------- */
+<COMMENT> {
+    \n            { yy_pop_state(); }
+    [ \t\n\r]*    { /* consume the whitespace */ }
 
-{TYPE}       { printline(); out("type"); out(yytext); }
+ }
 
-while        { printline(); out("while"); }
-
-{IDENTIFIER} { printline(); out("identifier"); out(yytext); }
-
-[ \t\n\r]*   { /* consume the whitespace */ }
-
-.       { errorOut((string("invalid character: ") + yytext).c_str()); out(yytext); exit(-1); }
-
-<COMMENT>{
-  \n         { yy_pop_state(); }
-
-  [ \t\n\r]*   { /* consume the whitespace */ }
-
-  .          {  }
-}
-<BLOCK_COMMENT>{
+ /* ------- Single Line Comment --------- */
+<BLOCK_COMMENT> {
   /* Ignore everything in comments, but allow nexting comments because we cool. */
-  \(\*       { yy_push_state(BLOCK_COMMENT); }
-
-  \*\)       { yy_pop_state(); }
-
+  \(\*         { yy_push_state(BLOCK_COMMENT); }
+  \*\)         { yy_pop_state(); }
   [ \t\n\r]*   { /* consume the whitespace */ }
 
-  .          {  }
+  <<EOF>>      {
+                  errorOut("ERROR: <<EOF>> found before end of comment");
+                  exit(-1);
+               }
+
+  .             { /* anything is allowed in comments */ }
 }
 %%

@@ -1,8 +1,9 @@
 Int int
-Bool bool <- true
-Bool bool2 <- false
+Bool bool
+Bool bool2
 String string
-Object object12type
+Object12type object12type
+Object object
 Type type
 nAME Name
 A a
