@@ -150,13 +150,17 @@ while        { printline(); out("while"); }
 <COMMENT>{
   \n         { yy_pop_state(); }
 
+  [ \t\n\r]*   { /* consume the whitespace */ }
+
   .          {  }
 }
 <BLOCK_COMMENT>{
   /* Ignore everything in comments, but allow nexting comments because we cool. */
-  \(\*       { yy_push_state(COMMENT); }
+  \(\*       { yy_push_state(BLOCK_COMMENT); }
 
   \*\)       { yy_pop_state(); }
+
+  [ \t\n\r]*   { /* consume the whitespace */ }
 
   .          {  }
 }
