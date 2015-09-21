@@ -26,3 +26,11 @@
 *.exe
 *.out
 *.app
+
+
+# Other junk
+build/
+lexer
+cool
+*.cl-lex*
+*~
