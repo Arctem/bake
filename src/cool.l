@@ -139,7 +139,7 @@ t[r|R][u|U][e|E]             { printline(); out("true"); }
 <COMMENT>{
     \n            { yy_pop_state(); }
     [ \t\n\r]*    { /* consume the whitespace */ }
-
+    .          {  }
  }
 
  /* ------- Single Line Comment --------- */
