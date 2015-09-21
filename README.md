@@ -16,7 +16,7 @@ Bake is currently in the lexical analyzer stage of our COOL compiler. Utilizing 
 None Known at this time.
 
 ## How to Compile and Run
-- Run cmake_script.sh in terminal.
+- Run cmake_script.sh in terminal to create the makefile and build the project.
   - To make clean, delete the build directory and rerun the script.
 - Go into build/src/
 - Run ./bake &lt;input-file&gt;
@@ -37,7 +37,7 @@ None Known at this time.
   - Run with "--lex" for the lexer
 
 ## Division of Labor
-Andrew Burns: Implementing CMake for compiling and linking the project. Documentation--readme.
-Melanie Palmer: Writing COOL code for test cases. Helping with FLEX code. Helping with testing script. Helping with Debugging error cases.
-William Rosenberger: Attempting to use gtest. Writing testing script. Adding file I/O to driver.cpp. Helping with debugging error cases.
+Andrew Burns: Researching and implementing CMake for compiling and linking the project. Documentation--readme.
+Melanie Palmer: Researching COOL and writing COOL code for test cases. Helping with FLEX code. Helping with testing script. Helping with Debugging error cases. Documentation--code comments.
+William Rosenberger: Researching and attempting to use gtest. Writing testing script. Adding file I/O to driver.cpp. Helping with debugging error cases.
 Russell White: Writing FLEX rules for lexing. Helped with CMake. Documention--code comments.
