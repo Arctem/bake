@@ -3,6 +3,7 @@ Bool bool
 Bool bool2
 String string
 Object12type object12type
+Object_qf object_23type
 Object object
 Type type
 nAME Name
