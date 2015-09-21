@@ -5,9 +5,7 @@ class Main inherits IO {
     Int int <- 0;
 
     if(int = 2)
-      int <- 10.0;
     else
-      int <- 1;
     fi
 
     while(true)
