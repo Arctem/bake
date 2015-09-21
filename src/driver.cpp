@@ -43,12 +43,14 @@ int main(int argc, char** argv)
     }
   }
 
+  // Fail if in is empty
   if(in_fname.empty()) {
     cout << "Must specify input file" << endl;
     help(argv[0]);
     exit(-1);
   }
 
+  // Fail if out is empty
   if(out_fname.empty()) {
     out_fname = in_fname + "-lex-bake";
   }
@@ -60,12 +62,15 @@ int main(int argc, char** argv)
     cout << "Error opening files" << endl;
   }
 
+  // Start the lexer
   yylex();
 
+  // Close file handlers
   fclose(yyin);
   fclose(yyout);
 }
 
+/* Function prints the help message */
 void help(char* cmd_name) {
   cout << "Usage: " << cmd_name << " -i input_file -o output_file\n";
   cout << "  input_file: File to scan" << endl;
