@@ -29,6 +29,9 @@ void printline() {
   fprintf(yyout, "%d\n", yylineno);
 }
 
+void errorOut(const char* message) {
+  fprintf(stderr, "Error: %d: Lexer: %s\n", yylineno, message);
+}
 
 
 %}
@@ -145,7 +148,7 @@ while        { printline(); out("while"); }
 
 [ \t\n\r]*   { /* consume the whitespace */ }
 
-.       { out(yytext); exit(-1); }
+.       { errorOut((string("invalid character: ") + yytext).c_str()); out(yytext); exit(-1); }
 
 <COMMENT>{
   \n         { yy_pop_state(); }

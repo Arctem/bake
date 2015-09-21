@@ -19,9 +19,10 @@ def ref_output(filename):
   cmd = "cool --lex {} --out {}".format(CL_TEST_DIR + filename, OUTPUT + filename)
   
   # Run the cool compiler. If it fails, it will return a string containing a description of why.
-  fail = check_output(cmd, shell = True)
+  fail = check_output(cmd, shell = True, stderr=STDOUT)
 
   if fail:
+    print("reference printed to stdout")
     return fail.decode("latin-1")
 
   # If the lexer succeeded, open the output file and return its contents
@@ -36,8 +37,9 @@ def bake_output(filename):
   # Command that runs our lexer on the given file
   cmd = "{} -i {} -o {}".format(BAKE, CL_TEST_DIR + filename, OUTPUT + filename + "-lex-bake")
 
-  fail = check_output(cmd, shell = True)
+  fail = check_output(cmd, shell = True, stderr=STDOUT)
   if fail:
+    print("bake printed to stdout")
     return fail.decode("latin-1")
 
   # If the lexer succeeded, open the output file and return its contents
@@ -71,7 +73,7 @@ def check_failure(filename):
   try:
     bake_output(filename)
   except CalledProcessError:
-    print("Test faild as excepted")
+    print("Test failed as excepted")
 
 def main():
   cool_files = [f for f in os.listdir(CL_TEST_DIR) if f.endswith(".cl")] # Get all .cl files in the test directory
@@ -80,7 +82,7 @@ def main():
     print("----------- Testing {} -----------".format(f))
 
     # Check tests that should error
-    if f in ["invalid-character.cl"]:
+    if f in ["invalid-character.cl", "bad-backslash.cl"]:
       check_failure(f)
     else:
       same_output(f)
