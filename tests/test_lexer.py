@@ -1,4 +1,11 @@
 #!/usr/bin/python3
+"""
+  Author:        Will Rosenberger
+  Date:          Sept. 20th, 2015
+  Description:   Runs .cl test cases
+  Bugs:          None known
+"""
+
 import sys
 import os
 from subprocess import check_output, STDOUT, CalledProcessError
@@ -9,7 +16,7 @@ BAKE = "../build/src/bake"
 CL_TEST_DIR = "lexer_tests/" # Directory that contains the .cl files to be tested
 OUTPUT = "lexer_output/" # Where to put the lexer files produced by the official Cool interpreter.
 VERBOSE = "v" in sys.argv
-SHOULD_FAIL = ["invalid-character.cl", "bad-backslash.cl", "bad-string.cl", "bad-comment.cl"]
+SHOULD_FAIL = ["invalid-character.cl", "bad-backslash.cl", "invalid-comment.cl", "invalid-string.cl", "invalid-integer.cl"]
 
 def ref_output(filename):
   """

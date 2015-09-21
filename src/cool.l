@@ -10,6 +10,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <stack>
 
 // If you want to disable DEBUGGING, comment out the next line
@@ -82,8 +83,15 @@ t[r|R][u|U][e|E]             { printline(); out("true"); }
 {TYPE}       { printline(); out("type"); out(yytext); }
 {IDENTIFIER} { printline(); out("identifier"); out(yytext); }
 {INTEGER}    {
-
-                printline(); out("integer"); out(yytext);
+                int num = atoi(yytext);
+                if(num < -2147483647 || num > 2147483647) {
+                  errorOut("Integer outside value range");
+                  exit(-1);
+                } else {
+                  printline();
+                  out("integer");
+                  out(yytext);
+                }
              }
 
 
@@ -150,7 +158,7 @@ t[r|R][u|U][e|E]             { printline(); out("true"); }
   [ \t\n\r]*   { /* consume the whitespace */ }
 
   <<EOF>>      {
-                  errorOut("ERROR: <<EOF>> found before end of comment");
+                  errorOut("<<EOF>> found before end of comment");
                   exit(-1);
                }
 
