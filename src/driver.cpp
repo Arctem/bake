@@ -53,6 +53,9 @@ int main(int argc, char** argv)
   }
 
   yylex();
+
+  fclose(yyin);
+  fclose(yyout);
 }
 
 void help(char* cmd_name) {
