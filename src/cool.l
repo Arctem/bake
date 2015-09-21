@@ -165,6 +165,8 @@ while        { printline(); out("while"); }
 
   [ \t\n\r]*   { /* consume the whitespace */ }
 
+  <<EOF>>     { errorOut("<<EOF>> before end of comment"); out(yytext); exit(-1); }
+
   .          {  }
 }
 %%

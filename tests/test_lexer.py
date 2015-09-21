@@ -9,6 +9,7 @@ BAKE = "../build/src/bake"
 CL_TEST_DIR = "lexer_tests/" # Directory that contains the .cl files to be tested
 OUTPUT = "lexer_output/" # Where to put the lexer files produced by the official Cool interpreter.
 VERBOSE = "v" in sys.argv
+SHOULD_FAIL = ["invalid-character.cl", "bad-backslash.cl", "bad-string.cl", "bad-comment.cl"]
 
 def ref_output(filename):
   """
@@ -56,6 +57,7 @@ def same_output(filename):
 
   if bake_o == ref_o:
     print("Match!")
+    return True
   else:
     print("Don't match")
     
@@ -66,6 +68,8 @@ def same_output(filename):
         elif line[0] == '-':
           print("Bake: {}".format(line))
 
+    return False
+
 def check_failure(filename):
   """
     Checks whether the given file fails.
@@ -73,7 +77,11 @@ def check_failure(filename):
   try:
     bake_output(filename)
   except CalledProcessError:
-    print("Test failed as excepted")
+    print("Lex failed as excepted")
+    return True
+  else:
+    print("Lex succeeded unexpectedly")
+    return False
 
 def main():
   cool_files = [f for f in os.listdir(CL_TEST_DIR) if f.endswith(".cl")] # Get all .cl files in the test directory
@@ -82,10 +90,13 @@ def main():
     print("----------- Testing {} -----------".format(f))
 
     # Check tests that should error
-    if f in ["invalid-character.cl", "bad-backslash.cl"]:
-      check_failure(f)
+    did_pass = False
+    if f in SHOULD_FAIL:
+      did_pass = check_failure(f)
     else:
-      same_output(f)
+      did_pass = same_output(f)
+
+    print("\t\t\tPASS" if did_pass else "\t\t\tFAIL")
 
 if __name__ == "__main__":
   main()

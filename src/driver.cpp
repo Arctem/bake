@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
@@ -18,20 +19,25 @@ int main(int argc, char** argv)
   string in_fname; // Name of the input file
   string out_fname; // Name of the output file
 
-  // Get file names
-  char c;
-  while((c = getopt(argc, argv, "i:o:")) != -1) {
-    switch(c) {
-    case 'i': // Input file
-      in_fname = string(optarg);
-      break;
-    case 'o': // Output file
-      out_fname = string(optarg);
-      break;
-    case '?':
-      help(argv[0]);
-      exit(-1);
-      break;
+  // Check whether only an input file (without the -i option) was given
+  if(argc == 2) {
+    in_fname = string(argv[1]);
+  } else {
+    // Get file names
+    char c;
+    while((c = getopt(argc, argv, "i:o:")) != -1) {
+      switch(c) {
+      case 'i': // Input file
+        in_fname = string(optarg);
+        break;
+      case 'o': // Output file
+        out_fname = string(optarg);
+        break;
+      case '?':
+        help(argv[0]);
+        exit(-1);
+        break;
+      }
     }
   }
 
@@ -59,7 +65,9 @@ int main(int argc, char** argv)
 }
 
 void help(char* cmd_name) {
-  cout << "Usage: " << cmd_name << " -i input_file -o output_file\n";
-  cout << "  input_file: File to scan" << endl;
-  cout << "  output_file: File in which to place the output. Defaults to <input_file>-lex-bake" << endl;
+  cout << "Usage: " << endl;
+  cout << "\t" << cmd_name << " input_file" << endl;
+  cout << "\t" << cmd_name << " -i input_file -o output_file" << endl;
+  cout << "input_file: File to scan" << endl;
+  cout << "output_file: File in which to place the output. Defaults to <input_file>-lex-bake" << endl;
 }
