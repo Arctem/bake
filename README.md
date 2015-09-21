@@ -19,12 +19,14 @@ None Known at this time.
 - Run cmake_script.sh in terminal.
 	- To make clean, delete the build directory and rerun the script.
 - Go into build/src/
-- Run ./bake -i <input-file> -o <output-file>
-	- "-i <input-file>" denotes the name of the input file to the lexer
-	- "-o <output-file>" denotes the name of the output file from the lexer.
-		- default output-file name is: "<input-file>-lex-bake"
+- Run ./bake &lt;input-file&gt;
+	- Alternately, you can run specifying the input and output files:
+		Run ./bake -i &lt;input-file&gt; -o &lt;output-file&gt;
+			- "-i &lt;input-file&gt;" denotes the name of the input file to the lexer
+			- "-o &lt;output-file&gt;" denotes the name of the output file from the lexer.
+		  - default output-file name is: "<input-file>-lex-bake"
 - Run unit tests: 
-	- navigate to the bake folder
+	- navigate to the bake/tests folder
 		- ./test_lexer.py
 	- Note: this script assumes the cool command is in the path.
 
