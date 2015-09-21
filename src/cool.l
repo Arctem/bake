@@ -145,7 +145,7 @@ while        { printline(); out("while"); }
 
 [ \t\n\r]*   { /* consume the whitespace */ }
 
-.       { out(yytext); exit(0); }
+.       { out("Error: Invalid character"); out(yytext); exit(-1); }
 
 <COMMENT>{
   \n         { yy_pop_state(); }

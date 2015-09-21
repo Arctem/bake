@@ -18,7 +18,11 @@ def ref_output(filename):
   cmd = "cool --lex {} --out {}".format(CL_TEST_DIR + filename, OUTPUT + filename)
   
   # Run the cool compiler. If it fails, it will return a string containing a description of why.
-  fail = check_output(cmd, shell = True)
+  try:
+    fail = check_output(cmd, shell = True)
+  except CalledProcessError:
+    return
+
   if fail:
     return fail.decode("latin-1")
 
@@ -34,7 +38,11 @@ def bake_output(filename):
   # Command that runs our lexer on the given file
   cmd = "{} -i {} -o {}".format(BAKE, CL_TEST_DIR + filename, OUTPUT + filename + "-lex-bake")
 
-  fail = check_output(cmd, shell = True)
+  try:
+    fail = check_output(cmd, shell = True)
+  except CalledProcessError:
+    return
+
   if fail:
     return fail.decode("latin-1")
 
