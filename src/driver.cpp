@@ -13,6 +13,9 @@ using namespace std;
 #include <stdlib.h>
 #include <getopt.h>
 
+#include "ast.h"
+using namespace bake_ast;
+
 extern int yylineno;
 extern int nelements;
 extern FILE* yyin;
@@ -26,6 +29,22 @@ void yylex_destroy(void);
 
 int main(int argc, char** argv)
 {
+  BinaryOp o1;
+  BinaryOp o2;
+  Integer i1(1);
+  Integer i2(2);
+  Integer i3(3);
+
+  o1.setLhs(&i1);
+  o1.setRhs(&o2);
+  o2.setLhs(&i2);
+  o2.setRhs(&i3);
+
+  PrettyPrint v;
+  o1.accept(&v);
+  cout << endl;
+
+
   string in_fname; // Name of the input file
   string out_fname; // Name of the output file
   bool run_lex_only;

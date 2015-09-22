@@ -1,6 +1,8 @@
 find_package(BISON REQUIRED)
 set(BISON_GENERATE_DEFINES TRUE)
 find_package(FLEX REQUIRED)
+set(EXECUTABLE_OUTPUT_PATH ../..)
+include_directories(ast/inc)
 
 BISON_TARGET(PARSER ${CMAKE_CURRENT_SOURCE_DIR}/parser_cool.yyp ${CMAKE_CURRENT_BINARY_DIR}/parser_cool.cpp
 COMPILE_FLAGS --defines="${CMAKE_CURRENT_BINARY_DIR}/parser_cool.h")
@@ -12,12 +14,12 @@ ADD_FLEX_BISON_DEPENDENCY(SCANNER PARSER)
 #include_directories(${GTEST_INCLUDE_DIRS})
 
 set(EXECUTABLE_OUTPUT_PATH ../..)
+add_subdirectory(ast)
 add_executable( bake
     driver.cpp
     ${BISON_PARSER_OUTPUTS}
     ${FLEX_SCANNER_OUTPUTS}
-
  )
 
- #target_link_libraries(bake ${GTEST_BOTH_LIBRARIES})
+ #target_link_libraries(bake.exe ${GTEST_BOTH_LIBRARIES})
  #add_test(AllTestsInBake bake)

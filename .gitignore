@@ -33,4 +33,6 @@ build/
 bake
 cool
 *.cl-lex*
+*.cl-ast
 *~
+bake
