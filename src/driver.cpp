@@ -20,6 +20,7 @@ extern FILE* yyout;
 
 int yylex(void);
 void help(char* cmd_name);
+void yylex_destroy(void);
 
 int main(int argc, char** argv)
 {
@@ -73,6 +74,7 @@ int main(int argc, char** argv)
   // Close file handlers
   fclose(yyin);
   fclose(yyout);
+  yylex_destroy();
 }
 
 /* Function prints the help message */
