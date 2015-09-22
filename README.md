@@ -40,4 +40,4 @@ None Known at this time.
 Andrew Burns: Researching and implementing CMake for compiling and linking the project. Documentation--readme.
 Melanie Palmer: Researching COOL and writing COOL code for test cases. Helping with FLEX code. Helping with testing script. Helping with Debugging error cases. Documentation--code comments.
 William Rosenberger: Researching and attempting to use gtest. Writing testing script. Adding file I/O to driver.cpp. Helping with debugging error cases.
-Russell White: Writing FLEX rules for lexing. Helped with CMake. Documention--code comments.
+Russell White: Writing FLEX rules for lexing. Helped with CMake. Documention--code comments. Configured CircleCI.
