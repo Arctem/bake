@@ -1,6 +1,6 @@
 find_package(FLEX REQUIRED)
 
-FLEX_TARGET(SCANNER ${CMAKE_CURRENT_SOURCE_DIR}/cool.l ${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp)
+FLEX_TARGET(SCANNER ${CMAKE_CURRENT_SOURCE_DIR}/scanner_cool.l ${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp)
 
 #enable_testing()
 #find_package(GTest REQUIRED)
