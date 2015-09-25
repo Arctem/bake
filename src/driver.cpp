@@ -19,6 +19,7 @@ extern FILE* yyin;
 extern FILE* yyout;
 
 int yylex(void);
+int yyparse(void);
 void help(char* cmd_name);
 void yylex_destroy(void);
 
@@ -69,12 +70,13 @@ int main(int argc, char** argv)
   }
 
   // Start the lexer
-  yylex();
+  //yylex();
+  yyparse();
 
   // Close file handlers
   fclose(yyin);
   fclose(yyout);
-  yylex_destroy();
+  //yylex_destroy();
 }
 
 /* Function prints the help message */

@@ -1,0 +1,150 @@
+%{
+
+// C++ stuff is
+#include <stdio.h>
+#include <vector>
+#include <cstring>
+#include <math.h>
+#include <iostream>
+
+extern char yytext[];
+#define YYERROR_VERBOSE 1
+int yylex();
+int yyerror(char const *s);
+extern int yylineno;
+int yycol = 0;
+
+%}
+
+/* ----------- OPTIONS ------------ */
+/* ----------- Union ------------ */
+%union {
+  int valueInt;
+  char* keyword;
+  char* type;
+  char* valueString;
+  bool  boolean;
+}
+
+/* --------- Base Tokens ------------ */
+%token <type> TYPE
+%token <type> IDENTIFIER
+%token <valueInt> INTEGER
+%token <valueString> STRING
+
+/* -------- Keyword Token ----------- */
+%token <keyword> CLASS
+%token <keyword> INHERIT
+%token <keyword> CASE
+%token <keyword> ESAC
+%token <keyword> IF
+%token <keyword> THEN
+%token <keyword> ELSE
+%token <keyword> FI
+%token <keyword> IN
+%token <keyword> LET
+%token <keyword> ISVOID
+%token <keyword> NEW
+%token <keyword> NOT
+%token <keyword> OF
+%token <keyword> WHILE
+%token <keyword> LOOP
+%token <keyword> POOL
+%token <keyword> GOES_TO
+
+/* ------- Compare Tokens ---------- */
+%token <keyword> LARROW
+%token <keyword> LEQUAL
+%token <keyword> RARROW
+
+/* ------- Boolean Tokens ---------- */
+%token <boolean> TRUE
+%token <boolean> FALSE
+
+/* ------------ Types ------------- */
+%type < > class
+%type < > commandList
+%type < > command
+%type < > parameters
+%type < > declaration
+%type < > expr
+%type < > math
+%type < > compare
+%type < > callMethod
+%type < > controlFlow
+%type < > block
+%type < > cases
+%type < > declarationBlock
+%type < > exprList
+
+/* ------------ RULES ------------- */
+%%
+root : class ';' root                                             {}
+      | class ';'                                                 {}
+
+class : CLASS TYPE '{' commandList ')'                            {}
+      | CLASS TYPE INHERIT TYPE '{' commandList ')'               {}
+
+commandList : command ';'                                         {}
+      | command ';' commandList                                   {}
+
+command : IDENTIFIER '(' parameters ')' ':' TYPE '{' expr '}'     {}
+      | IDENTIFIER '('  ')' ':' TYPE '{' expr '}'                 {}
+      | declaration                                               {}
+
+parameters : IDENTIFIER ':' TYPE                                  {}
+      | IDENTIFIER ':' TYPE ',' parameters                        {}
+
+expr : NEW TYPE                                                   {}
+      | IDENTIFIER LARROW expr                                    {}
+      | LET declarationBlock IN expr                              {}
+      | math                                                      {}
+      | compare                                                   {}
+      | callMethod                                                {}
+      | controlFlow                                               {}
+      | '{' block '}'                                             {}
+      | IDENTIFIER                                                {}
+      | INTEGER                                                   {}
+      | STRING                                                    {}
+      | TRUE                                                      {}
+      | FALSE                                                     {}
+
+controlFlow: IF expr THEN expr ELSE expr FI                       {}
+      | WHILE expr LOOP expr                                      {}
+      | CASE expr OF cases ESAC                                   {}
+
+cases : IDENTIFIER ':' TYPE GOES_TO expr ','                      {}
+      | IDENTIFIER ':' TYPE GOES_TO expr ',' cases                {}
+
+math : expr '/' expr                                              {}
+      | expr '+' expr                                             {}
+      | expr '-' expr                                             {}
+      | expr '*' expr                                             {}
+      | '(' expr ')'                                              {}
+      | '~' expr                                                  {}
+
+compare : ISVOID expr                                             {}
+      | expr '<' expr                                             {}
+      | expr LEQUAL expr                                          {}
+      | expr '=' expr                                             {}
+      | NOT expr                                                  {}
+
+callMethod : expr '.' IDENTIFIER '(' exprList ')'                 {}
+      | expr '@' TYPE '.' IDENTIFIER '(' exprList ')'             {}
+      | expr '.' IDENTIFIER '(' ')'                               {}
+      | expr '@' TYPE '.' IDENTIFIER '(' ')'                      {}
+      | IDENTIFIER '(' exprList ')'                               {}
+      | IDENTIFIER '(' ')'                                        {}
+
+declaration : IDENTIFIER ':' TYPE                                 {}
+      | IDENTIFIER ':' TYPE LARROW expr                           {}
+
+declarationBlock : declaration                                    {}
+      | declaration ',' declarationBlock                          {}
+
+block : expr ';'                                                  {}
+      | expr ';' block                                            {}
+
+exprList : expr                                                   {}
+      | expr ',' exprList                                         {}
+%%
