@@ -30,7 +30,7 @@
 
 # Other junk
 build/
-lexer
+bake
 cool
 *.cl-lex*
 *~
