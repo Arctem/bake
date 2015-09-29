@@ -12,7 +12,7 @@ from subprocess import check_output, STDOUT, CalledProcessError
 import difflib
 import codecs
 
-BAKE = "../build/src/bake"
+BAKE = "../bake"
 CL_TEST_DIR = "lexer_tests/" # Directory that contains the .cl files to be tested
 OUTPUT = "lexer_output/" # Where to put the lexer files produced by the official Cool interpreter.
 VERBOSE = "v" in sys.argv

@@ -6,6 +6,7 @@ FLEX_TARGET(SCANNER ${CMAKE_CURRENT_SOURCE_DIR}/cool.l ${CMAKE_CURRENT_BINARY_DI
 #find_package(GTest REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
 
+set(EXECUTABLE_OUTPUT_PATH ../..)
 add_executable( bake
     driver.cpp
     ${FLEX_SCANNER_OUTPUTS}
