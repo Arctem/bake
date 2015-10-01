@@ -1,0 +1,44 @@
+%{
+
+// C++ stuff is
+
+%}
+
+/* ----------- Options ------------ */
+%union {
+  int value;
+  char* string;
+  bool  boolean;
+}
+
+%token <string> VARIABLE
+%token <string> OBJECT
+%token <string> METHOD
+
+/* ------------ Rules ------------- */
+%%
+root : root class                    {}
+      | class                        {}
+
+class : 'class' classType '{' feature ')'
+      | 'class' classType 'inherits' type '{' feature ')'
+
+feature : functionName '(' parameter ')' ':' type '{' expr '}'
+      | attributeName ':' type '<-' expr
+      | attributeName ':' type
+
+parameter : name ':' type
+
+expr : name '<-' expr
+      |
+      | expr '+' expr
+      | expr '-' expr
+      | expr '*' expr
+      | expr '/' expr
+      | '~' expr
+      | expr '<' expr
+      | expr '<=' expr
+      | 'not' expr
+      | (expr)
+
+%%
