@@ -69,12 +69,13 @@ int main(int argc, char** argv)
   }
 
   // Start the lexer
-  yylex();
+  //yylex();
+  yyparse();
 
   // Close file handlers
   fclose(yyin);
   fclose(yyout);
-  yylex_destroy();
+  //yylex_destroy();
 }
 
 /* Function prints the help message */

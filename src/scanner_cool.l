@@ -55,33 +55,33 @@ STRING      \"([^\n\Z\"])*\"
 %%
   /* -----------------  RULES --------------- */
   /* ---------------- KEYWORDS -------------- */
-class        { printline(); out("class"); }
-inherits     { printline(); out("inherits"); }
-case         { printline(); out("case"); }
-esac         { printline(); out("esac"); }
-if           { printline(); out("if"); }
-then         { printline(); out("then"); }
-else         { printline(); out("else"); }
-fi           { printline(); out("fi"); }
-in           { printline(); out("in"); }
-let          { printline(); out("let"); }
-isvoid       { printline(); out("isvoid"); }
-new          { printline(); out("new"); }
-not          { printline(); out("not"); }
-of           { printline(); out("of"); }
-while        { printline(); out("while"); }
-loop         { printline(); out("loop"); }
-pool         { printline(); out("pool"); }
+class        { printline(); out("class"); return CLASS;}
+inherits     { printline(); out("inherits"); return INHERIT }
+case         { printline(); out("case"); return CASE;}
+esac         { printline(); out("esac"); return ESAC;}
+if           { printline(); out("if"); return IF;}
+then         { printline(); out("then"); return THEN;}
+else         { printline(); out("else"); return ELSE;}
+fi           { printline(); out("fi"); return FI;}
+in           { printline(); out("in"); return IN;}
+let          { printline(); out("let"); return LET;}
+isvoid       { printline(); out("isvoid"); return ISVOID;}
+new          { printline(); out("new"); return NEW;}
+not          { printline(); out("not"); return NOT;}
+of           { printline(); out("of"); return OF;}
+while        { printline(); out("while"); return WHILE;}
+loop         { printline(); out("loop"); return LOOP;}
+pool         { printline(); out("pool"); return POOL}
 
 
   /* --------------- BOOL Keywords ----------- */
-f[a|A][l|L][s|S][e|E]        { printline(); out("false"); }
-t[r|R][u|U][e|E]             { printline(); out("true"); }
+f[a|A][l|L][s|S][e|E]        { printline(); out("false"); return FALSE;}
+t[r|R][u|U][e|E]             { printline(); out("true"); return TRUE;}
 
 
   /* ----- Integers, Identifiers, Types ------ */
-{TYPE}       { printline(); out("type"); out(yytext); }
-{IDENTIFIER} { printline(); out("identifier"); out(yytext); }
+{TYPE}       { printline(); out("type"); out(yytext); return TYPE;}
+{IDENTIFIER} { printline(); out("identifier"); out(yytext); return INDENTIFIER;}
 {INTEGER}    {
                 int num = atoi(yytext);
                 if(num < -2147483647 || num > 2147483647) {
@@ -92,33 +92,35 @@ t[r|R][u|U][e|E]             { printline(); out("true"); }
                   out("integer");
                   out(yytext);
                 }
+                return INTEGER;
              }
 
 
   /* --------------- Punctuation ------------ */
-\@           { printline(); out("at"); }
-:            { printline(); out("colon"); }
-,            { printline(); out("comma"); }
-\/            { printline(); out("divide"); }
-\.           { printline(); out("dot"); }
-\{           { printline(); out("lbrace"); }
-\(           { printline(); out("lparen"); }
--\>          { printline(); out("rarrow"); }
-\}           { printline(); out("rbrace"); }
-\)           { printline(); out("rparen"); }
-;            { printline(); out("semi"); }
+\@           { printline(); out("at"); return '@';}
+:            { printline(); out("colon"); return ':';}
+,            { printline(); out("comma"); return ',';}
+\/            { printline(); out("divide"); return '/';}
+\.           { printline(); out("dot"); return '.';}
+\{           { printline(); out("lbrace"); return '{';}
+\(           { printline(); out("lparen"); return ')';}
+-\>          { printline(); out("rarrow"); return RARROW;}
+\}           { printline(); out("rbrace"); return '}';}
+\)           { printline(); out("rparen"); return ')';}
+;            { printline(); out("semi"); return ';';}
 
   /* ------ Assignments & Comparisions ------ */
-\<-          { printline(); out("larrow"); }
-=            { printline(); out("equals"); }
-\<=          { printline(); out("le"); }
-\<           { printline(); out("lt"); }
+\<-          { printline(); out("larrow"); return LARROW; }
+=            { printline(); out("equals"); return '='; }
+\<=          { printline(); out("le"); return LEQUAL;}
+=\>          { printline(); out("re"); return GOES_TO;}
+\<           { printline(); out("lt"); return '<';}
 
   /* -------------- Arthimetic ------------- */
--            { printline(); out("minus"); }
-\+           { printline(); out("plus"); }
-\~           { printline(); out("tilde"); }
-\*           { printline(); out("times"); }
+-            { printline(); out("minus"); return '-';}
+\+           { printline(); out("plus"); return '+';}
+\~           { printline(); out("tilde"); return '~';}
+\*           { printline(); out("times"); return '*';}
 
   /* -------------- Strings --------------- */
 {STRING}     {
@@ -126,6 +128,7 @@ t[r|R][u|U][e|E]             { printline(); out("true"); }
                 out("string");
                 yytext[yyleng - 1] = '\0';
                 out(yytext + 1);
+                return STRING;
              }
 
   /* -------------- Comments -------------- */
