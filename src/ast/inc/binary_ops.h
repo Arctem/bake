@@ -21,6 +21,62 @@ namespace bake_ast {
     Node* lhs;
     Node* rhs;
   };
+  
+  class Plus : public BinaryOp {
+  public:
+    Plus() : type(PLUS) {};
+    
+    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+  };
+  
+  class Minus : public BinaryOp {
+  public:
+    Minus() : type(MINUS) {};
+    
+    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+  };
+  
+  class Multiply : public BinaryOp {
+  public:
+    Multiply() : type(MULTIPLY) {};
+    
+    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+  };
+  
+  class Divide : public BinaryOp {
+  public:
+    Divide() : type(DIVIDE) {};
+    
+    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+  };
+  
+  class LessThan : public BinaryOp {
+  public:
+    LessThan() : type(LESSTHAN) {};
+    
+    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+  };
+  
+  class LessThanEqual : public BinaryOp {
+  public:
+    LessThanEqual() : type(LESSTHANEQUAL) {};
+    
+    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+  };
+  
+  class Equal : public BinaryOp {
+  public:
+    Equal() : type(EQUAL) {};
+    
+    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+  };
+  
+  class Assign : public BinaryOp {
+  public:
+    Assign() : type(ASSIGN) {};
+    
+    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+  };
 }
 
 #endif

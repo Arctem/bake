@@ -15,6 +15,14 @@ namespace bake_ast {
   class BitNot;
   class Isvoid;
   class New;
+  class Plus;
+  class Minus;
+  class Multiply;
+  class Divide;
+  class LessThan;
+  class LessThanEqual;
+  class Equal;
+  class Assign;
 
   class Visitor {
   public:
@@ -42,12 +50,24 @@ namespace bake_ast {
     void visit(BoolVal*);
     void visit(Id*);
     void visit(Type*);
-    void visit(BinaryOp*);
+
+    // Unary Operators
     void visit(UnaryOp*);
     void visit(LogicalNot*);
     void visit(BitNot*);
     void visit(Isvoid*);
     void visit(New*);
+    
+    // Binary Operators
+    void visit(BinaryOp*);
+    void visit(Plus*);
+    void visit(Minus*);
+    void visit(Multiply*);
+    void visit(Divide*);
+    void visit(LessThan*);
+    void visit(LessThanEqual*);
+    void visit(Equal*);
+    void visit(Assign*);
 
   private:
     int depth; // Holds how many levels down the tree this print has gone
