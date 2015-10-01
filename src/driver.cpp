@@ -31,19 +31,30 @@ int main(int argc, char** argv)
 {
   BinaryOp o1;
   BinaryOp o2;
-  Integer i1(1);
-  Integer i2(2);
-  Integer i3(3);
+  BinaryOp o3;
+  BitNot bnot;
+  LogicalNot lnot;
+  Isvoid ivoid;
+  New nw;
+  BoolVal bl(true);
+  IntegerVal intg(2);
+  StringVal str("Hello world");
+  Id id("aname");
 
-  o1.setLhs(&i1);
+  o1.setLhs(&bnot);
+  bnot.set(&bl);
   o1.setRhs(&o2);
-  o2.setLhs(&i2);
-  o2.setRhs(&i3);
+  o2.setLhs(&o3);
+  o2.setRhs(&str);
+  o3.setLhs(&intg);
+  o3.setRhs(&lnot);
+  lnot.set(&ivoid);
+  ivoid.set(&nw);
+  nw.set(&id);
 
   PrettyPrint v;
   o1.accept(&v);
   cout << endl;
-
 
   string in_fname; // Name of the input file
   string out_fname; // Name of the output file
@@ -81,7 +92,7 @@ int main(int argc, char** argv)
   if(in_fname.empty()) {
     cout << "Must specify input file" << endl;
     help(argv[0]);
-    exit(-1);
+    return -1;
   }
 
   if(printLex == true) {

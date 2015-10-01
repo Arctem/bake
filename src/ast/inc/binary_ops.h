@@ -9,7 +9,7 @@ namespace bake_ast {
   public:
     NodeType type;
 
-    BinaryOp() : type(BINARYOP) {};
+    BinaryOp() {};
 
     void setLhs(Node* n) { this->lhs = n; }
     Node* getLhs() { return this->lhs; }

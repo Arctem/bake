@@ -1,10 +1,7 @@
 
 #include <iostream>
 using namespace std;
-#include "visitor.h"
-#include "node.h"
-#include "terminals.h"
-#include "binary_ops.h"
+#include "ast.h"
 using namespace bake_ast;
 
 /*********** Pretty print methods ***********/
@@ -19,9 +16,29 @@ void PrettyPrint::leadingOps() {
   }
 }
 
-void PrettyPrint::visit(Integer* n) {
+void PrettyPrint::visit(IntegerVal* n) {
   leadingOps();
-  cout << "+ Value: " << n->getValue() << endl;
+  cout << "+ Integer: " << n->getValue() << endl;
+}
+
+void PrettyPrint::visit(StringVal* n) {
+  leadingOps();
+  cout << "+ String: " << *(n->getValue()) << endl;
+}
+
+void PrettyPrint::visit(BoolVal* n) {
+  leadingOps();
+  cout << "+ Boolean: " << n->getValue() << endl;
+}
+
+void PrettyPrint::visit(Id* n) {
+  leadingOps();
+  cout << "+ ID: " << *(n->getName()) << endl;
+}
+
+void PrettyPrint::visit(Type* n) {
+  leadingOps();
+  cout << "+ ID: " << *(n->getName()) << endl;
 }
 
 void PrettyPrint::visit(BinaryOp* n) {
@@ -31,5 +48,50 @@ void PrettyPrint::visit(BinaryOp* n) {
   depth++;
   n->getLhs()->accept(this);
   n->getRhs()->accept(this);
+  depth--;
+}
+
+void PrettyPrint::visit(UnaryOp* n) {
+  leadingOps();
+  cout << "+ UnaryOp" << endl;
+
+  depth++;
+  n->get()->accept(this);
+  depth--;
+}
+
+void PrettyPrint::visit(LogicalNot* n) {
+  leadingOps();
+  cout << "+ LogicalNot" << endl;
+
+  depth++;
+  n->get()->accept(this);
+  depth--;
+}
+
+void PrettyPrint::visit(BitNot* n) {
+  leadingOps();
+  cout << "+ BitNot" << endl;
+
+  depth++;
+  n->get()->accept(this);
+  depth--;
+}
+
+void PrettyPrint::visit(Isvoid* n) {
+  leadingOps();
+  cout << "+ Isvoid" << endl;
+
+  depth++;
+  n->get()->accept(this);
+  depth--;
+}
+
+void PrettyPrint::visit(New* n) {
+  leadingOps();
+  cout << "+ New" << endl;
+
+  depth++;
+  n->get()->accept(this);
   depth--;
 }
