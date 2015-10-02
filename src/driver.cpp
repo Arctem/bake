@@ -14,7 +14,7 @@ using namespace std;
 #include <getopt.h>
 
 #include "ast.h"
-using namespace bake_ast;
+// using namespace bake_ast;
 
 extern int yylineno;
 extern int nelements;
@@ -29,68 +29,6 @@ void yylex_destroy(void);
 
 int main(int argc, char** argv)
 {
-  Plus o1;
-  Divide o2;
-  Assign o3;
-  BitNot bnot;
-  LogicalNot lnot;
-  Isvoid ivoid;
-  New nw;
-  BoolVal bl(true);
-  IntegerVal intg(2);
-  StringVal str("Hello world");
-  Id id("aname");
-  WhileLoop w;
-  IfStatement i;
-  
-  i.setCond(&intg);
-  i.setBody(&w);
-  i.setElseBody(&str);
-  w.setCond(&o1);
-  w.setBody(&str);
-  o1.setLhs(&intg);
-  o1.setRhs(&intg);
-
-  o1.setLhs(&bnot);
-  bnot.set(&bl);
-  o1.setRhs(&o2);
-  o2.setLhs(&o3);
-  o2.setRhs(&str);
-  o3.setLhs(&intg);
-  o3.setRhs(&lnot);
-  lnot.set(&ivoid);
-  ivoid.set(&nw);
-  nw.set(&id);
-
-  ExprList exps;
-  Id id2("x");
-  LogicalNot lnot2;
-  Assign a1;
-  IntegerVal intg2(42);
-  BoolVal bl2(false);
-  lnot2.set(&bl2);
-  a1.setRhs(&id2);
-  a1.setLhs(&intg2);
-  exps.add(&a1);
-  exps.add(&lnot2);
-
-  exps.add(&o1);
-  o1.setLhs(&bnot);
-  bnot.set(&bl);
-  o1.setRhs(&o2);
-  o2.setLhs(&o3);
-  o2.setRhs(&str);
-  o3.setLhs(&intg);
-  o3.setRhs(&lnot);
-  lnot.set(&ivoid);
-  ivoid.set(&nw);
-  nw.set(&id);
-
-  PrettyPrint v;
-  //exps.accept(&v);
-  i.accept(&v);
-  cout << endl;
-
   string in_fname; // Name of the input file
   string out_fname; // Name of the output file
   bool run_lex_only;
