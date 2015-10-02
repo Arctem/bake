@@ -7,9 +7,12 @@
 #include <math.h>
 #include <iostream>
 
-extern char yytext[];
+
+// define line below as 1 to get debugging
+#define PARSER_DEBUG 0
 #define YYERROR_VERBOSE 1
-#define PARSER_DEBUG 1
+extern char yytext[];
+
 int yylex();
 extern int yylineno;
 int yycol = 0;
@@ -20,9 +23,9 @@ void yyerror(char const* s)
   printf("Error: line %d column %d: %s\n",yylineno,yycol,s);
 }
 
-void printDebug(char *s){
+void printDebug(const char *message){
   if(PARSER_DEBUG == 1){
-    printf("%s", s);
+    printf("Debug: %d: Parsed: %s\n", yylineno,message);
   }
 }
 

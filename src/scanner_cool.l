@@ -15,6 +15,9 @@
 #include <stdarg.h>
 #include "parser_cool.h"
 
+// define line below as 1 to get debugging
+#define  SCANNER_DEBUG 0
+
 extern int yycol;
 bool printLex;
 
@@ -25,7 +28,9 @@ void out(const char *output);
 void printline();
 
 void out(const char *output) {
-  fprintf(yyout, "%s\n", output);
+  if(printLex == true){
+    fprintf(yyout, "%s\n", output);
+  }
 }
 
 void printline() {
@@ -41,6 +46,10 @@ void outputLex(const char* message){
       printline();
       out(message);
    }
+
+   if(SCANNER_DEBUG == 1){
+      printf("Debug: %d: Lexed: %s", yylineno,message);
+   }
 }
 
 void adjust(void){
@@ -50,6 +59,7 @@ void adjust(void){
     else {yycol++;}
   }
 }
+
 
 %}
 
@@ -71,41 +81,41 @@ STRING      \"([^\n\Z\"])*\"
 %%
   /* -----------------  RULES --------------- */
   /* ---------------- KEYWORDS -------------- */
-class        { outputLex("class"); adjust(); return CLASS;}
-inherits     { outputLex("inherits"); return INHERIT; }
-case         { outputLex("case"); return CASE;}
-esac         { outputLex("esac"); return ESAC;}
-if           { outputLex("if"); return IF;}
-then         { outputLex("then"); return THEN;}
-else         { outputLex("else"); return ELSE;}
-fi           { outputLex("fi"); return FI;}
-in           { outputLex("in"); return IN;}
-let          { outputLex("let"); return LET;}
-isvoid       { outputLex("isvoid"); return ISVOID;}
-new          { outputLex("new"); return NEW;}
-not          { outputLex("not"); return NOT;}
-of           { outputLex("of"); return OF;}
-while        { outputLex("while"); return WHILE;}
-loop         { outputLex("loop"); return LOOP;}
-pool         { outputLex("pool"); return POOL;}
+class        { outputLex("class");    adjust(); return CLASS;}
+inherits     { outputLex("inherits"); adjust(); return INHERIT; }
+case         { outputLex("case");     adjust(); return CASE;}
+esac         { outputLex("esac");     adjust(); return ESAC;}
+if           { outputLex("if");       adjust(); return IF;}
+then         { outputLex("then");     adjust(); return THEN;}
+else         { outputLex("else");     adjust(); return ELSE;}
+fi           { outputLex("fi");       adjust(); return FI;}
+in           { outputLex("in");       adjust(); return IN;}
+let          { outputLex("let");      adjust(); return LET;}
+isvoid       { outputLex("isvoid");   adjust(); return ISVOID;}
+new          { outputLex("new");      adjust(); return NEW;}
+not          { outputLex("not");      adjust(); return NOT;}
+of           { outputLex("of");       adjust(); return OF;}
+while        { outputLex("while");    adjust(); return WHILE;}
+loop         { outputLex("loop");     adjust(); return LOOP;}
+pool         { outputLex("pool");     adjust(); return POOL;}
 
 
   /* --------------- BOOL Keywords ----------- */
-f[a|A][l|L][s|S][e|E]        { outputLex("false"); return FALSE;}
-t[r|R][u|U][e|E]             { outputLex("true"); return TRUE;}
+f[a|A][l|L][s|S][e|E]        { outputLex("false"); adjust(); return FALSE;}
+t[r|R][u|U][e|E]             { outputLex("true");  adjust(); return TRUE;}
 
 
   /* ----- Integers, Identifiers, Types ------ */
-{TYPE}       { adjust(); outputLex("type"); return TYPE;}
-{IDENTIFIER} { outputLex("identifier"); out(yytext); return IDENTIFIER;}
+{TYPE}       { adjust(); outputLex("type"); out(yytext); return TYPE;}
+{IDENTIFIER} { outputLex("identifier"); out(yytext);  adjust(); return IDENTIFIER;}
 {INTEGER}    {
+                adjust();
                 int num = atoi(yytext);
                 if(num < -2147483647 || num > 2147483647) {
                   errorOut("Integer outside value range");
                   exit(-1);
                 } else {
-                  printline();
-                  out("integer");
+                  outputLex("integer");
                   out(yytext);
                 }
                 return INTEGER;
@@ -113,73 +123,74 @@ t[r|R][u|U][e|E]             { outputLex("true"); return TRUE;}
 
 
   /* --------------- Punctuation ------------ */
-\@           { outputLex("at"); return '@';}
-:            { outputLex("colon"); return ':';}
-,            { outputLex("comma"); return ',';}
-\/            { outputLex("divide"); return '/';}
-\.           { outputLex("dot"); return '.';}
-\{           { outputLex("lbrace"); return '{';}
-\(           { outputLex("lparen"); return '(';}
--\>          { outputLex("rarrow"); return RARROW;}
-\}           { outputLex("rbrace"); return '}';}
-\)           { outputLex("rparen"); return ')';}
-;            { outputLex("semi"); return ';';}
+\@           { outputLex("at");     adjust(); return '@';}
+:            { outputLex("colon");  adjust(); return ':';}
+,            { outputLex("comma");  adjust(); return ',';}
+\/           { outputLex("divide"); adjust(); return '/';}
+\.           { outputLex("dot");    adjust(); return '.';}
+\{           { outputLex("lbrace"); adjust(); return '{';}
+\(           { outputLex("lparen"); adjust(); return '(';}
+-\>          { outputLex("rarrow"); adjust(); return RARROW;}
+\}           { outputLex("rbrace"); adjust(); return '}';}
+\)           { outputLex("rparen"); adjust(); return ')';}
+;            { outputLex("semi"); adjust(); return ';';}
 
   /* ------ Assignments & Comparisions ------ */
-\<-          { outputLex("larrow"); return LARROW; }
-=            { outputLex("equals"); return '='; }
-\<=          { outputLex("le"); return LEQUAL;}
-=\>          { outputLex("re"); return GOES_TO;}
-\<           { outputLex("lt"); return '<';}
+\<-          { outputLex("larrow"); adjust(); return LARROW; }
+=            { outputLex("equals"); adjust(); return '='; }
+\<=          { outputLex("le");     adjust(); return LEQUAL;}
+=\>          { outputLex("re");     adjust(); return GOES_TO;}
+\<           { outputLex("lt");     adjust(); return '<';}
 
   /* -------------- Arthimetic ------------- */
--            { outputLex("minus"); return '-';}
-\+           { outputLex("plus"); return '+';}
-\~           { outputLex("tilde"); return '~';}
-\*           { outputLex("times"); return '*';}
+-            { outputLex("minus"); adjust(); return '-';}
+\+           { outputLex("plus");  adjust(); return '+';}
+\~           { outputLex("tilde"); adjust(); return '~';}
+\*           { outputLex("times"); adjust(); return '*';}
 
   /* -------------- Strings --------------- */
 {STRING}     {
-                outputLex("string");
+                adjust();
                 yytext[yyleng - 1] = '\0';
+                outputLex("string");
                 out(yytext + 1);
                 return STRING;
              }
 
   /* -------------- Comments -------------- */
-\(\*         { yy_push_state(BLOCK_COMMENT); }
---           { yy_push_state(COMMENT); }
+\(\*         { adjust(); yy_push_state(BLOCK_COMMENT); }
+--           { adjust(); yy_push_state(COMMENT); }
 
   /* ------- Consumes Whitespace  -------- */
-[ \t\n\r]*   { }
+[ \t\n\r]*   { adjust(); }
 
  /* --  Anything is an Invalid Character -- */
 .            {
                 errorOut((string("invalid character: ") + yytext).c_str());
-                out(yytext);
                 exit(-1);
               }
 
  /* ----------- OTHER BLOCKS ------------ */
  /* ------- Single Line Comment --------- */
 <COMMENT>{
-    \n            { yy_pop_state(); }
-    [ \t\n\r]*    { /* consume the whitespace */ }
-    .          {  }
+    \n            { adjust(); yy_pop_state(); }
+    [ \t\n\r]*    { adjust(); /* consume the whitespace */ }
+    .          { adjust(); }
  }
 
  /* ------- Single Line Comment --------- */
 <BLOCK_COMMENT>{
   /* Ignore everything in comments, but allow nexting comments because we cool. */
-  \(\*         { yy_push_state(BLOCK_COMMENT); }
-  \*\)         { yy_pop_state(); }
-  [ \t\n\r]*   { /* consume the whitespace */ }
+  \(\*         { adjust(); yy_push_state(BLOCK_COMMENT); }
+  \*\)         { adjust(); yy_pop_state(); }
+  [ \t\n\r]*   { adjust(); /* consume the whitespace */ }
 
   <<EOF>>      {
+                  adjust();
                   errorOut("<<EOF>> found before end of comment");
                   exit(-1);
                }
 
-  .             { /* anything is allowed in comments */ }
+  .             { adjust(); /* anything is allowed in comments */ }
 }
 %%

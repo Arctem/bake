@@ -118,7 +118,7 @@ void help(char* cmd_name) {
   cout << "Usage: " << endl;
   cout << "\t" << cmd_name << " input_file" << endl;
   cout << "\t" << cmd_name << " -i input_file -l output_file" << endl;
-  cout << "\t" << cmd_name << " -i input_file -y output_file<< endl;
+  cout << "\t" << cmd_name << " -i input_file -y output_file" << endl;
   cout << "-y: Prints the lexer files" << endl;
   cout << "input_file: File to scan" << endl;
   cout << "output_file: File in which to place the output. Defaults to <input_file>-lex-bake" << endl;
