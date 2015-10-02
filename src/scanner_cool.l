@@ -16,10 +16,7 @@
 #include "parser_cool.h"
 
 extern int yycol;
-// If you want to disable DEBUGGING, comment out the next line
-// and uncomment the one after.
-#define DEBUG(...) fprintf (stdout, __VA_ARGS__)
-//#define DEBUG(...)
+bool printLex;
 
 using namespace std;
 
@@ -39,34 +36,21 @@ void errorOut(const char* message) {
   fprintf(stderr, "Error: %d: Lexer: %s\n", yylineno, message);
 }
 
-#ifndef SCANDEBUG
-  #define SCANDEBUG 0
-#endif
-
-void printdebug(const char *fmt, ...)
-{
-  char text[1024];
-  if (SCANDEBUG)
-  {
-    if (fmt)
-    {
-      va_list arg;
-      va_start(arg,fmt);
-        vsprintf(text,fmt,arg);
-      va_end(arg);
-        printf("%s",text);
-    }
-  }
+void outputLex(const char* message){
+   if(printLex == true){
+      printline();
+      out(message);
+   }
 }
 
-void adjust(void)
-{
+void adjust(void){
   for(int i=0; yytext[i] != '\0'; i++)
   {
     if (yytext[i] == '\n'){yycol = 0;}
     else {yycol++;}
   }
 }
+
 %}
 
 /* Flex options used throughout */
@@ -87,34 +71,33 @@ STRING      \"([^\n\Z\"])*\"
 %%
   /* -----------------  RULES --------------- */
   /* ---------------- KEYWORDS -------------- */
-class        { printline(); out("class");
-                adjust(); printdebug("class"); return CLASS;}
-inherits     { printline(); out("inherits"); return INHERIT; }
-case         { printline(); out("case"); return CASE;}
-esac         { printline(); out("esac"); return ESAC;}
-if           { printline(); out("if"); return IF;}
-then         { printline(); out("then"); return THEN;}
-else         { printline(); out("else"); return ELSE;}
-fi           { printline(); out("fi"); return FI;}
-in           { printline(); out("in"); return IN;}
-let          { printline(); out("let"); return LET;}
-isvoid       { printline(); out("isvoid"); return ISVOID;}
-new          { printline(); out("new"); return NEW;}
-not          { printline(); out("not"); return NOT;}
-of           { printline(); out("of"); return OF;}
-while        { printline(); out("while"); return WHILE;}
-loop         { printline(); out("loop"); return LOOP;}
-pool         { printline(); out("pool"); return POOL;}
+class        { outputLex("class"); adjust(); return CLASS;}
+inherits     { outputLex("inherits"); return INHERIT; }
+case         { outputLex("case"); return CASE;}
+esac         { outputLex("esac"); return ESAC;}
+if           { outputLex("if"); return IF;}
+then         { outputLex("then"); return THEN;}
+else         { outputLex("else"); return ELSE;}
+fi           { outputLex("fi"); return FI;}
+in           { outputLex("in"); return IN;}
+let          { outputLex("let"); return LET;}
+isvoid       { outputLex("isvoid"); return ISVOID;}
+new          { outputLex("new"); return NEW;}
+not          { outputLex("not"); return NOT;}
+of           { outputLex("of"); return OF;}
+while        { outputLex("while"); return WHILE;}
+loop         { outputLex("loop"); return LOOP;}
+pool         { outputLex("pool"); return POOL;}
 
 
   /* --------------- BOOL Keywords ----------- */
-f[a|A][l|L][s|S][e|E]        { printline(); out("false"); return FALSE;}
-t[r|R][u|U][e|E]             { printline(); out("true"); return TRUE;}
+f[a|A][l|L][s|S][e|E]        { outputLex("false"); return FALSE;}
+t[r|R][u|U][e|E]             { outputLex("true"); return TRUE;}
 
 
   /* ----- Integers, Identifiers, Types ------ */
-{TYPE}       { adjust(); printdebug("Scanner_Type\n"); return TYPE;}
-{IDENTIFIER} { printline(); out("identifier"); out(yytext); return IDENTIFIER;}
+{TYPE}       { adjust(); outputLex("type"); return TYPE;}
+{IDENTIFIER} { outputLex("identifier"); out(yytext); return IDENTIFIER;}
 {INTEGER}    {
                 int num = atoi(yytext);
                 if(num < -2147483647 || num > 2147483647) {
@@ -130,35 +113,34 @@ t[r|R][u|U][e|E]             { printline(); out("true"); return TRUE;}
 
 
   /* --------------- Punctuation ------------ */
-\@           { printline(); out("at"); return '@';}
-:            { printline(); out("colon"); return ':';}
-,            { printline(); out("comma"); return ',';}
-\/            { printline(); out("divide"); return '/';}
-\.           { printline(); out("dot"); return '.';}
-\{           { printline(); out("lbrace"); return '{';}
-\(           { printline(); out("lparen"); return '(';}
--\>          { printline(); out("rarrow"); return RARROW;}
-\}           { printline(); out("rbrace"); return '}';}
-\)           { printline(); out("rparen"); return ')';}
-;            { printline(); out("semi"); return ';';}
+\@           { outputLex("at"); return '@';}
+:            { outputLex("colon"); return ':';}
+,            { outputLex("comma"); return ',';}
+\/            { outputLex("divide"); return '/';}
+\.           { outputLex("dot"); return '.';}
+\{           { outputLex("lbrace"); return '{';}
+\(           { outputLex("lparen"); return '(';}
+-\>          { outputLex("rarrow"); return RARROW;}
+\}           { outputLex("rbrace"); return '}';}
+\)           { outputLex("rparen"); return ')';}
+;            { outputLex("semi"); return ';';}
 
   /* ------ Assignments & Comparisions ------ */
-\<-          { printline(); out("larrow"); return LARROW; }
-=            { printline(); out("equals"); return '='; }
-\<=          { printline(); out("le"); return LEQUAL;}
-=\>          { printline(); out("re"); return GOES_TO;}
-\<           { printline(); out("lt"); return '<';}
+\<-          { outputLex("larrow"); return LARROW; }
+=            { outputLex("equals"); return '='; }
+\<=          { outputLex("le"); return LEQUAL;}
+=\>          { outputLex("re"); return GOES_TO;}
+\<           { outputLex("lt"); return '<';}
 
   /* -------------- Arthimetic ------------- */
--            { printline(); out("minus"); return '-';}
-\+           { printline(); out("plus"); return '+';}
-\~           { printline(); out("tilde"); return '~';}
-\*           { printline(); out("times"); return '*';}
+-            { outputLex("minus"); return '-';}
+\+           { outputLex("plus"); return '+';}
+\~           { outputLex("tilde"); return '~';}
+\*           { outputLex("times"); return '*';}
 
   /* -------------- Strings --------------- */
 {STRING}     {
-                printline();
-                out("string");
+                outputLex("string");
                 yytext[yyleng - 1] = '\0';
                 out(yytext + 1);
                 return STRING;
