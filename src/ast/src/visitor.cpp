@@ -248,3 +248,18 @@ void PrettyPrint::visit(CaseStatement* n){
   
   depth--;
 }
+
+void PrettyPrint::visit(FormalDeclare* n) {
+  leadingOps();
+  cout << "+ FormalDeclare" << endl;
+
+  depth++;
+  n->getID()->accept(this);
+  n->getType()->accept(this);
+  
+  // if there is an expression, visit it.
+  if(n->getExpr() != nullptr)
+    n->getExpr()->accept(this);
+    
+  depth--;
+}
