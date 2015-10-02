@@ -7,6 +7,7 @@
 #include "terminals.h"
 #include "unary_ops.h"
 #include "misc_ops.h"
+#include "nary.h"
 #include "visitor.h"
 
 #endif

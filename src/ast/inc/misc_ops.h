@@ -5,21 +5,10 @@
 #include <vector>
 using namespace std;
 #include "node.h"
+#include "nary.h"
 using namespace bake_ast;
 
 namespace bake_ast {
-	class ExprList : Node {
-	public:
-		ExprList() : Node(EXPRLIST) { };
-		void add(Node*);
-		vector<Node*> getChildren();
-		virtual void accept(Visitor* v) {v->visit(this); };
-
-	private:
-		vector<Node*> children;
-	};
-  
-  
   class WhileLoop : public Node {
   public:
     WhileLoop() : Node(WHILELOOP) {};
