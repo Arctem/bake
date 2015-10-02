@@ -15,7 +15,7 @@ namespace bake_ast {
 
     void set(Node* n) { child = n; }
     Node* get() { return child; }
-    virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
+    virtual void accept(bake_ast::Visitor* v) = 0;
 
   protected:
     Node* child;

@@ -181,3 +181,16 @@ void PrettyPrint::visit(Assign* n) {
   n->getRhs()->accept(this);
   depth--;
 }
+
+/*********** Misc ***********/
+
+void PrettyPrint::visit(ExprList* n) {
+  leadingOps();
+  cout << "+ ExprList" << endl;
+
+  depth++;
+  for(auto curr : n->getChildren()) {
+    curr->accept(this);
+  }
+  depth--;
+}

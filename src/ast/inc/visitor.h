@@ -23,6 +23,7 @@ namespace bake_ast {
   class LessThanEqual;
   class Equal;
   class Assign;
+  class ExprList;
 
   class Visitor {
   public:
@@ -48,6 +49,7 @@ namespace bake_ast {
     virtual void visit(LessThanEqual*) = 0;
     virtual void visit(Equal*) = 0;
     virtual void visit(Assign*) = 0;
+    virtual void visit(ExprList*) = 0;
   };
 
   class PrettyPrint : public Visitor {
@@ -76,6 +78,9 @@ namespace bake_ast {
     void visit(LessThanEqual*);
     void visit(Equal*);
     void visit(Assign*);
+
+    // Misc
+    void visit(ExprList*);
 
   private:
     int depth; // Holds how many levels down the tree this print has gone

@@ -13,7 +13,7 @@ namespace bake_ast {
     Node* getLhs() { return this->lhs; }
     void setRhs(Node* n) { this->rhs = n; }
     Node* getRhs() { return this->rhs; }
-    virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
+    virtual void accept(bake_ast::Visitor* v) = 0;
 
   protected:
     Node* lhs;

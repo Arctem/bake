@@ -52,8 +52,32 @@ int main(int argc, char** argv)
   ivoid.set(&nw);
   nw.set(&id);
 
+  ExprList exps;
+  Id id2("x");
+  LogicalNot lnot2;
+  Assign a1;
+  IntegerVal intg2(42);
+  BoolVal bl2(false);
+  lnot2.set(&bl2);
+  a1.setRhs(&id2);
+  a1.setLhs(&intg2);
+  exps.add(&a1);
+  exps.add(&lnot2);
+
+  exps.add(&o1);
+  o1.setLhs(&bnot);
+  bnot.set(&bl);
+  o1.setRhs(&o2);
+  o2.setLhs(&o3);
+  o2.setRhs(&str);
+  o3.setLhs(&intg);
+  o3.setRhs(&lnot);
+  lnot.set(&ivoid);
+  ivoid.set(&nw);
+  nw.set(&id);
+
   PrettyPrint v;
-  o1.accept(&v);
+  exps.accept(&v);
   cout << endl;
 
   string in_fname; // Name of the input file
