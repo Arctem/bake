@@ -40,6 +40,14 @@ namespace bake_ast {
     virtual void visit(BitNot*) = 0;
     virtual void visit(Isvoid*) = 0;
     virtual void visit(New*) = 0;
+    virtual void visit(Plus*) = 0;
+    virtual void visit(Minus*) = 0;
+    virtual void visit(Multiply*) = 0;
+    virtual void visit(Divide*) = 0;
+    virtual void visit(LessThan*) = 0;
+    virtual void visit(LessThanEqual*) = 0;
+    virtual void visit(Equal*) = 0;
+    virtual void visit(Assign*) = 0;
   };
 
   class PrettyPrint : public Visitor {

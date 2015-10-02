@@ -10,7 +10,7 @@ using namespace bake_ast;
  * copied into a separate string object inside the StringVal.
  * This was done in the interest of simplifying memory management.
  */
-StringVal::StringVal(const char* val) : type(STRINGVAL) {
+StringVal::StringVal(const char* val) : Leaf(STRINGVAL) {
   this->value = new string(val);
 }
 
@@ -20,7 +20,7 @@ StringVal::~StringVal() {
 
 /*********** Id methods ***********/
 
-Id::Id(const char* name) : type(ID) {
+Id::Id(const char* name) : Leaf(ID) {
   this->name = new string(name);
 }
 
@@ -30,7 +30,7 @@ Id::~Id() {
 
 /*********** Type methods ***********/
 
-Type::Type(const char* name) : type(TYPE) {
+Type::Type(const char* name) : Leaf(TYPE) {
   this->name = new string(name);
 }
 

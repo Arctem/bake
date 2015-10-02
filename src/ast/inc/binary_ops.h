@@ -7,9 +7,7 @@
 namespace bake_ast {
   class BinaryOp : public Node {
   public:
-    NodeType type;
-
-    BinaryOp() {};
+    BinaryOp(NodeType type) : Node(type) {};
 
     void setLhs(Node* n) { this->lhs = n; }
     Node* getLhs() { return this->lhs; }
@@ -24,56 +22,56 @@ namespace bake_ast {
   
   class Plus : public BinaryOp {
   public:
-    Plus() : type(PLUS) {};
+    Plus() : BinaryOp(PLUS) {};
     
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
   class Minus : public BinaryOp {
   public:
-    Minus() : type(MINUS) {};
+    Minus() : BinaryOp(MINUS) {};
     
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
   class Multiply : public BinaryOp {
   public:
-    Multiply() : type(MULTIPLY) {};
+    Multiply() : BinaryOp(MULTIPLY) {};
     
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
   class Divide : public BinaryOp {
   public:
-    Divide() : type(DIVIDE) {};
+    Divide() : BinaryOp(DIVIDE) {};
     
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
   class LessThan : public BinaryOp {
   public:
-    LessThan() : type(LESSTHAN) {};
+    LessThan() : BinaryOp(LESSTHAN) {};
     
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
   class LessThanEqual : public BinaryOp {
   public:
-    LessThanEqual() : type(LESSTHANEQUAL) {};
+    LessThanEqual() : BinaryOp(LESSTHANEQUAL) {};
     
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
   class Equal : public BinaryOp {
   public:
-    Equal() : type(EQUAL) {};
+    Equal() : BinaryOp(EQUAL) {};
     
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
   class Assign : public BinaryOp {
   public:
-    Assign() : type(ASSIGN) {};
+    Assign() : BinaryOp(ASSIGN) {};
     
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };

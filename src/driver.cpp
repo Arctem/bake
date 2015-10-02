@@ -29,9 +29,9 @@ void yylex_destroy(void);
 
 int main(int argc, char** argv)
 {
-  BinaryOp o1;
-  BinaryOp o2;
-  BinaryOp o3;
+  Plus o1;
+  Divide o2;
+  Assign o3;
   BitNot bnot;
   LogicalNot lnot;
   Isvoid ivoid;

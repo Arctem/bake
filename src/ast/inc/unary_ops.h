@@ -10,9 +10,7 @@ namespace bake_ast {
    */
   class UnaryOp : public Node {
   public:
-    NodeType type;
-
-    UnaryOp() { };
+    UnaryOp(NodeType type) : Node(type) { };
     virtual ~UnaryOp() { };
 
     void set(Node* n) { child = n; }
@@ -28,9 +26,7 @@ namespace bake_ast {
    */
   class LogicalNot : public UnaryOp {
   public:
-    NodeType type;
-
-    LogicalNot() : type(LOGICALNOT) {};
+    LogicalNot() : UnaryOp(LOGICALNOT) {};
 
     virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
@@ -40,9 +36,7 @@ namespace bake_ast {
    */
   class BitNot : public UnaryOp {
   public:
-    NodeType type;
-
-    BitNot() : type(BITNOT) {};
+    BitNot() : UnaryOp(BITNOT) {};
 
     virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
@@ -52,9 +46,7 @@ namespace bake_ast {
    */
   class Isvoid : public UnaryOp {
   public:
-    NodeType type;
-
-    Isvoid() : type(ISVOID) {};
+    Isvoid() : UnaryOp(ISVOID) {};
 
     virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
@@ -64,9 +56,7 @@ namespace bake_ast {
    */
   class New : public UnaryOp {
   public:
-    NodeType type;
-
-    New() : type(NEW) {};
+    New() : UnaryOp(NEW) {};
 
     virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };

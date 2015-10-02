@@ -20,7 +20,9 @@ namespace bake_ast {
    */
   class Node {
   public:
-    Node() {}
+  	NodeType type;
+
+    Node(NodeType type) : type(type) {}
     virtual ~Node() { }
     
     virtual void accept(bake_ast::Visitor*) = 0;

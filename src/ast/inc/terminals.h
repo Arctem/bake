@@ -10,16 +10,17 @@ namespace bake_ast {
   /**
    * Base class for terminal objects
    */
-  class Leaf : public Node { };
+  class Leaf : public Node {
+  public:
+    Leaf(NodeType type) : Node(type) { };
+  };
 
   /**
    * Represents an integer
    */
   class IntegerVal : public Leaf {
   public:
-    NodeType type;
-
-    IntegerVal(int val) : type(INTEGERVAL), value(val) { }
+    IntegerVal(int val) : Leaf(INTEGERVAL), value(val) { }
     void accept(bake_ast::Visitor* v) { v->visit(this); }
     int getValue() { return value; }
 
@@ -32,8 +33,6 @@ namespace bake_ast {
    */
   class StringVal : public Leaf {
   public:
-    NodeType type;
-
     StringVal(const char* val);
     virtual ~StringVal();
     void accept(bake_ast::Visitor* v) { v->visit(this); }
@@ -48,9 +47,7 @@ namespace bake_ast {
    */
   class BoolVal : public Leaf {
   public:
-    NodeType type;
-
-    BoolVal(bool val) : type(BOOLVAL), value(val) { };
+    BoolVal(bool val) : Leaf(BOOLVAL), value(val) { };
     virtual ~BoolVal() {};
     void accept(bake_ast::Visitor* v) { v->visit(this); }
     bool getValue() { return value; }
@@ -64,8 +61,6 @@ namespace bake_ast {
    */
   class Id : public Leaf {
   public:
-    NodeType type;
-
     Id(const char* name);
     virtual ~Id();
     void accept(bake_ast::Visitor* v) { v->visit(this); }
@@ -80,8 +75,6 @@ namespace bake_ast {
    */
   class Type : public Leaf {
   public:
-    NodeType type;
-
     Type(const char* name);
     virtual ~Type();
     void accept(bake_ast::Visitor* v) { v->visit(this); }

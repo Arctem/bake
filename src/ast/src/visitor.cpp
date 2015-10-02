@@ -16,6 +16,8 @@ void PrettyPrint::leadingOps() {
   }
 }
 
+/*********** Terminal implementations ***********/
+
 void PrettyPrint::visit(IntegerVal* n) {
   leadingOps();
   cout << "+ Integer: " << n->getValue() << endl;
@@ -41,15 +43,7 @@ void PrettyPrint::visit(Type* n) {
   cout << "+ ID: " << *(n->getName()) << endl;
 }
 
-void PrettyPrint::visit(BinaryOp* n) {
-  leadingOps();
-  cout << "+ BinaryOp" << endl;
-
-  depth++;
-  n->getLhs()->accept(this);
-  n->getRhs()->accept(this);
-  depth--;
-}
+/*********** Unary operation implementations ***********/
 
 void PrettyPrint::visit(UnaryOp* n) {
   leadingOps();
@@ -96,12 +90,25 @@ void PrettyPrint::visit(New* n) {
   depth--;
 }
 
+/*********** Binary operation implementations ***********/
+
+void PrettyPrint::visit(BinaryOp* n) {
+  leadingOps();
+  cout << "+ BinaryOp" << endl;
+
+  depth++;
+  n->getLhs()->accept(this);
+  n->getRhs()->accept(this);
+  depth--;
+}
+
 void PrettyPrint::visit(Plus* n) {
   leadingOps();
   cout << "+ Plus" << endl;
 
   depth++;
-  n->get()->accept(this);
+  n->getLhs()->accept(this);
+  n->getRhs()->accept(this);
   depth--;
 }
 
@@ -110,7 +117,8 @@ void PrettyPrint::visit(Minus* n) {
   cout << "+ Minus" << endl;
 
   depth++;
-  n->get()->accept(this);
+  n->getLhs()->accept(this);
+  n->getRhs()->accept(this);
   depth--;
 }
 
@@ -119,7 +127,8 @@ void PrettyPrint::visit(Multiply* n) {
   cout << "+ Multiply" << endl;
 
   depth++;
-  n->get()->accept(this);
+  n->getLhs()->accept(this);
+  n->getRhs()->accept(this);
   depth--;
 }
 
@@ -128,7 +137,8 @@ void PrettyPrint::visit(Divide* n) {
   cout << "+ Divide" << endl;
 
   depth++;
-  n->get()->accept(this);
+  n->getLhs()->accept(this);
+  n->getRhs()->accept(this);
   depth--;
 }
 
@@ -137,7 +147,8 @@ void PrettyPrint::visit(LessThan* n) {
   cout << "+ LessThan" << endl;
 
   depth++;
-  n->get()->accept(this);
+  n->getLhs()->accept(this);
+  n->getRhs()->accept(this);
   depth--;
 }
 
@@ -146,7 +157,8 @@ void PrettyPrint::visit(LessThanEqual* n) {
   cout << "+ LessThanEqual" << endl;
 
   depth++;
-  n->get()->accept(this);
+  n->getLhs()->accept(this);
+  n->getRhs()->accept(this);
   depth--;
 }
 
@@ -155,7 +167,8 @@ void PrettyPrint::visit(Equal* n) {
   cout << "+ Equal" << endl;
 
   depth++;
-  n->get()->accept(this);
+  n->getLhs()->accept(this);
+  n->getRhs()->accept(this);
   depth--;
 }
 
@@ -164,6 +177,7 @@ void PrettyPrint::visit(Assign* n) {
   cout << "+ Assign" << endl;
 
   depth++;
-  n->get()->accept(this);
+  n->getLhs()->accept(this);
+  n->getRhs()->accept(this);
   depth--;
 }
