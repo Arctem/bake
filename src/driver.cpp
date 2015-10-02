@@ -28,7 +28,7 @@ void help(char* cmd_name);
 void yylex_destroy(void);
 
 int main(int argc, char** argv)
-{
+{  
   string in_fname; // Name of the input file
   string out_fname; // Name of the output file
   bool run_lex_only;

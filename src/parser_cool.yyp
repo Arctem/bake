@@ -9,7 +9,7 @@
 
 
 // define line below as 1 to get debugging
-#define PARSER_DEBUG 0
+#define PARSER_DEBUG 1
 #define YYERROR_VERBOSE 1
 extern char yytext[];
 
@@ -25,7 +25,7 @@ void yyerror(char const* s)
 
 void printDebug(const char *message){
   if(PARSER_DEBUG == 1){
-    printf("Debug: %d: Parsed: %s\n", yylineno,message);
+    printf("Debug: %d: Parsed: %s", yylineno,message);
   }
 }
 
@@ -92,6 +92,16 @@ void printDebug(const char *message){
 %type < > declarationBlock
 %type < > exprList
 
+%right LARROW
+%left NOT
+%nonassoc LEQUAL '=' '<'
+%left '+' '-'
+%left '*' '/'
+%left ISVOID
+%left '~'
+%left '@'
+%left '.'
+
 /* ------------ RULES ------------- */
 %%
 root : class ';' root                                             {printDebug("class ; root\n");}
@@ -99,6 +109,8 @@ root : class ';' root                                             {printDebug("c
 
 class : CLASS TYPE INHERIT TYPE '{' commandList '}'               {printDebug("class type inherit type { commandlist }\n");}
       | CLASS TYPE '{' commandList '}'                            {printDebug("class type { commandlist }\n");}
+      | CLASS TYPE INHERIT TYPE '{'  '}'                          {printDebug("class type inherit type {  }\n");}
+      | CLASS TYPE '{'  '}'                                       {printDebug("class type {  }\n");}
 
 commandList : command ';'  commandList                            {printDebug("command ; commandlist\n");}
       | command ';'                                               {printDebug("command ; \n");}
@@ -144,7 +156,7 @@ compare : ISVOID expr                                             {printDebug("I
       | expr '=' expr                                             {printDebug("=\n");}
       | NOT expr                                                  {printDebug("NOT\n");}
 
-callMethod : expr '.' IDENTIFIER '(' exprList ')'                 {printDebug(" expr.IDENTIFIER(exprList)\n");}
+callMethod : expr '.' IDENTIFIER '(' exprList ')'                 {printDebug("expr.IDENTIFIER(exprList)\n");}
       | expr '@' TYPE '.' IDENTIFIER '(' exprList ')'             {printDebug("expr@TYPE.IDENTIFIER(exprList)\n" );}
       | expr '.' IDENTIFIER '(' ')'                               {printDebug("expr.IDENTIFIER()\n");}
       | expr '@' TYPE '.' IDENTIFIER '(' ')'                      {printDebug("expr@TYPE.IDENTIFIER(exprList)\n" );}
