@@ -26,6 +26,8 @@ namespace bake_ast {
   class ExprList;
   class WhileLoop;
   class IfStatement;
+  class LetStatement;
+  class CaseStatement;
 
   class Visitor {
   public:
@@ -54,6 +56,8 @@ namespace bake_ast {
     virtual void visit(ExprList*) = 0;
     virtual void visit(WhileLoop*) = 0;
     virtual void visit(IfStatement*) = 0;
+    virtual void visit(LetStatement*) = 0;
+    virtual void visit(CaseStatement*) = 0;
   };
 
   class PrettyPrint : public Visitor {
@@ -87,6 +91,8 @@ namespace bake_ast {
     void visit(ExprList*);
     void visit(WhileLoop*);
     void visit(IfStatement*);
+    void visit(LetStatement*);
+    void visit(CaseStatement*);
 
   private:
     int depth; // Holds how many levels down the tree this print has gone

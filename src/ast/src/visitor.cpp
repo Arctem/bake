@@ -215,3 +215,36 @@ void PrettyPrint::visit(IfStatement* n){
   n->getElseBody()->accept(this);
   depth--;
 }
+
+// TODO: make it work.
+void PrettyPrint::visit(LetStatement* n){
+  leadingOps();
+  cout << "+ LetStatment" << endl;
+
+  depth++;
+  // loop through id and tType
+  
+  
+  depth--;
+}
+
+void PrettyPrint::visit(CaseStatement* n){
+  leadingOps();
+  cout << "+ CaseStatement" << endl;
+  
+  // get how many different statement sets there are
+  int length = n->getIdList().size();
+
+  depth++;
+  // go through first expression.
+  n->getCaseExpr()->accept(this);
+  
+  // loop through id, Type, and expr lists
+  for(int i = 0; i < length; i++) {
+    n->getIdList().at(i)->accept(this);
+    n->getTypeList().at(i)->accept(this);
+    n->getExprList().at(i)->accept(this);
+  }
+  
+  depth--;
+}
