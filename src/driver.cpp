@@ -40,6 +40,16 @@ int main(int argc, char** argv)
   IntegerVal intg(2);
   StringVal str("Hello world");
   Id id("aname");
+  WhileLoop w;
+  IfStatement i;
+  
+  i.setCond(&intg);
+  i.setBody(&w);
+  i.setElseBody(&str);
+  w.setCond(&o1);
+  w.setBody(&str);
+  o1.setLhs(&intg);
+  o1.setRhs(&intg);
 
   o1.setLhs(&bnot);
   bnot.set(&bl);
@@ -77,7 +87,8 @@ int main(int argc, char** argv)
   nw.set(&id);
 
   PrettyPrint v;
-  exps.accept(&v);
+  //exps.accept(&v);
+  i.accept(&v);
   cout << endl;
 
   string in_fname; // Name of the input file

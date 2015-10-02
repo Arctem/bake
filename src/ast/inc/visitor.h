@@ -52,6 +52,8 @@ namespace bake_ast {
     virtual void visit(Equal*) = 0;
     virtual void visit(Assign*) = 0;
     virtual void visit(ExprList*) = 0;
+    virtual void visit(WhileLoop*) = 0;
+    virtual void visit(IfStatement*) = 0;
   };
 
   class PrettyPrint : public Visitor {

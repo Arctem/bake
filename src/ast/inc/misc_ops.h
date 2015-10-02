@@ -29,7 +29,9 @@ namespace bake_ast {
     Node* getCond() { return this->cond; }
     
     void setBody(Node* n) { this->body = n; }
-    Node* getBody() { return this->body; }  
+    Node* getBody() { return this->body; }
+    
+    void accept(Visitor* v) { v->visit(this); }  
     
   private:
     Node* cond;
@@ -49,6 +51,8 @@ namespace bake_ast {
     
     void setElseBody(Node* n) { this->elseBody = n; }
     Node* getElseBody() { return this->elseBody; }  
+    
+    void accept(Visitor* v) { v->visit(this); }
     
   private:
     Node* cond;
