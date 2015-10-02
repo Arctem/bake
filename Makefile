@@ -7,4 +7,4 @@ all: CMakeLists.txt
 
 clean:
 	rm -rf build
-	rm bake
+	rm -f bake
