@@ -194,3 +194,24 @@ void PrettyPrint::visit(ExprList* n) {
   }
   depth--;
 }
+
+void PrettyPrint::visit(WhileLoop* n){
+  leadingOps();
+  cout << "+ WhileLoop" << endl;
+
+  depth++;
+  n->getCond()->accept(this);
+  n->getBody()->accept(this);
+  depth--;
+}
+
+void PrettyPrint::visit(IfStatement* n){
+  leadingOps();
+  cout << "+ IfStatement" << endl;
+
+  depth++;
+  n->getCond()->accept(this);
+  n->getBody()->accept(this);
+  n->getElseBody()->accept(this);
+  depth--;
+}

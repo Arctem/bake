@@ -18,6 +18,43 @@ namespace bake_ast {
 	private:
 		vector<Node*> children;
 	};
+  
+  
+  class WhileLoop : public Node {
+  public:
+    WhileLoop() : Node(WHILELOOP) {};
+    
+    
+    void setCond(Node* n) { this->cond = n; }
+    Node* getCond() { return this->cond; }
+    
+    void setBody(Node* n) { this->body = n; }
+    Node* getBody() { return this->body; }  
+    
+  private:
+    Node* cond;
+    Node* body;
+  };
+  
+  class IfStatement : public Node {
+  public:
+    IfStatement() : Node(IFSTATEMENT) {};
+    
+    
+    void setCond(Node* n) { this->cond = n; }
+    Node* getCond() { return this->cond; }
+    
+    void setBody(Node* n) { this->body = n; }
+    Node* getBody() { return this->body; }
+    
+    void setElseBody(Node* n) { this->elseBody = n; }
+    Node* getElseBody() { return this->elseBody; }  
+    
+  private:
+    Node* cond;
+    Node* body;
+    Node* elseBody;
+  };
 }
 
 #endif

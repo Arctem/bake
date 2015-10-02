@@ -13,7 +13,7 @@
 
 namespace bake_ast {
   enum NodeType { INTEGERVAL, STRINGVAL, BOOLVAL, ID, LOGICALNOT, BITNOT, ISVOID, NEW, TYPE, 
-                  PLUS, MINUS, MULTIPLY, DIVIDE, LESSTHAN, LESSTHANEQUAL, EQUAL, ASSIGN, EXPRLIST};
+                  PLUS, MINUS, MULTIPLY, DIVIDE, LESSTHAN, LESSTHANEQUAL, EQUAL, ASSIGN, EXPRLIST, WHILELOOP, IFSTATEMENT};
 
   /**
    * Base class for all objects that can be placed in the AST

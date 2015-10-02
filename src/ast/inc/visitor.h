@@ -24,6 +24,8 @@ namespace bake_ast {
   class Equal;
   class Assign;
   class ExprList;
+  class WhileLoop;
+  class IfStatement;
 
   class Visitor {
   public:
@@ -81,6 +83,8 @@ namespace bake_ast {
 
     // Misc
     void visit(ExprList*);
+    void visit(WhileLoop*);
+    void visit(IfStatement*);
 
   private:
     int depth; // Holds how many levels down the tree this print has gone
