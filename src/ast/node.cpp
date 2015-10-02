@@ -9,5 +9,5 @@
 #include <iostream>
 using namespace std;
 
-#include "node.h"
+#include "ast/node.h"
 using namespace bake_ast;

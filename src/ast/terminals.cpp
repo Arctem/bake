@@ -1,5 +1,5 @@
 
-#include "terminals.h"
+#include "ast/terminals.h"
 using namespace bake_ast;
 
 /*********** StringVal methods ***********/

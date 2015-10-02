@@ -1,7 +1,7 @@
 
 #include <iostream>
 using namespace std;
-#include "ast.h"
+#include "ast/ast.h"
 using namespace bake_ast;
 
 /*********** Pretty print methods ***********/

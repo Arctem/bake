@@ -13,7 +13,7 @@ using namespace std;
 #include <stdlib.h>
 #include <getopt.h>
 
-#include "ast.h"
+#include "ast/ast.h"
 using namespace bake_ast;
 
 extern int yylineno;
