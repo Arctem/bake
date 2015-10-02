@@ -12,8 +12,10 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stack>
+#include <stdarg.h>
 #include "parser_cool.h"
 
+extern int yycol;
 // If you want to disable DEBUGGING, comment out the next line
 // and uncomment the one after.
 #define DEBUG(...) fprintf (stdout, __VA_ARGS__)
@@ -36,6 +38,35 @@ void printline() {
 void errorOut(const char* message) {
   fprintf(stderr, "Error: %d: Lexer: %s\n", yylineno, message);
 }
+
+#ifndef SCANDEBUG
+  #define SCANDEBUG 0
+#endif
+
+void printdebug(const char *fmt, ...)
+{
+  char text[1024];
+  if (SCANDEBUG)
+  {
+    if (fmt)
+    {
+      va_list arg;
+      va_start(arg,fmt);
+        vsprintf(text,fmt,arg);
+      va_end(arg);
+        printf("%s",text);
+    }
+  }
+}
+
+void adjust(void)
+{
+  for(int i=0; yytext[i] != '\0'; i++)
+  {
+    if (yytext[i] == '\n'){yycol = 0;}
+    else {yycol++;}
+  }
+}
 %}
 
 /* Flex options used throughout */
@@ -56,8 +87,9 @@ STRING      \"([^\n\Z\"])*\"
 %%
   /* -----------------  RULES --------------- */
   /* ---------------- KEYWORDS -------------- */
-class        { printline(); out("class"); return CLASS;}
-inherits     { printline(); out("inherits"); return INHERIT }
+class        { printline(); out("class");
+                adjust(); printdebug("class"); return CLASS;}
+inherits     { printline(); out("inherits"); return INHERIT; }
 case         { printline(); out("case"); return CASE;}
 esac         { printline(); out("esac"); return ESAC;}
 if           { printline(); out("if"); return IF;}
@@ -72,7 +104,7 @@ not          { printline(); out("not"); return NOT;}
 of           { printline(); out("of"); return OF;}
 while        { printline(); out("while"); return WHILE;}
 loop         { printline(); out("loop"); return LOOP;}
-pool         { printline(); out("pool"); return POOL}
+pool         { printline(); out("pool"); return POOL;}
 
 
   /* --------------- BOOL Keywords ----------- */
@@ -81,8 +113,8 @@ t[r|R][u|U][e|E]             { printline(); out("true"); return TRUE;}
 
 
   /* ----- Integers, Identifiers, Types ------ */
-{TYPE}       { printline(); out("type"); out(yytext); return TYPE;}
-{IDENTIFIER} { printline(); out("identifier"); out(yytext); return INDENTIFIER;}
+{TYPE}       { adjust(); printdebug("Scanner_Type\n"); return TYPE;}
+{IDENTIFIER} { printline(); out("identifier"); out(yytext); return IDENTIFIER;}
 {INTEGER}    {
                 int num = atoi(yytext);
                 if(num < -2147483647 || num > 2147483647) {
@@ -104,7 +136,7 @@ t[r|R][u|U][e|E]             { printline(); out("true"); return TRUE;}
 \/            { printline(); out("divide"); return '/';}
 \.           { printline(); out("dot"); return '.';}
 \{           { printline(); out("lbrace"); return '{';}
-\(           { printline(); out("lparen"); return ')';}
+\(           { printline(); out("lparen"); return '(';}
 -\>          { printline(); out("rarrow"); return RARROW;}
 \}           { printline(); out("rbrace"); return '}';}
 \)           { printline(); out("rparen"); return ')';}

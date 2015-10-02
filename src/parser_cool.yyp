@@ -10,9 +10,14 @@
 extern char yytext[];
 #define YYERROR_VERBOSE 1
 int yylex();
-int yyerror(char const *s);
 extern int yylineno;
 int yycol = 0;
+
+void yyerror(char *s)
+{ 
+  fflush(stdout);
+  printf("Error: line %d column %d: %s\n",yylineno,yycol,s);
+}
 
 %}
 
@@ -79,72 +84,72 @@ int yycol = 0;
 
 /* ------------ RULES ------------- */
 %%
-root : class ';' root                                             {}
-      | class ';'                                                 {}
+root : class ';' root                                             {printf("class ; root\n");}
+      | class ';'                                                 {printf("class ; \n");}
 
-class : CLASS TYPE '{' commandList ')'                            {}
-      | CLASS TYPE INHERIT TYPE '{' commandList ')'               {}
+class : CLASS TYPE INHERIT TYPE '{' commandList '}'               {printf("class type inherit type { commandlist }\n");}
+      | CLASS TYPE '{' commandList '}'                            {printf("class type { commandlist }\n");}
 
-commandList : command ';'                                         {}
-      | command ';' commandList                                   {}
+commandList : command ';'  commandList                            {printf("command ; commandlist\n");}
+      | command ';'                                               {printf("command ; \n");}
 
-command : IDENTIFIER '(' parameters ')' ':' TYPE '{' expr '}'     {}
-      | IDENTIFIER '('  ')' ':' TYPE '{' expr '}'                 {}
-      | declaration                                               {}
+command : IDENTIFIER '(' parameters ')' ':' TYPE '{' expr '}'     {printf("IDENTIFIER ( parameters ) : TYPE { expr }\n");}
+      | IDENTIFIER '('  ')' ':' TYPE '{' expr '}'                 {printf("IDENTIFIER ( ) : TYPE { expr }\n");}
+      | declaration                                               {printf("declaration\n");}
 
-parameters : IDENTIFIER ':' TYPE                                  {}
-      | IDENTIFIER ':' TYPE ',' parameters                        {}
+parameters : IDENTIFIER ':' TYPE                                  {printf("IDENTIFIER : TYPE\n");}
+      | IDENTIFIER ':' TYPE ',' parameters                        {printf("IDENTIFIER : TYPE , parameters\n");}
 
-expr : NEW TYPE                                                   {}
-      | IDENTIFIER LARROW expr                                    {}
-      | LET declarationBlock IN expr                              {}
-      | math                                                      {}
-      | compare                                                   {}
-      | callMethod                                                {}
-      | controlFlow                                               {}
-      | '{' block '}'                                             {}
-      | IDENTIFIER                                                {}
-      | INTEGER                                                   {}
-      | STRING                                                    {}
-      | TRUE                                                      {}
-      | FALSE                                                     {}
+expr : NEW TYPE                                                   {printf("NEW TYPE\n");}
+      | IDENTIFIER LARROW expr                                    {printf("IDENTIFIER <- expr\n");}
+      | LET declarationBlock IN expr                              {printf("LET declarationBlock IN expr\n");}
+      | math                                                      {printf("math\n");}
+      | compare                                                   {printf("compare\n");}
+      | callMethod                                                {printf("callMethod\n");}
+      | controlFlow                                               {printf("controlFlow\n");}
+      | '{' block '}'                                             {printf("{ block }\n");}
+      | IDENTIFIER                                                {printf("IDENTIFIER\n");}
+      | INTEGER                                                   {printf("INTEGER\n");}
+      | STRING                                                    {printf("STRING\n");}
+      | TRUE                                                      {printf(" true \n");}
+      | FALSE                                                     {printf(" false \n"); }
 
-controlFlow: IF expr THEN expr ELSE expr FI                       {}
-      | WHILE expr LOOP expr                                      {}
-      | CASE expr OF cases ESAC                                   {}
+controlFlow: IF expr THEN expr ELSE expr FI                       {printf(" IF expr THEN expr ELSE expr FI\n");}
+      | WHILE expr LOOP expr                                      {printf("WHILE expr LOOP expr\n");}
+      | CASE expr OF cases ESAC                                   {printf("CASE expr OF cases ESAC\n");}
 
-cases : IDENTIFIER ':' TYPE GOES_TO expr ','                      {}
-      | IDENTIFIER ':' TYPE GOES_TO expr ',' cases                {}
+cases : IDENTIFIER ':' TYPE GOES_TO expr ','                      {printf("IDENTIFIER : TYPE => expr , \n");}
+      | IDENTIFIER ':' TYPE GOES_TO expr ',' cases                {printf("IDENTIFIER : TYPE => expr, cases \n");}
 
-math : expr '/' expr                                              {}
-      | expr '+' expr                                             {}
-      | expr '-' expr                                             {}
-      | expr '*' expr                                             {}
-      | '(' expr ')'                                              {}
-      | '~' expr                                                  {}
+math : expr '/' expr                                              {printf("/\n");}
+      | expr '+' expr                                             {printf("+\n");}
+      | expr '-' expr                                             {printf("-\n");}
+      | expr '*' expr                                             {printf("*\n");}
+      | '(' expr ')'                                              {printf("()\n");}
+      | '~' expr                                                  {printf("~\n");}
 
-compare : ISVOID expr                                             {}
-      | expr '<' expr                                             {}
-      | expr LEQUAL expr                                          {}
-      | expr '=' expr                                             {}
-      | NOT expr                                                  {}
+compare : ISVOID expr                                             {printf("ISVOID\n");}
+      | expr '<' expr                                             {printf("<\n");}
+      | expr LEQUAL expr                                          {printf("<=\n");}
+      | expr '=' expr                                             {printf("=\n");}
+      | NOT expr                                                  {printf("NOT\n");}
 
-callMethod : expr '.' IDENTIFIER '(' exprList ')'                 {}
-      | expr '@' TYPE '.' IDENTIFIER '(' exprList ')'             {}
-      | expr '.' IDENTIFIER '(' ')'                               {}
-      | expr '@' TYPE '.' IDENTIFIER '(' ')'                      {}
-      | IDENTIFIER '(' exprList ')'                               {}
-      | IDENTIFIER '(' ')'                                        {}
+callMethod : expr '.' IDENTIFIER '(' exprList ')'                 {printf(" expr.IDENTIFIER(exprList)\n");}
+      | expr '@' TYPE '.' IDENTIFIER '(' exprList ')'             {printf("expr@TYPE.IDENTIFIER(exprList)\n" );}
+      | expr '.' IDENTIFIER '(' ')'                               {printf("expr.IDENTIFIER()\n");}
+      | expr '@' TYPE '.' IDENTIFIER '(' ')'                      {printf("expr@TYPE.IDENTIFIER(exprList)\n" );}
+      | IDENTIFIER '(' exprList ')'                               {printf("IDENTIFIER (exprList)\n");}
+      | IDENTIFIER '(' ')'                                        {printf("IDENTIFIER ( )\n" );}
 
-declaration : IDENTIFIER ':' TYPE                                 {}
-      | IDENTIFIER ':' TYPE LARROW expr                           {}
+declaration : IDENTIFIER ':' TYPE                                 {printf("IDENTIFIER : TYPE\n");}
+      | IDENTIFIER ':' TYPE LARROW expr                           {printf("IDENTIFIER : TYPE <- expr\n");}
 
-declarationBlock : declaration                                    {}
-      | declaration ',' declarationBlock                          {}
+declarationBlock : declaration ',' declarationBlock               {printf("declaration , declarationBlock\n");}
+      | declaration                                               {printf("declaration\n");}
 
-block : expr ';'                                                  {}
-      | expr ';' block                                            {}
+block : expr ';'  block                                           {printf("expr ; block\n") ; }
+      | expr ';'                                                  {printf("expr ;\n");}
 
-exprList : expr                                                   {}
-      | expr ',' exprList                                         {}
+exprList : expr ',' exprList                                      {printf("expr ; exprList\n");}
+      | expr                                                      {printf("expr\n");}
 %%
