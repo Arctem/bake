@@ -1,5 +1,8 @@
+find_package(BISON REQUIRED)
+set(BISON_GENERATE_DEFINES TRUE)
 find_package(FLEX REQUIRED)
 
+BISON_TARGET(PARSER ${CMAKE_CURRENT_SOURCE_DIR}/parser_cool.yyp ${CMAKE_CURRENT_BINARY_DIR}/parser_cool.cpp COMPILE_FLAGS  -v COMPILE_FLAGS --defines=parser_cool.h)
 FLEX_TARGET(SCANNER ${CMAKE_CURRENT_SOURCE_DIR}/scanner_cool.l ${CMAKE_CURRENT_BINARY_DIR}/lexer.cpp)
 
 #enable_testing()
@@ -9,7 +12,9 @@ FLEX_TARGET(SCANNER ${CMAKE_CURRENT_SOURCE_DIR}/scanner_cool.l ${CMAKE_CURRENT_B
 set(EXECUTABLE_OUTPUT_PATH ../..)
 add_executable( bake
     driver.cpp
+    ${BISON_PARSER_OUTPUTS}
     ${FLEX_SCANNER_OUTPUTS}
+
  )
 
  #target_link_libraries(bake ${GTEST_BOTH_LIBRARIES})

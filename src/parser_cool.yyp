@@ -1,6 +1,18 @@
 %{
 
 // C++ stuff is
+#include <stdio.h>
+#include <vector>
+#include <cstring>
+#include <math.h>
+#include <iostream>
+
+extern char yytext[];
+#define YYERROR_VERBOSE 1
+int yylex();
+int yyerror(char const *s);
+extern int yylineno;
+int yycol = 0;
 
 %}
 
@@ -63,7 +75,6 @@
 %type < > block
 %type < > cases
 %type < > declarationBlock
-%type < > declaration
 %type < > exprList
 
 /* ------------ RULES ------------- */
@@ -82,7 +93,7 @@ command : IDENTIFIER '(' parameters ')' ':' TYPE '{' expr '}'     {}
       | declaration                                               {}
 
 parameters : IDENTIFIER ':' TYPE                                  {}
-      | IDENTIFIER ':' TYPE ',' parameter                         {}
+      | IDENTIFIER ':' TYPE ',' parameters                        {}
 
 expr : NEW TYPE                                                   {}
       | IDENTIFIER LARROW expr                                    {}

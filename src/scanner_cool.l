@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stack>
+#include "parser_cool.h"
 
 // If you want to disable DEBUGGING, comment out the next line
 // and uncomment the one after.

@@ -19,6 +19,7 @@ extern FILE* yyin;
 extern FILE* yyout;
 
 int yylex(void);
+int yyparse(void);
 void help(char* cmd_name);
 void yylex_destroy(void);
 
