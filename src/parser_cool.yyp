@@ -54,7 +54,7 @@ void printDebug(const char *message){
 /* -------- Keyword Token ----------- */
 %token <keyword> CLASS
 %token <keyword> INHERIT
-%token <keyword> CASE
+%token <keyword> CASES
 %token <keyword> ESAC
 %token <keyword> IF
 %token <keyword> THEN
@@ -142,7 +142,7 @@ expr : NEW TYPE                                                   {printDebug("N
       | IDENTIFIER LARROW expr                                    {printDebug("IDENTIFIER <- expr\n");
                                                                     $$ = new bake_ast::Assign($1, $3);}
       | LET declarationBlock IN expr                              {printDebug("LET declarationBlock IN expr\n");
-								    $$ = new bake_ast::LetStatement($2, $4);}
+                    $$ = new bake_ast::LetStatement($2, $4);}
       | math                                                      {printDebug("math\n"); $$ = $1;}
       | compare                                                   {printDebug("compare\n"); $$ = $1;}
       | callMethod                                                {printDebug("callMethod\n"); $$ = $1;}
@@ -158,7 +158,7 @@ controlFlow: IF expr THEN expr ELSE expr FI                       {printDebug(" 
                                                                     $$ = new bake_ast::IfStatement($2, $4, $6);}
       | WHILE expr LOOP expr                                      {printDebug("WHILE expr LOOP expr\n");
                                                                     $$ = new bake_ast::WhileLoop($2, $4);}
-      | CASE expr OF cases ESAC                                   {printDebug("CASE expr OF cases ESAC\n");
+      | CASES expr OF cases ESAC                                   {printDebug("CASES expr OF cases ESAC\n");
                                                                     $$ = new bake_ast::ClassStatement($2, $4);}
 
 cases : IDENTIFIER ':' TYPE GOES_TO expr ','                      {printDebug("IDENTIFIER : TYPE => expr , \n");
