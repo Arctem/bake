@@ -93,6 +93,12 @@ namespace bake_ast {
   class Dispatch : public Node {
   public:
     Dispatch() : Node(DISPATCH) {};
+    Dispatch(Node* e, Node* t, Node* id, ExprList* exprList) : Node(DISPATCH) {
+      expr = e;
+      type = t;
+      this->id = id;
+      this->exprList = exprList;
+    }
     
     Node* getExpr() { return this->expr; }
     Node* getType() { return this->type; }
@@ -103,6 +109,7 @@ namespace bake_ast {
     void setType(Node* n) { this->type = n; }
     void setID(Node* n) { this->id = n; }
     void addToExprList(Node* n) { this->exprList->add(n); }
+    void setExprList(ExprList* e) { this->exprList = e; }
     
     void accept(Visitor* v) { v->visit(this); }
     
@@ -111,7 +118,7 @@ namespace bake_ast {
     Node* type = nullptr; // optional
     
     Node* id;
-    ExprList* exprList;
+    ExprList* exprList = nullptr;
     
     
   };
