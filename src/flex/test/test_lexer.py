@@ -46,7 +46,6 @@ def bake_output(filename):
 
   fail = check_output(cmd, shell = True, stderr=STDOUT)
   if fail:
-    print("bake printed to stdout")
     return fail.decode("latin-1")
 
   # If the lexer succeeded, open the output file and return its contents

@@ -30,7 +30,13 @@
 
 # Other junk
 build/
+lib/
+bin/
+test_out/
 bake
 cool
 *.cl-lex*
+*.cl-ast
 *~
+.vscode
+bake
