@@ -85,7 +85,7 @@ STRING      \"([^\n\Z\"])*\"
   /* ---------------- KEYWORDS -------------- */
 class        { outputLex("class");    adjust(); return CLASS;}
 inherits     { outputLex("inherits"); adjust(); return INHERIT; }
-case         { outputLex("case");     adjust(); return yytokentype::CASE;}
+case         { outputLex("case");     adjust(); return CASE;}
 esac         { outputLex("esac");     adjust(); return ESAC;}
 if           { outputLex("if");       adjust(); return IF;}
 then         { outputLex("then");     adjust(); return THEN;}
