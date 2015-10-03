@@ -48,7 +48,9 @@ namespace bake_ast {
   class BoolVal : public Leaf {
   public:
     BoolVal(bool val) : Leaf(BOOLVAL), value(val) { };
+    
     virtual ~BoolVal() {};
+    
     void accept(bake_ast::Visitor* v) { v->visit(this); }
     bool getValue() { return value; }
 
