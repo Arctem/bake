@@ -29,31 +29,6 @@ namespace bake_ast {
     vector<Node*> children;
   };
   
-  class CaseStatement : public Node {
-  public:
-    CaseStatement() : Node(CASESTATEMENT) {};
-    
-    Node* getCaseExpr() { return this->caseExpr; }
-    vector<Node*> getIdList() { return this->idList->getChildren();}
-    vector<Node*> getTypeList() { return this->typeList->getChildren(); }
-    vector<Node*> getExprList() { return this->exprList->getChildren(); }
-    
-    void setCaseExpr(Node* n) { this->caseExpr = n; } 
-    void addToIdList(Node* n) { idList->add(n); }
-    void addToTypeList(Node* n) { typeList->add(n); }
-    void addToExprList(Node* n) { exprList->add(n); }
-    
-    void accept(Visitor* v) { v->visit(this); }
-  
-  private:
-    Node* caseExpr;
-    
-    // there will be at least one in each of these lists.
-    ExprList* idList;
-    ExprList* typeList;
-    ExprList* exprList;
-  
-  };
   
   // TODO: optional expr, so change it around.
   class LetStatement : public Node {
@@ -87,6 +62,58 @@ namespace bake_ast {
     ExprList* typeList;
     ExprList* exprList;
   
+  };
+  
+  class CaseStatement : public Node {
+  public:
+    CaseStatement() : Node(CASESTATEMENT) {};
+    
+    Node* getCaseExpr() { return this->caseExpr; }
+    vector<Node*> getIdList() { return this->idList->getChildren();}
+    vector<Node*> getTypeList() { return this->typeList->getChildren(); }
+    vector<Node*> getExprList() { return this->exprList->getChildren(); }
+    
+    void setCaseExpr(Node* n) { this->caseExpr = n; } 
+    void addToIdList(Node* n) { idList->add(n); }
+    void addToTypeList(Node* n) { typeList->add(n); }
+    void addToExprList(Node* n) { exprList->add(n); }
+    
+    void accept(Visitor* v) { v->visit(this); }
+  
+  private:
+    Node* caseExpr;
+    
+    // there will be at least one in each of these lists.
+    ExprList* idList;
+    ExprList* typeList;
+    ExprList* exprList;
+  
+  };
+  
+  class Dispatch : public Node {
+  public:
+    Dispatch() : Node(DISPATCH) {};
+    
+    Node* getExpr() { return this->expr; }
+    Node* getType() { return this->type; }
+    Node* getID() { return this->id; }
+    vector<Node*> getExprList() { return this->exprList->getChildren(); }
+    
+    void setExpr(Node* n) { this->expr = n; }
+    void setType(Node* n) { this->type = n; }
+    void setID(Node* n) { this->id = n; }
+    void addToExprList(Node* n) { this->exprList->add(n); }
+    
+    void accept(Visitor* v) { v->visit(this); }
+    
+  private:
+    Node* expr = nullptr; // optional
+    Node* type = nullptr; // optional
+    
+    Node* id;
+    ExprList* exprList;
+    
+    
   };
 }
 

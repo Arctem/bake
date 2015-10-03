@@ -88,7 +88,7 @@ namespace bake_ast {
     
   private:
     Node* type;
-    Node* inheritType;
+    Node* inheritType = nullptr;
     Node* feature;
     
   

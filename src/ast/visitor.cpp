@@ -263,3 +263,49 @@ void PrettyPrint::visit(FormalDeclare* n) {
     
   depth--;
 }
+
+void PrettyPrint::visit(ClassStatement* n) {
+  leadingOps();
+  cout << "+ ClassStatement" << endl;
+
+  depth++;
+  n->getType()->accept(this);
+  
+  // if there is an inherited type, visit it.
+  if(n->getInheritType() != nullptr)
+    n->getInheritType()->accept(this);
+    
+  n->getFeature()->accept(this);
+    
+  depth--;
+}
+
+void PrettyPrint::visit(ClassList* n) {
+  leadingOps();
+  cout << "+ ClassList" << endl;
+
+  depth++;
+  for(auto curr : n->getChildren()) {
+    curr->accept(this);
+  }
+    
+  depth--;
+}
+
+void PrettyPrint::visit(Dispatch* n) {
+  leadingOps();
+  cout << "+ Dispatch" << endl;
+
+  depth++;
+  if(n->getExpr() != nullptr)
+    n->getExpr()->accept(this);
+  if(n->getType() != nullptr)
+    n->getType()->accept(this);
+    
+  n->getID()->accept(this);
+  for(auto curr : n->getExprList()) {
+    curr->accept(this);
+  }
+    
+  depth--;
+}
