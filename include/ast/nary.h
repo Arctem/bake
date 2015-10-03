@@ -173,6 +173,8 @@ namespace bake_ast {
     void setList(ListFormalDeclare* l) { list = l; }
     void setType(Node* t) { type = t; }
     void setExpr(Node* e) { expr = e; }
+
+    virtual void accept(Visitor* v) { v->visit(this); }
     
   private:
     Node* id;
@@ -200,16 +202,16 @@ namespace bake_ast {
   class FeatureList : public Node {
   public:
     FeatureList() : Node(FEATURELIST) {};
-    FeatureList(vector<FeatureOption*> v) : Node(FEATURELIST) { list = v; };
+    FeatureList(vector<Node*> v) : Node(FEATURELIST) { list = v; };
     
-    vector<FeatureOption*> getList() {return list;}
+    vector<Node*> getList() {return list;}
     
-    void add(FeatureOption* n) { list.push_back(n); }
+    void add(Node* n) { list.push_back(n); }
     
     virtual void accept(Visitor* v) { v->visit(this); }
     
   private:
-    vector<FeatureOption*> list;
+    vector<Node*> list;
   };
 }
 
