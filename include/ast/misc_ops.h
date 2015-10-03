@@ -16,20 +16,20 @@ namespace bake_ast {
       cond = c;
       body = b;
     }
-    
+
     void setCond(Node* n) { this->cond = n; }
     Node* getCond() { return this->cond; }
-    
+
     void setBody(Node* n) { this->body = n; }
     Node* getBody() { return this->body; }
-    
-    void accept(Visitor* v) { v->visit(this); }  
-    
+
+    void accept(Visitor* v) { v->visit(this); }
+
   private:
     Node* cond;
     Node* body;
   };
-  
+
   class IfStatement : public Node {
   public:
     IfStatement() : Node(IFSTATEMENT) {};
@@ -38,24 +38,24 @@ namespace bake_ast {
       body = b;
       elseBody = e;
     }
-    
+
     void setCond(Node* n) { this->cond = n; }
     Node* getCond() { return this->cond; }
-    
+
     void setBody(Node* n) { this->body = n; }
     Node* getBody() { return this->body; }
-    
+
     void setElseBody(Node* n) { this->elseBody = n; }
-    Node* getElseBody() { return this->elseBody; }  
-    
+    Node* getElseBody() { return this->elseBody; }
+
     void accept(Visitor* v) { v->visit(this); }
-    
+
   private:
     Node* cond;
     Node* body;
     Node* elseBody;
   };
-  
+
   // this class also supports the optional expression assignment.
   class FormalDeclare : public Node {
   public:
@@ -65,25 +65,52 @@ namespace bake_ast {
       type = t;
       expr = e;
     }
-    
+
     Node* getID() { return this->id; }
     Node* getType() { return this->type; }
     Node* getExpr() { return this->expr; }
-    
+
     void setID(Node* n) { id = n; }
     void setType(Node* n) { type = n; }
     void setExpr(Node* n) { expr = n; }
-    
+
     void accept(Visitor* v) { v->visit(this); }
-    
+
   private:
     Node* id;
     Node* type;
     Node* expr = nullptr;
-  
+
   };
-  
-    
+
+  // this class also supports the optional expression assignment.
+  class Case : public Node {
+  public:
+    Case() : Node(CASE) {};
+    Case(Node* i, Node* t, Node* e = nullptr) : Node(CASE) {
+      id = i;
+      type = t;
+      expr = e;
+    }
+
+    Node* getID() { return this->id; }
+    Node* getType() { return this->type; }
+    Node* getExpr() { return this->expr; }
+
+    void setID(Node* n) { id = n; }
+    void setType(Node* n) { type = n; }
+    void setExpr(Node* n) { expr = n; }
+
+    void accept(Visitor* v) { v->visit(this); }
+
+  private:
+    Node* id;
+    Node* type;
+    Node* expr = nullptr;
+
+  };
+
+
   class ClassStatement : public Node {
   public:
     ClassStatement() : Node(CLASSSTATEMENT) {};
@@ -92,23 +119,23 @@ namespace bake_ast {
       inheritType = i;
       feature = f;
     }
-    
+
     Node* getType() { return this->type; }
     Node* getInheritType() { return this->inheritType; }
     Node* getFeature() { return this->feature; }
-    
+
     void getType(Node* n) { this->type = n; }
     void getInheritType(Node* n) { this->inheritType = n; }
     void getFeature(Node* n) { this->feature = n; }
-    
+
     void accept(Visitor* v) { v->visit(this); }
-    
+
   private:
     Node* type;
     Node* inheritType = nullptr;
     Node* feature = nullptr;
-    
-  
+
+
   };
 }
 
