@@ -29,12 +29,6 @@ void yylex_destroy(void);
 
 int main(int argc, char** argv)
 {
-  ExprList* l = new ExprList();
-  l->add(new IntegerVal(2));
-
-  PrettyPrint p;
-  l->accept(&p);
-
   string in_fname; // Name of the input file
   string out_fname; // Name of the output file
   bool run_lex_only;

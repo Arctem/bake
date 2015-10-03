@@ -49,66 +49,6 @@ namespace bake_ast {
     Node* elseBody;
   };
   
-  // TODO: optional expr, so change it around.
-  class LetStatement : public Node {
-  public:
-    LetStatement() : Node(LETSTATEMENT) {};
-    
-    Node* getID() { return this->id; }
-    Node* getType() { return this->type; }
-    Node* getExpr() { return this->expr; }
-    vector<Node*> getIdList() { return this->idList->getChildren();}
-    vector<Node*> getTypeList() { return this->typeList->getChildren(); }
-    vector<Node*> getExprList() { return this->exprList->getChildren(); }
-    
-    void setID(Node* n) { id = n; }
-    void setType(Node* n) { type = n; }
-    void setExpr(Node* n) { expr = n; }
-    void addToIdList(Node* n) { idList->add(n); }
-    void addToTypeList(Node* n) { typeList->add(n); }
-    void addToExprList(Node* n) { exprList->add(n); }
-    
-    void accept(Visitor* v) { v->visit(this); }
-  
-  private:
-    // required first arguments
-    Node* id;
-    Node* type;
-    Node* expr;
-    
-    // other required arguments
-    ExprList* idList;
-    ExprList* typeList;
-    ExprList* exprList;
-  
-  };
-  
-  class CaseStatement : public Node {
-  public:
-    CaseStatement() : Node(CASESTATEMENT) {};
-    
-    Node* getCaseExpr() { return this->caseExpr; }
-    vector<Node*> getIdList() { return this->idList->getChildren();}
-    vector<Node*> getTypeList() { return this->typeList->getChildren(); }
-    vector<Node*> getExprList() { return this->exprList->getChildren(); }
-    
-    void setCaseExpr(Node* n) { this->caseExpr = n; } 
-    void addToIdList(Node* n) { idList->add(n); }
-    void addToTypeList(Node* n) { typeList->add(n); }
-    void addToExprList(Node* n) { exprList->add(n); }
-    
-    void accept(Visitor* v) { v->visit(this); }
-  
-  private:
-    Node* caseExpr;
-    
-    // there will be at least one in each of these lists.
-    ExprList* idList;
-    ExprList* typeList;
-    ExprList* exprList;
-  
-  };
-  
   // this class also supports the optional expression assignment.
   class FormalDeclare : public Node {
   public:
@@ -131,7 +71,28 @@ namespace bake_ast {
   
   };
   
+    
+  class ClassStatement : public Node {
+  public:
+    ClassStatement() : Node(CLASSSTATEMENT) {};
+    
+    Node* getType() { return this->type; }
+    Node* getInheritType() { return this->inheritType; }
+    Node* getFeature() { return this->feature; }
+    
+    void getType(Node* n) { this->type = n; }
+    void getInheritType(Node* n) { this->inheritType = n; }
+    void getFeature(Node* n) { this->feature = n; }
+    
+    void accept(Visitor* v) { v->visit(this); }
+    
+  private:
+    Node* type;
+    Node* inheritType;
+    Node* feature;
+    
   
+  };
 }
 
 #endif

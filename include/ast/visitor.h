@@ -29,6 +29,8 @@ namespace bake_ast {
   class LetStatement;
   class CaseStatement;
   class FormalDeclare;
+  class ClassStatement;
+  class ClassList;
 
   class Visitor {
   public:
@@ -60,6 +62,8 @@ namespace bake_ast {
     virtual void visit(LetStatement*) = 0;
     virtual void visit(CaseStatement*) = 0;
     virtual void visit(FormalDeclare*) = 0;
+    virtual void visit(ClassStatement*) = 0;
+    virtual void visit(ClassList*) = 0;
   };
 
   class PrettyPrint : public Visitor {
@@ -96,6 +100,8 @@ namespace bake_ast {
     void visit(LetStatement*);
     void visit(CaseStatement*);
     void visit(FormalDeclare*);
+    void visit(ClassStatement*);
+    void visit(ClassList*);
 
   private:
     int depth; // Holds how many levels down the tree this print has gone
