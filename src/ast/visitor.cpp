@@ -326,6 +326,7 @@ void PrettyPrint::visit(ListFormalDeclare* n){
     curr->accept(this);
   }
 
+
   depth--;
 }
 
@@ -361,8 +362,10 @@ void PrettyPrint::visit(Feature* n){
 
   depth++;
   n->getID()->accept(this);
-  for(auto curr : n->getList()->getList()) {
-    curr->accept(this);
+  if(n->getList()) {
+    for(auto curr : n->getList()->getList()) {
+      curr->accept(this);
+    }
   }
   n->getType()->accept(this);
   n->getExpr()->accept(this);
