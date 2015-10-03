@@ -21,7 +21,7 @@
 #define  SCANNER_DEBUG 0
 
 extern int yycol;
-bool printLex;
+bool printLex = false;
 
 using namespace std;
 
@@ -122,14 +122,14 @@ t[r|R][u|U][e|E]             {
                 adjust();
                 outputLex("type");
                 out(yytext);
-                yylval.valueString = yytext;
+                yylval.valueString = strdup(yytext);
                 return yytokentype::TYPE;
               }
 {IDENTIFIER} {
                 outputLex("identifier");
                 out(yytext);
                 adjust();
-                yylval.valueString = yytext;
+                yylval.valueString = strdup(yytext);
                 return IDENTIFIER;
               }
 
@@ -180,7 +180,7 @@ t[r|R][u|U][e|E]             {
                 yytext[yyleng - 1] = '\0';
                 outputLex("string");
                 out(yytext + 1);
-                yylval.valueString = yytext + 1;
+                yylval.valueString = strdup(yytext + 1);
                 return STRING;
              }
 
