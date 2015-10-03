@@ -21,6 +21,10 @@ namespace bake_ast {
   class ClassList : public Node {
   public:
     ClassList() : Node(CLASSLIST) { };
+    ClassList(vector<Node*> c) : Node(CLASSLIST){
+      children = c;
+    }
+    
     void add(Node* n) { children.push_back(n); }
     vector<Node*> getChildren() { return children; }
     virtual void accept(Visitor* v) { v->visit(this); };
@@ -67,6 +71,12 @@ namespace bake_ast {
   class CaseStatement : public Node {
   public:
     CaseStatement() : Node(CASESTATEMENT) {};
+    CaseStatement(Node* c, ExprList* i, ExprList* t, ExprList* e) ; Node(CASESTATEMENT) {
+      caseExpr = c;
+      idList = i;
+      typeList = t;
+      exprList = e;
+    }
     
     Node* getCaseExpr() { return this->caseExpr; }
     vector<Node*> getIdList() { return this->idList->getChildren();}
