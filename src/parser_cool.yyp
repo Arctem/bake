@@ -113,6 +113,8 @@ void printDebug(const char *message){
 
 /* ------------ RULES ------------- */
 %%
+start : root                                                      { $1->accept(new bake_ast::PrettyPrint()); }
+
 root : class ';' root                                             {printDebug("class ; root\n"); $3->add($1); $$ = $3;}
       | class ';'                                                 {printDebug("class ; \n"); $$ = new bake_ast::ClassList(); $$->add($1);}
 

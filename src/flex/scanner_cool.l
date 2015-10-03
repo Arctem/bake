@@ -122,14 +122,14 @@ t[r|R][u|U][e|E]             {
                 adjust();
                 outputLex("type");
                 out(yytext);
-                yylval.valueString = yytext + 1;
+                yylval.valueString = yytext;
                 return yytokentype::TYPE;
               }
 {IDENTIFIER} {
                 outputLex("identifier");
                 out(yytext);
                 adjust();
-                yylval.valueString = yytext + 1;
+                yylval.valueString = yytext;
                 return IDENTIFIER;
               }
 
