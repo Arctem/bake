@@ -71,7 +71,7 @@ namespace bake_ast {
   class CaseStatement : public Node {
   public:
     CaseStatement() : Node(CASESTATEMENT) {};
-    CaseStatement(Node* c, ExprList* i, ExprList* t, ExprList* e) ; Node(CASESTATEMENT) {
+    CaseStatement(Node* c, ExprList* i, ExprList* t, ExprList* e) : Node(CASESTATEMENT) {
       caseExpr = c;
       idList = i;
       typeList = t;

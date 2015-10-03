@@ -12,7 +12,10 @@ namespace bake_ast {
   class WhileLoop : public Node {
   public:
     WhileLoop() : Node(WHILELOOP) {};
-    
+    WhileLoop(Node* c, Node* b) : Node(WHILELOOP) {
+      cond = c;
+      body = b;
+    }
     
     void setCond(Node* n) { this->cond = n; }
     Node* getCond() { return this->cond; }
@@ -30,7 +33,11 @@ namespace bake_ast {
   class IfStatement : public Node {
   public:
     IfStatement() : Node(IFSTATEMENT) {};
-    
+    IfStatement(Node* c, Node* b, Node* e) : Node (IFSTATEMENT) {
+      cond = c;
+      body = b;
+      elseBody = e;
+    }
     
     void setCond(Node* n) { this->cond = n; }
     Node* getCond() { return this->cond; }
@@ -53,6 +60,11 @@ namespace bake_ast {
   class FormalDeclare : public Node {
   public:
     FormalDeclare() : Node(FORMALDECLARE) {};
+    FormalDeclare(Node* i, Node* t, Node* e) : Node(FORMALDECLARE) {
+      id = i;
+      type = t;
+      expr = e;
+    }
     
     Node* getID() { return this->id; }
     Node* getType() { return this->type; }
@@ -75,6 +87,11 @@ namespace bake_ast {
   class ClassStatement : public Node {
   public:
     ClassStatement() : Node(CLASSSTATEMENT) {};
+    ClassStatement(Node* t, Node* i, Node* f) : Node(CLASSSTATEMENT) {
+      type = t;
+      inheritType = i;
+      feature = f;
+    }
     
     Node* getType() { return this->type; }
     Node* getInheritType() { return this->inheritType; }
