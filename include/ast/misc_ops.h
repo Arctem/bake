@@ -69,13 +69,13 @@ namespace bake_ast {
     Node* getID() { return this->id; }
     Node* getType() { return this->type; }
     Node* getExpr() { return this->expr; }
-    
+
     void setID(Node* n) { id = n; }
     void setType(Node* n) { type = n; }
     void setExpr(Node* n) { expr = n; }
-    
+
     void accept(Visitor* v) { v->visit(this); }
-    
+
   private:
     Node* id;
     Node* type;
