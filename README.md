@@ -14,7 +14,13 @@ Bake is currently in the parser stage of our COOL compiler. Utilizing FLEX, it r
 - Pretty print of our AST
 
 ## Bugs
-None Known at this time.
+- Memory leaks in our AST, fix by building destructors.
+- Ordered lists are currently reversed (i.e. group of expr) the statements will be in
+  reversed order, but everything within that statement (like order of operations) is
+  in the correct order. This bug is due to a minor mistake made while building the
+  tree and is an easy fix but we're tired.
+- Automated testing is kinda borked, so you'll have to run it yourself. Just do
+  `./bake src/flex/test/parser_tests/<test-file>` and you'll see the tree. Exciting!
 
 ## How to Compile and Run
 - Run cmake_script.sh in terminal to create the makefile and build the project.
