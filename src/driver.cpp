@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 {  
   string in_fname; // Name of the input file
   string out_fname; // Name of the output file
-  bool run_lex_only;
+  bool run_lex_only = false;
 
 
   // Check whether only an input file (without the -i option) was given

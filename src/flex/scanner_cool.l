@@ -13,6 +13,8 @@
 #include <math.h>
 #include <stack>
 #include <stdarg.h>
+
+#include "ast/ast.h"
 #include "parser_cool.h"
 
 // define line below as 1 to get debugging
@@ -91,8 +93,8 @@ else         { outputLex("else");     adjust(); return ELSE;}
 fi           { outputLex("fi");       adjust(); return FI;}
 in           { outputLex("in");       adjust(); return IN;}
 let          { outputLex("let");      adjust(); return LET;}
-isvoid       { outputLex("isvoid");   adjust(); return ISVOID;}
-new          { outputLex("new");      adjust(); return NEW;}
+isvoid       { outputLex("isvoid");   adjust(); return yytokentype::ISVOID;}
+new          { outputLex("new");      adjust(); return yytokentype::NEW;}
 not          { outputLex("not");      adjust(); return NOT;}
 of           { outputLex("of");       adjust(); return OF;}
 while        { outputLex("while");    adjust(); return WHILE;}
@@ -106,7 +108,7 @@ t[r|R][u|U][e|E]             { outputLex("true");  adjust(); return TRUE;}
 
 
   /* ----- Integers, Identifiers, Types ------ */
-{TYPE}       { adjust(); outputLex("type"); out(yytext); return TYPE;}
+{TYPE}       { adjust(); outputLex("type"); out(yytext); return yytokentype::TYPE;}
 {IDENTIFIER} { outputLex("identifier"); out(yytext);  adjust(); return IDENTIFIER;}
 {INTEGER}    {
                 adjust();
@@ -154,6 +156,7 @@ t[r|R][u|U][e|E]             { outputLex("true");  adjust(); return TRUE;}
                 yytext[yyleng - 1] = '\0';
                 outputLex("string");
                 out(yytext + 1);
+		yylval.valueString = yytext + 1;
                 return STRING;
              }
 

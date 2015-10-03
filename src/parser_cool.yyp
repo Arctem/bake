@@ -7,6 +7,7 @@
 #include <math.h>
 #include <iostream>
 
+#include "ast/ast.h"
 
 // define line below as 1 to get debugging
 #define PARSER_DEBUG 1
@@ -39,6 +40,8 @@ void printDebug(const char *message){
   char* type;
   char* valueString;
   bool  boolean;
+  bake_ast::Node* node;
+  bake_ast::ExprList* exprList;
 }
 
 /* --------- Base Tokens ------------ */
@@ -77,20 +80,20 @@ void printDebug(const char *message){
 %token <boolean> FALSE
 
 /* ------------ Types ------------- */
-%type < > class
-%type < > commandList
-%type < > command
-%type < > parameters
-%type < > declaration
-%type < > expr
-%type < > math
-%type < > compare
-%type < > callMethod
-%type < > controlFlow
-%type < > block
-%type < > cases
-%type < > declarationBlock
-%type < > exprList
+%type <node> class
+%type <node> commandList
+%type <node> command
+%type <node> parameters
+%type <node> declaration
+%type <node> expr
+%type <node> math
+%type <node> compare
+%type <node> callMethod
+%type <node> controlFlow
+%type <node> block
+%type <node> cases
+%type <node> declarationBlock
+%type <exprList> exprList
 
 %right LARROW
 %left NOT
@@ -132,7 +135,7 @@ expr : NEW TYPE                                                   {printDebug("N
       | '{' block '}'                                             {printDebug("{ block }\n");}
       | IDENTIFIER                                                {printDebug("IDENTIFIER\n");}
       | INTEGER                                                   {printDebug("INTEGER\n");}
-      | STRING                                                    {printDebug("STRING\n");}
+| STRING                                                    {printDebug("STRING\n"); $$ = new bake_ast::StringVal($1);}
       | TRUE                                                      {printDebug(" true \n");}
       | FALSE                                                     {printDebug(" false \n"); }
 
@@ -172,6 +175,9 @@ declarationBlock : declaration ',' declarationBlock               {printDebug("d
 block : expr ';'  block                                           {printDebug("expr ; block\n") ; }
       | expr ';'                                                  {printDebug("expr ;\n");}
 
-exprList : expr ',' exprList                                      {printDebug("expr ; exprList\n");}
-      | expr                                                      {printDebug("expr\n");}
+exprList : expr ',' exprList                                      {printDebug("expr ; exprList\n"); /*$3->add($1); $$ = $3;*/}
+      | expr                                                      {
+                                                                    printDebug("expr\n");
+                                                                    //$$ = new ExprList(); $$->add($1);
+                                                                  }
 %%
