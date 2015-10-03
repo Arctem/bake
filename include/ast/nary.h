@@ -33,38 +33,43 @@ namespace bake_ast {
     vector<Node*> children;
   };
   
+  class ListFormalDeclare : public Node {
+  public:
+    ListFormalDeclare() : Node(LISTFORMALDECLARE) {};
+    ListFormalDeclare(vector<FormalDeclare*> l) : Node(LISTFORMALDECLARE) {
+      list = l;
+    }
+    
+    void add(FormalDeclare* n) { list.push_back(n); }
+    vector<FormalDeclare*> getList() { return list; }
+    
+    virtual void accept(Visitor* v) { v->visit(this); }
+    
+  private:
+    vector<FormalDeclare*> list;
+  };
   
-  // TODO: optional expr, so change it around.
+  
   class LetStatement : public Node {
   public:
     LetStatement() : Node(LETSTATEMENT) {};
+    LetStatement(ListFormalDeclare* l, Node* e) : Node(LETSTATEMENT) {
+      list = l;
+      expr = e;
+    }
     
-    Node* getID() { return this->id; }
-    Node* getType() { return this->type; }
     Node* getExpr() { return this->expr; }
-    vector<Node*> getIdList() { return this->idList->getChildren();}
-    vector<Node*> getTypeList() { return this->typeList->getChildren(); }
-    vector<Node*> getExprList() { return this->exprList->getChildren(); }
+    vector<FormalDeclare*> getList() { return this->list->getList(); }
     
-    void setID(Node* n) { id = n; }
-    void setType(Node* n) { type = n; }
     void setExpr(Node* n) { expr = n; }
-    void addToIdList(Node* n) { idList->add(n); }
-    void addToTypeList(Node* n) { typeList->add(n); }
-    void addToExprList(Node* n) { exprList->add(n); }
+    void addToIdList(FormalDeclare* n) { list->add(n); }
+
     
-    void accept(Visitor* v) { v->visit(this); }
+    virtual void accept(Visitor* v) { v->visit(this); }
   
   private:
-    // required first arguments
-    Node* id;
-    Node* type;
+    ListFormalDeclare* list;
     Node* expr;
-    
-    // other required arguments
-    ExprList* idList;
-    ExprList* typeList;
-    ExprList* exprList;
   
   };
   

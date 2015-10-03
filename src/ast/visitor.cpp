@@ -216,18 +216,6 @@ void PrettyPrint::visit(IfStatement* n){
   depth--;
 }
 
-// TODO: make it work.
-void PrettyPrint::visit(LetStatement* n){
-  leadingOps();
-  cout << "+ LetStatment" << endl;
-
-  depth++;
-  // loop through id and tType
-  
-  
-  depth--;
-}
-
 void PrettyPrint::visit(CaseStatement* n){
   leadingOps();
   cout << "+ CaseStatement" << endl;
@@ -309,3 +297,30 @@ void PrettyPrint::visit(Dispatch* n) {
     
   depth--;
 }
+
+void PrettyPrint::visit(ListFormalDeclare* n){
+  leadingOps();
+  cout << "+ ListFormalDeclare" << endl;
+
+  depth++;
+  for(auto curr : n->getList()) {
+    curr->accept(this);
+  }
+    
+  depth--;
+}
+
+void PrettyPrint::visit(LetStatement* n){
+  leadingOps();
+  cout << "+ LetStatement" << endl;
+
+  depth++;
+  for(auto curr : n->getList()) {
+    curr->accept(this);
+  }
+  
+  n->getExpr()->accept(this);
+    
+  depth--;
+}
+

@@ -60,7 +60,7 @@ namespace bake_ast {
   class FormalDeclare : public Node {
   public:
     FormalDeclare() : Node(FORMALDECLARE) {};
-    FormalDeclare(Node* i, Node* t, Node* e) : Node(FORMALDECLARE) {
+    FormalDeclare(Node* i, Node* t, Node* e = nullptr) : Node(FORMALDECLARE) {
       id = i;
       type = t;
       expr = e;
@@ -87,7 +87,7 @@ namespace bake_ast {
   class ClassStatement : public Node {
   public:
     ClassStatement() : Node(CLASSSTATEMENT) {};
-    ClassStatement(Node* t, Node* i, Node* f) : Node(CLASSSTATEMENT) {
+    ClassStatement(Node* t, Node* i = nullptr, Node* f = nullptr) : Node(CLASSSTATEMENT) {
       type = t;
       inheritType = i;
       feature = f;
@@ -106,7 +106,7 @@ namespace bake_ast {
   private:
     Node* type;
     Node* inheritType = nullptr;
-    Node* feature;
+    Node* feature = nullptr;
     
   
   };
