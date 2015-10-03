@@ -28,7 +28,7 @@ void help(char* cmd_name);
 void yylex_destroy(void);
 
 int main(int argc, char** argv)
-{  
+{
   string in_fname; // Name of the input file
   string out_fname; // Name of the output file
   bool run_lex_only = false;
@@ -40,18 +40,14 @@ int main(int argc, char** argv)
   } else {
     // Get file names
     char c;
-    while((c = getopt(argc, argv, "i:l:p")) != -1) {
+    while((c = getopt(argc, argv, "i:l:")) != -1) {
       switch(c) {
       case 'i': // Input file
         in_fname = string(optarg);
         break;
-      case 'l': // output only lex
+      case 'l' :
+        printLex = true;
         out_fname = string(optarg);
-        printLex = true;
-        run_lex_only = true;
-        break;
-      case 'p' :
-        printLex = true;
         break;
       case '?':
         help(argv[0]);
@@ -88,18 +84,6 @@ int main(int argc, char** argv)
     cout << "Error opening files" << endl;
   }
 
-  if(run_lex_only == true){
-    // Start the lexer
-    yylex();
-
-    // Close file handlers
-    fclose(yyin);
-    fclose(yyout);
-
-    yylex_destroy();
-    return 0;
-  }
-
   // Start the lexer
   yyparse();
 
@@ -111,6 +95,7 @@ int main(int argc, char** argv)
   }
 
   // Frees memory
+  yylex_destroy();
 
   return 0;
 }
@@ -121,8 +106,6 @@ void help(char* cmd_name) {
   cout << "Usage: " << endl;
   cout << "\t" << cmd_name << " input_file" << endl;
   cout << "\t" << cmd_name << " -i input_file -l output_file" << endl;
-  cout << "\t" << cmd_name << " -i input_file -y output_file" << endl;
-  cout << "-y: Prints the lexer files" << endl;
   cout << "input_file: File to scan" << endl;
   cout << "output_file: File in which to place the output. Defaults to <input_file>-lex-bake" << endl;
 }

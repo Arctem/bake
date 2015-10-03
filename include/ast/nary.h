@@ -17,14 +17,14 @@ namespace bake_ast {
   private:
     vector<Node*> children;
   };
-  
+
   class ClassList : public Node {
   public:
     ClassList() : Node(CLASSLIST) { };
     ClassList(vector<Node*> c) : Node(CLASSLIST){
       children = c;
     }
-    
+
     void add(Node* n) { children.push_back(n); }
     vector<Node*> getChildren() { return children; }
     virtual void accept(Visitor* v) { v->visit(this); };
@@ -32,24 +32,40 @@ namespace bake_ast {
   private:
     vector<Node*> children;
   };
-  
+
   class ListFormalDeclare : public Node {
   public:
     ListFormalDeclare() : Node(LISTFORMALDECLARE) {};
     ListFormalDeclare(vector<FormalDeclare*> l) : Node(LISTFORMALDECLARE) {
       list = l;
     }
-    
+
     void add(FormalDeclare* n) { list.push_back(n); }
     vector<FormalDeclare*> getList() { return list; }
-    
+
     virtual void accept(Visitor* v) { v->visit(this); }
-    
+
   private:
     vector<FormalDeclare*> list;
   };
-  
-  
+
+  class CaseList : public Node {
+  public:
+    CaseList() : Node(CASELIST) {};
+    CaseList(vector<FormalDeclare*> l) : Node(CASELIST) {
+      list = l;
+    }
+
+    void add(Case* n) { list.push_back(n); }
+    vector<Case*> getList() { return list; }
+
+    virtual void accept(Visitor* v) { v->visit(this); }
+
+  private:
+    vector<Case*> list;
+  };
+
+
   class LetStatement : public Node {
   public:
     LetStatement() : Node(LETSTATEMENT) {};
@@ -57,22 +73,22 @@ namespace bake_ast {
       list = l;
       expr = e;
     }
-    
+
     Node* getExpr() { return this->expr; }
     vector<FormalDeclare*> getList() { return this->list->getList(); }
-    
+
     void setExpr(Node* n) { expr = n; }
     void addToIdList(FormalDeclare* n) { list->add(n); }
 
-    
+
     virtual void accept(Visitor* v) { v->visit(this); }
-  
+
   private:
     ListFormalDeclare* list;
     Node* expr;
-  
+
   };
-  
+
   class CaseStatement : public Node {
   public:
     CaseStatement() : Node(CASESTATEMENT) {};
@@ -82,29 +98,29 @@ namespace bake_ast {
       typeList = t;
       exprList = e;
     }
-    
+
     Node* getCaseExpr() { return this->caseExpr; }
     vector<Node*> getIdList() { return this->idList->getChildren();}
     vector<Node*> getTypeList() { return this->typeList->getChildren(); }
     vector<Node*> getExprList() { return this->exprList->getChildren(); }
-    
-    void setCaseExpr(Node* n) { this->caseExpr = n; } 
+
+    void setCaseExpr(Node* n) { this->caseExpr = n; }
     void addToIdList(Node* n) { idList->add(n); }
     void addToTypeList(Node* n) { typeList->add(n); }
     void addToExprList(Node* n) { exprList->add(n); }
-    
+
     void accept(Visitor* v) { v->visit(this); }
-  
+
   private:
     Node* caseExpr;
-    
+
     // there will be at least one in each of these lists.
     ExprList* idList;
     ExprList* typeList;
     ExprList* exprList;
-  
+
   };
-  
+
   class Dispatch : public Node {
   public:
     Dispatch() : Node(DISPATCH) {};
@@ -114,28 +130,28 @@ namespace bake_ast {
       this->id = id;
       this->exprList = exprList;
     }
-    
+
     Node* getExpr() { return this->expr; }
     Node* getType() { return this->type; }
     Node* getID() { return this->id; }
     vector<Node*> getExprList() { return this->exprList->getChildren(); }
-    
+
     void setExpr(Node* n) { this->expr = n; }
     void setType(Node* n) { this->type = n; }
     void setID(Node* n) { this->id = n; }
     void addToExprList(Node* n) { this->exprList->add(n); }
     void setExprList(ExprList* e) { this->exprList = e; }
-    
+
     void accept(Visitor* v) { v->visit(this); }
-    
+
   private:
     Node* expr = nullptr; // optional
     Node* type = nullptr; // optional
-    
+
     Node* id;
     ExprList* exprList = nullptr;
-    
-    
+
+
   };
 }
 
