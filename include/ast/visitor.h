@@ -28,6 +28,8 @@ namespace bake_ast {
   class IfStatement;
   class LetStatement;
   class CaseStatement;
+  class CaseList;
+  class Case;
   class FormalDeclare;
   class ClassStatement;
   class ClassList;
@@ -64,6 +66,8 @@ namespace bake_ast {
     virtual void visit(IfStatement*) = 0;
     virtual void visit(LetStatement*) = 0;
     virtual void visit(CaseStatement*) = 0;
+    virtual void visit(CaseList*) = 0;
+    virtual void visit(Case*) = 0;
     virtual void visit(FormalDeclare*) = 0;
     virtual void visit(ClassStatement*) = 0;
     virtual void visit(ClassList*) = 0;
@@ -86,7 +90,7 @@ namespace bake_ast {
     void visit(BitNot*);
     void visit(Isvoid*);
     void visit(New*);
-    
+
     // Binary Operators
     void visit(BinaryOp*);
     void visit(Plus*);
@@ -104,6 +108,8 @@ namespace bake_ast {
     void visit(IfStatement*);
     void visit(LetStatement*);
     void visit(CaseStatement*);
+    void visit(CaseList*);
+    void visit(Case*);
     void visit(FormalDeclare*);
     void visit(ClassStatement*);
     void visit(ClassList*);
