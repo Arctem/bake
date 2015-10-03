@@ -103,13 +103,36 @@ pool         { outputLex("pool");     adjust(); return POOL;}
 
 
   /* --------------- BOOL Keywords ----------- */
-f[a|A][l|L][s|S][e|E]        { outputLex("false"); adjust(); return FALSE;}
-t[r|R][u|U][e|E]             { outputLex("true");  adjust(); return TRUE;}
+f[a|A][l|L][s|S][e|E]        {
+                                outputLex("false");
+                                adjust();
+                                yylval.boolean = false;
+                                return FALSE;
+                             }
+t[r|R][u|U][e|E]             {
+                                outputLex("true");
+                                adjust();
+                                yylval.boolean = true;
+                                return TRUE;
+                              }
 
 
   /* ----- Integers, Identifiers, Types ------ */
-{TYPE}       { adjust(); outputLex("type"); out(yytext); return yytokentype::TYPE;}
-{IDENTIFIER} { outputLex("identifier"); out(yytext);  adjust(); return IDENTIFIER;}
+{TYPE}       {
+                adjust();
+                outputLex("type");
+                out(yytext);
+                yylval.valueString = yytext + 1;
+                return yytokentype::TYPE;
+              }
+{IDENTIFIER} {
+                outputLex("identifier");
+                out(yytext);
+                adjust();
+                yylval.valueString = yytext + 1;
+                return IDENTIFIER;
+              }
+
 {INTEGER}    {
                 adjust();
                 int num = atoi(yytext);
@@ -120,6 +143,7 @@ t[r|R][u|U][e|E]             { outputLex("true");  adjust(); return TRUE;}
                   outputLex("integer");
                   out(yytext);
                 }
+                yylval.valueInt = atoi(yytext);
                 return INTEGER;
              }
 
@@ -156,7 +180,7 @@ t[r|R][u|U][e|E]             { outputLex("true");  adjust(); return TRUE;}
                 yytext[yyleng - 1] = '\0';
                 outputLex("string");
                 out(yytext + 1);
-		yylval.valueString = yytext + 1;
+                yylval.valueString = yytext + 1;
                 return STRING;
              }
 
