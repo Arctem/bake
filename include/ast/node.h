@@ -16,7 +16,7 @@ namespace bake_ast {
                   PLUS, MINUS, MULTIPLY, DIVIDE, LESSTHAN, LESSTHANEQUAL, EQUAL, ASSIGN, 
                   EXPRLIST, WHILELOOP, IFSTATEMENT, LETSTATEMENT, CASESTATEMENT, FORMALDECLARE,
                   CLASSSTATEMENT, CLASSLIST, DISPATCH, LISTFORMALDECLARE, FEATURELIST,
-                  FEATUREOPTION, FEATURE};
+                  FEATUREOPTION, FEATURE, CASE, CASELIST};
 
   /**
    * Base class for all objects that can be placed in the AST

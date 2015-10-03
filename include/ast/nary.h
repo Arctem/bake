@@ -52,7 +52,7 @@ namespace bake_ast {
   class CaseList : public Node {
   public:
     CaseList() : Node(CASELIST) {};
-    CaseList(vector<FormalDeclare*> l) : Node(CASELIST) {
+    CaseList(vector<Case*> l) : Node(CASELIST) {
       list = l;
     }
 
