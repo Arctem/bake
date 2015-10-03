@@ -13,4 +13,4 @@ dependencies:
 
 test:
   override:
-    - cd tests && ./test_lexer.py
+    - make test
