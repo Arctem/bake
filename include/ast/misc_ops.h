@@ -114,28 +114,44 @@ namespace bake_ast {
   class ClassStatement : public Node {
   public:
     ClassStatement() : Node(CLASSSTATEMENT) {};
-    ClassStatement(Node* t, Node* i = nullptr, Node* f = nullptr) : Node(CLASSSTATEMENT) {
+    ClassStatement(Node* t, Node* i = nullptr, FeatureList* f = nullptr) : Node(CLASSSTATEMENT) {
       type = t;
       inheritType = i;
-      feature = f;
+      list = f;
     }
 
     Node* getType() { return this->type; }
     Node* getInheritType() { return this->inheritType; }
+<<<<<<< Updated upstream
     Node* getFeature() { return this->feature; }
 
     void getType(Node* n) { this->type = n; }
     void getInheritType(Node* n) { this->inheritType = n; }
     void getFeature(Node* n) { this->feature = n; }
 
+=======
+    FeatureList* getList() { return this->list; }
+    
+    void setType(Node* n) { this->type = n; }
+    void setInheritType(Node* n) { this->inheritType = n; }
+    void setList(FeatureList* n) { this->list = n; }
+    void add(FeatureOption* n) { list->add(n); }
+    
+>>>>>>> Stashed changes
     void accept(Visitor* v) { v->visit(this); }
 
   private:
     Node* type;
     Node* inheritType = nullptr;
+<<<<<<< Updated upstream
     Node* feature = nullptr;
 
 
+=======
+    FeatureList* list;
+    
+  
+>>>>>>> Stashed changes
   };
 }
 

@@ -36,6 +36,9 @@ namespace bake_ast {
   class Dispatch;
   class ListFormalDeclare;
   class LetStatement;
+  class Feature;
+  class FeatureOption;
+  class FeatureList;
 
   class Visitor {
   public:
@@ -73,6 +76,9 @@ namespace bake_ast {
     virtual void visit(ClassList*) = 0;
     virtual void visit(Dispatch*) = 0;
     virtual void visit(ListFormalDeclare*) = 0;
+    virtual void visit(Feature*) = 0;
+    virtual void visit(FeatureOption*) = 0;
+    virtual void visit(FeatureList*) = 0;
   };
 
   class PrettyPrint : public Visitor {
@@ -115,6 +121,9 @@ namespace bake_ast {
     void visit(ClassList*);
     void visit(Dispatch*);
     void visit(ListFormalDeclare*);
+    void visit(Feature*);
+    void visit(FeatureOption*);
+    void visit(FeatureList*);
 
   private:
     int depth; // Holds how many levels down the tree this print has gone

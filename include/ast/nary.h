@@ -108,9 +108,9 @@ namespace bake_ast {
     void addToIdList(Node* n) { idList->add(n); }
     void addToTypeList(Node* n) { typeList->add(n); }
     void addToExprList(Node* n) { exprList->add(n); }
-
-    void accept(Visitor* v) { v->visit(this); }
-
+    
+    virtual void accept(Visitor* v) { v->visit(this); }
+  
   private:
     Node* caseExpr;
 
@@ -118,7 +118,7 @@ namespace bake_ast {
     ExprList* idList;
     ExprList* typeList;
     ExprList* exprList;
-
+    
   };
 
   class Dispatch : public Node {
@@ -141,9 +141,9 @@ namespace bake_ast {
     void setID(Node* n) { this->id = n; }
     void addToExprList(Node* n) { this->exprList->add(n); }
     void setExprList(ExprList* e) { this->exprList = e; }
-
-    void accept(Visitor* v) { v->visit(this); }
-
+    
+    virtual void accept(Visitor* v) { v->visit(this); }
+    
   private:
     Node* expr = nullptr; // optional
     Node* type = nullptr; // optional
@@ -152,6 +152,64 @@ namespace bake_ast {
     ExprList* exprList = nullptr;
 
 
+  };
+  
+  class Feature : public Node {
+  public:
+    Feature() : Node(FEATURE) {};
+    Feature(Node* i, ListFormalDeclare* l, Node* t, Node* e) : Node (FEATURE) {
+      id = i;
+      list = l;
+      type = t;
+      expr = e;
+    }
+    
+    Node* getID() { return id; }
+    ListFormalDeclare* getList() { return list; }
+    Node* getType() { return type; }
+    Node* getExpr() { return expr; }
+    
+    void setID(Node* i) { id = i; }
+    void setList(ListFormalDeclare* l) { list = l; }
+    void setType(Node* t) { type = t; }
+    void setExpr(Node* e) { expr = e; }
+    
+  private:
+    Node* id;
+    ListFormalDeclare* list;
+    Node* type;
+    Node* expr;
+  };
+  
+  class FeatureOption : public Node {
+  public:
+    FeatureOption() : Node(FEATUREOPTION){};
+    FeatureOption(Feature* f) : Node(FEATUREOPTION) { feat = f; }
+    FeatureOption(FormalDeclare* f) : Node(FEATUREOPTION) { form = f; }
+    
+    Feature* getFeat() { return feat; }
+    FormalDeclare* getForm() { return form; }
+    
+    virtual void accept(Visitor* v) { v->visit(this); }
+    
+  private:
+    Feature* feat = nullptr;
+    FormalDeclare* form = nullptr;
+  };
+  
+  class FeatureList : public Node {
+  public:
+    FeatureList() : Node(FEATURELIST) {};
+    FeatureList(vector<FeatureOption*> v) : Node(FEATURELIST) { list = v; };
+    
+    vector<FeatureOption*> getList() {return list;}
+    
+    void add(FeatureOption* n) { list.push_back(n); }
+    
+    virtual void accept(Visitor* v) { v->visit(this); }
+    
+  private:
+    vector<FeatureOption*> list;
   };
 }
 
