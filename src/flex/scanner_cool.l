@@ -15,10 +15,12 @@
 #include <stdarg.h>
 
 #include "ast/ast.h"
-#include "parser_cool.h"
+#include "parser_cool.hpp"
 
 // define line below as 1 to get debugging
-#define  SCANNER_DEBUG 0
+#define SCANNER_DEBUG 0
+
+#define yyterminate() return YY_NULL
 
 extern int yycol;
 bool printLex = false;
@@ -148,13 +150,13 @@ t[r|R][u|U][e|E]             {
 
              if(num < 0 ){
                errorOut("Float is not unsigned. Invalid for COOL. ");
-               exit(-1);
+               return YY_NULL;
              }
              outputLex("float");
              out(yytext);
              yylval.valueFloat = atof(yytext);
              return FLOAT;
-                         }
+         }
 
 {INTEGER}    {
                 adjust();
@@ -162,7 +164,7 @@ t[r|R][u|U][e|E]             {
 
                 if(num < 0 ){
                   errorOut("Integer is not unsigned. Invalid for COOL. ");
-                  exit(-1);
+                  return YY_NULL;
                 } else if(num <= 2147483647) {
                   outputLex("int 32");
                   out(yytext);
@@ -172,8 +174,7 @@ t[r|R][u|U][e|E]             {
                 }
 
                 errorOut("Integer outside value range over a 8, 32, or 64 bit integer");
-                exit(-1);
-
+                return YY_NULL;
              }
 
 
@@ -225,7 +226,7 @@ t[r|R][u|U][e|E]             {
  /* --  Anything is an Invalid Character -- */
 .            {
                 errorOut((string("invalid character: ") + yytext).c_str());
-                exit(-1);
+                yyterminate();
               }
 
  /* ----------- OTHER BLOCKS ------------ */
@@ -246,7 +247,7 @@ t[r|R][u|U][e|E]             {
   <<EOF>>      {
                   adjust();
                   errorOut("<<EOF>> found before end of comment");
-                  exit(-1);
+                  yyterminate();
                }
 
   .             { adjust(); /* anything is allowed in comments */ }

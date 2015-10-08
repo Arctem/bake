@@ -1,0 +1,13 @@
+macro(create_test target)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${bake_SOURCE_DIR}/bin)
+  add_executable(${target} ${target}.cpp)
+  target_link_libraries(${target} gtest gtest_main ast flex)
+  if(DEFINED ENV{CIRCLE_TEST_REPORTS})
+    add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> --gtest_output=xml:$ENV{CIRCLE_TEST_REPORTS}/${target}/ WORKING_DIRECTORY ${bake_SOURCE_DIR})
+  else()
+    add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> --gtest_output=xml:${bake_SOURCE_DIR}/test_out/${target}/ WORKING_DIRECTORY ${bake_SOURCE_DIR})
+  endif()
+endmacro(create_test)
+
+
+create_test(lextest)

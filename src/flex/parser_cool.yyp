@@ -19,17 +19,57 @@ extern bake_ast::ClassList* ast; // Reference to the root of the AST
 int yylex();
 extern int yylineno;
 int yycol = 0;
+extern FILE* yyin;
+extern FILE* yyout;
 
-void yyerror(char const* s)
-{
+int yyparse(void);
+void yylex_destroy(void);
+
+int yyerror(char const* s) {
   fflush(stdout);
   printf("Error: line %d column %d: %s\n",yylineno,yycol,s);
+  return -1;
 }
 
-void printDebug(const char *message){
-  if(PARSER_DEBUG == 1){
+void printDebug(const char *message) {
+  if(PARSER_DEBUG){
     printf("Debug: %d: Parsed: %s", yylineno,message);
   }
+}
+
+int perform_lex(string in_fname, bool print_lex) {
+  yyin = fopen(in_fname.c_str(), "r");
+
+  if(!yyin) {
+    cout << "Error opening input file " << in_fname << endl;
+    return -1;
+  }
+
+  string out_fname;
+  if(print_lex) {
+    out_fname = in_fname + "-lex-bake";
+
+    yyout = fopen(out_fname.c_str(), "w");
+    if(!yyout) {
+      cout << "Error opening output file: " << endl;
+      return -1;
+    }
+  }
+
+  // Start the lexer
+  int retval = yyparse();
+
+  // Close file handlers
+  fclose(yyin);
+
+  if(print_lex){
+    fclose(yyout);
+  }
+
+  // Frees memory
+  yylex_destroy();
+
+  return retval;
 }
 
 %}
@@ -188,7 +228,7 @@ expr : NEW TYPE                                                   {printDebug("N
 
 controlFlow: IF expr THEN expr ELSE expr FI                       {printDebug(" IF expr THEN expr ELSE expr FI\n");
                                                                     $$ = new bake_ast::IfStatement($2, $4, $6);}
-      | WHILE expr LOOP expr                                      {printDebug("WHILE expr LOOP expr\n");
+      | WHILE expr LOOP expr POOL                                 {printDebug("WHILE expr LOOP expr\n");
                                                                     $$ = new bake_ast::WhileLoop($2, $4);}
       | CASES expr OF cases ESAC                                   {printDebug("CASES expr OF cases ESAC\n");
                                                                     $$ = new bake_ast::CaseStatement($2, $4);}

@@ -5,40 +5,12 @@
  *   Bugs:           Probably lots.
  */
 
-#include <iostream>
-#include <string>
-using namespace std;
+#include "driver.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <getopt.h>
-
-#include "ast/ast.h"
-using namespace bake_ast;
-#include "typecheck/symbol_node.h"
-#include "typecheck/build_st.h"
-#include "typecheck/symbol_table_print.h"
-#include "typecheck/visitor_tc.h"
-using namespace typecheck;
-
-extern int yylineno;
-extern int nelements;
-extern FILE* yyin;
-extern FILE* yyout;
-extern bool printLex;
-ClassList* ast;
-
-int yylex(void);
-int yyparse(void);
-void help(char* cmd_name);
-void yylex_destroy(void);
-
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
   vector<string> in_files; // Names of the input files
   string exe_fname; // Name of the output executable
   bool run_lex_only = false;
-
 
   // Check whether only an input file (without the -i option) was given
   if(argc == 2) {
@@ -73,34 +45,12 @@ int main(int argc, char** argv)
   // We need to parse every file separately. ASTs will
   // combine as we go.
   for(auto in_fname : in_files) {
-    string out_fname;
-    if(printLex) {
-      out_fname = in_fname + "-lex-bake";
-
-      yyout = fopen(out_fname.c_str(), "w");
-      if(!yyout) {
-	cout << "Error opening file: " << out_fname << endl;
-      }
-
-    }
-
-    // Open input file
-    yyin = fopen(in_fname.c_str(), "r");
-
-    if(!yyin) {
-      cout << "Error opening file: " << in_fname << endl;
-    }
-
     // Start the lexer
-    yyparse();
-
-    // Close file handlers
-    fclose(yyin);
-
-    if(printLex){
-      fclose(yyout);
+    int err;
+    if((err = perform_lex(in_fname, printLex))) {
+      cout << "Failed lex on " << in_fname << endl;
+      return err;
     }
-
   }
 
   PrettyPrint pp;
@@ -130,15 +80,10 @@ int main(int argc, char** argv)
     return 0;
   }
 
-
-  // Frees memory
-  yylex_destroy();
-
   delete ast;
 
   return 0;
 }
-
 
 /* Function prints the help message */
 void help(char* cmd_name) {
