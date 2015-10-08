@@ -93,8 +93,8 @@ else         { outputLex("else");     adjust(); return ELSE;}
 fi           { outputLex("fi");       adjust(); return FI;}
 in           { outputLex("in");       adjust(); return IN;}
 let          { outputLex("let");      adjust(); return LET;}
-isvoid       { outputLex("isvoid");   adjust(); return yytokentype::ISVOID;}
-new          { outputLex("new");      adjust(); return yytokentype::NEW;}
+isvoid       { outputLex("isvoid");   adjust(); return ISVOID;}
+new          { outputLex("new");      adjust(); return NEW;}
 not          { outputLex("not");      adjust(); return NOT;}
 of           { outputLex("of");       adjust(); return OF;}
 while        { outputLex("while");    adjust(); return WHILE;}

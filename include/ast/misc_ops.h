@@ -2,9 +2,7 @@
 #ifndef __THE_AWSOME__
 #define __THE_AWSOME__
 
-using namespace std;
 #include "node.h"
-#include "nary.h"
 using namespace bake_ast;
 
 namespace bake_ast {
@@ -126,40 +124,6 @@ namespace bake_ast {
     Node* type;
     Node* expr = nullptr;
 
-  };
-
-
-  class ClassStatement : public Node {
-  public:
-    ClassStatement() : Node(CLASSSTATEMENT) {};
-    ClassStatement(Node* t, Node* i = nullptr, FeatureList* f = nullptr) : Node(CLASSSTATEMENT) {
-      type = t;
-      inheritType = i;
-      list = f;
-    }
-    virtual ~ClassStatement() {
-      delete inheritType;
-      delete type;
-      delete list;
-    }
-
-    Node* getType() { return this->type; }
-    Node* getInheritType() { return this->inheritType; }
-    FeatureList* getList() { return this->list; }
-    
-    void setType(Node* n) { this->type = n; }
-    void setInheritType(Node* n) { this->inheritType = n; }
-    void setList(FeatureList* n) { this->list = n; }
-    void add(FeatureOption* n) { list->add(n); }
-
-    virtual void accept(Visitor* v) { v->visit(this); }
-
-  private:
-    Node* type;
-    Node* inheritType = nullptr;
-
-    FeatureList* list;
-    
   };
 }
 

@@ -20,12 +20,12 @@ namespace bake_ast {
    */
   class IntegerVal : public Leaf {
   public:
-    IntegerVal(int val) : Leaf(INTEGERVAL), value(val) { }
+    IntegerVal(int val) : Leaf(INTEGERVAL), val(val) { }
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    int getValue() { return value; }
+    int getValue() { return val; }
 
   private:
-    int value;
+    int val;
   };
 
   /**
@@ -36,10 +36,10 @@ namespace bake_ast {
     StringVal(const char* val);
     virtual ~StringVal();
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    string* getValue() { return value; }
+    string* getValue() { return val; }
 
   private:
-    string* value;
+    string* val;
   };
 
   /**
@@ -47,15 +47,15 @@ namespace bake_ast {
    */
   class BoolVal : public Leaf {
   public:
-    BoolVal(bool val) : Leaf(BOOLVAL), value(val) { };
+    BoolVal(bool val) : Leaf(BOOLVAL), val(val) { };
     
     virtual ~BoolVal() {};
     
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    bool getValue() { return value; }
+    bool getValue() { return val; }
 
   private:
-    bool value;
+    bool val;
   };
 
   /**

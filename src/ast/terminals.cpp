@@ -11,11 +11,11 @@ using namespace bake_ast;
  * This was done in the interest of simplifying memory management.
  */
 StringVal::StringVal(const char* val) : Leaf(STRINGVAL) {
-  this->value = new string(val);
+  this->val = new string(val);
 }
 
 StringVal::~StringVal() {
-  delete this->value;
+  delete this->val;
 }
 
 /*********** Id methods ***********/

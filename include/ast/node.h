@@ -12,8 +12,8 @@
 #include "visitor.h"
 
 namespace bake_ast {
-  enum NodeType { INTEGERVAL, STRINGVAL, BOOLVAL, IDVAL, LOGICALNOT, BITNOT, ISVOID, NEW, TYPEVAL, 
-                  PLUS, MINUS, MULTIPLY, DIVIDE, LESSTHAN, LESSTHANEQUAL, EQUAL, ASSIGN, 
+  enum NodeType { INTEGERVAL, STRINGVAL, BOOLVAL, IDVAL, LOGICALNOT, BITNOT, VOID, NEWVAL, TYPEVAL, 
+                  PLUS, MINUS, MULTIPLY, DIVIDE, LESSTHAN, LESSTHANEQUAL, EQUAL, ASSIGN,
                   EXPRLIST, WHILELOOP, IFSTATEMENT, LETSTATEMENT, CASESTATEMENT, FORMALDECLARE,
                   CLASSSTATEMENT, CLASSLIST, DISPATCH, LISTFORMALDECLARE, FEATURELIST,
                   FEATUREOPTION, FEATURE, CASE, CASELIST};
@@ -23,11 +23,11 @@ namespace bake_ast {
    */
   class Node {
   public:
-  	NodeType type;
+    NodeType type;
 
     Node(NodeType type) : type(type) {}
     virtual ~Node() { }
-    
+
     virtual void accept(bake_ast::Visitor*) = 0;
   };
 }
