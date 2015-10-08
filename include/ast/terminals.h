@@ -2,8 +2,7 @@
 #ifndef __TERMINALS__
 #define __TERMINALS__
 
-#include <string>
-using namespace std;
+#include <string.h>
 #include "node.h"
 
 namespace bake_ast {
@@ -36,10 +35,10 @@ namespace bake_ast {
     StringVal(const char* val);
     virtual ~StringVal();
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    string* getValue() { return val; }
+    char* getValue() { return val; }
 
   private:
-    string* val;
+    char* val;
   };
 
   /**
@@ -66,10 +65,10 @@ namespace bake_ast {
     Id(const char* name);
     virtual ~Id();
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    string* getName() { return this->name; }
+    char* getName() { return this->name; }
 
   private:
-    string* name;
+    char* name;
   };
 
   /**
@@ -80,10 +79,10 @@ namespace bake_ast {
     Type(const char* name);
     virtual ~Type();
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    string* getName() { return this->name; }
+    char* getName() { return this->name; }
 
   private:
-    string* name;
+    char* name;
   };
 }
 

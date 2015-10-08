@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
-add_compile_options(-std=c++11 -g -Wall)
+add_compile_options(-std=c++11 -g -Wall -Wno-deprecated-register)
 
 project(bake)
 
