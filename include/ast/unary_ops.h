@@ -14,7 +14,7 @@ namespace bake_ast {
     UnaryOp(NodeType type, Node* c) : Node(type) {
       child = c;
     }
-    virtual ~UnaryOp() { };
+    virtual ~UnaryOp() { delete child; };
 
     void set(Node* n) { child = n; }
     Node* get() { return child; }

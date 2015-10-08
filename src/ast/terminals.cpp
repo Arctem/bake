@@ -20,7 +20,7 @@ StringVal::~StringVal() {
 
 /*********** Id methods ***********/
 
-Id::Id(const char* name) : Leaf(ID) {
+Id::Id(const char* name) : Leaf(IDVAL) {
   this->name = new string(name);
 }
 
@@ -30,7 +30,7 @@ Id::~Id() {
 
 /*********** Type methods ***********/
 
-Type::Type(const char* name) : Leaf(TYPE) {
+Type::Type(const char* name) : Leaf(TYPEVAL) {
   this->name = new string(name);
 }
 

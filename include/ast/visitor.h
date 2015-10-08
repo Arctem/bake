@@ -30,7 +30,6 @@ namespace bake_ast {
   class CaseStatement;
   class CaseList;
   class Case;
-  class FormalDeclare;
   class ClassStatement;
   class ClassList;
   class Dispatch;
@@ -39,6 +38,7 @@ namespace bake_ast {
   class Feature;
   class FeatureOption;
   class FeatureList;
+  class FormalDeclare;
 
   class Visitor {
   public:

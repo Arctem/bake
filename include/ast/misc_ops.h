@@ -2,7 +2,6 @@
 #ifndef __THE_AWSOME__
 #define __THE_AWSOME__
 
-#include <vector>
 using namespace std;
 #include "node.h"
 #include "nary.h"
@@ -15,6 +14,10 @@ namespace bake_ast {
     WhileLoop(Node* c, Node* b) : Node(WHILELOOP) {
       cond = c;
       body = b;
+    }
+    virtual ~WhileLoop() {
+      delete cond;
+      delete body;
     }
 
     void setCond(Node* n) { this->cond = n; }
@@ -29,6 +32,38 @@ namespace bake_ast {
     Node* cond;
     Node* body;
   };
+  
+  // this class also supports the optional expression assignment.
+  class FormalDeclare : public Node {
+  public:
+    FormalDeclare() : Node(FORMALDECLARE) {};
+    FormalDeclare(Node* i, Node* t, Node* e = nullptr) : Node(FORMALDECLARE) {
+      id = i;
+      type = t;
+      expr = e;
+    }
+    virtual ~FormalDeclare() {
+      delete id;
+      delete type;
+      delete expr;
+    }
+
+    Node* getID() { return this->id; }
+    Node* getType() { return this->type; }
+    Node* getExpr() { return this->expr; }
+
+    void setID(Node* n) { id = n; }
+    void setType(Node* n) { type = n; }
+    void setExpr(Node* n) { expr = n; }
+
+    void accept(Visitor* v) { v->visit(this); }
+
+  private:
+    Node* id;
+    Node* type;
+    Node* expr = nullptr;
+
+  };
 
   class IfStatement : public Node {
   public:
@@ -37,6 +72,11 @@ namespace bake_ast {
       cond = c;
       body = b;
       elseBody = e;
+    }
+    virtual ~IfStatement() {
+      delete cond;
+      delete body;
+      delete elseBody;
     }
 
     void setCond(Node* n) { this->cond = n; }
@@ -57,33 +97,6 @@ namespace bake_ast {
   };
 
   // this class also supports the optional expression assignment.
-  class FormalDeclare : public Node {
-  public:
-    FormalDeclare() : Node(FORMALDECLARE) {};
-    FormalDeclare(Node* i, Node* t, Node* e = nullptr) : Node(FORMALDECLARE) {
-      id = i;
-      type = t;
-      expr = e;
-    }
-
-    Node* getID() { return this->id; }
-    Node* getType() { return this->type; }
-    Node* getExpr() { return this->expr; }
-
-    void setID(Node* n) { id = n; }
-    void setType(Node* n) { type = n; }
-    void setExpr(Node* n) { expr = n; }
-
-    void accept(Visitor* v) { v->visit(this); }
-
-  private:
-    Node* id;
-    Node* type;
-    Node* expr = nullptr;
-
-  };
-
-  // this class also supports the optional expression assignment.
   class Case : public Node {
   public:
     Case() : Node(CASE) {};
@@ -91,6 +104,11 @@ namespace bake_ast {
       id = i;
       type = t;
       expr = e;
+    }
+    virtual ~Case() {
+      delete id;
+      delete type;
+      delete expr;
     }
 
     Node* getID() { return this->id; }
@@ -118,6 +136,11 @@ namespace bake_ast {
       type = t;
       inheritType = i;
       list = f;
+    }
+    virtual ~ClassStatement() {
+      delete inheritType;
+      delete type;
+      delete list;
     }
 
     Node* getType() { return this->type; }

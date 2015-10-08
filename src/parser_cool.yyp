@@ -114,7 +114,7 @@ void printDebug(const char *message){
 /* ------------ RULES ------------- */
 %%
 /* We need to have destructors so the tree properly deletes itself :( */
-start : root                                                      { $1->accept(new bake_ast::PrettyPrint()); delete $1; }
+start : root                                                      {bake_ast::PrettyPrint* tmpPP = new bake_ast::PrettyPrint(); $1->accept(tmpPP); delete $1; delete tmpPP; }
 
 root : class ';' root                                             {printDebug("class ; root\n"); $3->add($1); $$ = $3;}
       | class ';'                                                 {printDebug("class ; \n"); $$ = new bake_ast::ClassList(); $$->add($1);}

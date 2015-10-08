@@ -1,6 +1,6 @@
 
-#ifndef __NARY__
-#define __NARY__
+#ifndef __CANARY__
+#define __CANARY__
 
 #include <vector>
 using namespace std;
@@ -10,6 +10,14 @@ namespace bake_ast {
   class ExprList : public Node {
   public:
     ExprList() : Node(EXPRLIST) { };
+    virtual ~ExprList() { 
+      while(!children.empty()){
+        auto tmp = children.back();
+        children.pop_back();
+        delete tmp;
+      }   
+    }
+    
     void add(Node* n) { children.push_back(n); }
     vector<Node*> getChildren() { return children; }
     virtual void accept(Visitor* v) { v->visit(this); };
@@ -23,6 +31,14 @@ namespace bake_ast {
     ClassList() : Node(CLASSLIST) { };
     ClassList(vector<Node*> c) : Node(CLASSLIST){
       children = c;
+    }
+    
+    virtual ~ClassList() { 
+      while(!children.empty()){
+        auto tmp = children.back();
+        children.pop_back();
+        delete tmp;
+      }  
     }
 
     void add(Node* n) { children.push_back(n); }
@@ -39,6 +55,13 @@ namespace bake_ast {
     ListFormalDeclare(vector<FormalDeclare*> l) : Node(LISTFORMALDECLARE) {
       list = l;
     }
+    virtual ~ListFormalDeclare() { 
+      while(!list.empty()){
+        auto tmp = list.back();
+        list.pop_back();
+        delete tmp;
+      }   
+    }
 
     void add(FormalDeclare* n) { list.push_back(n); }
     vector<FormalDeclare*> getList() { return list; }
@@ -54,6 +77,13 @@ namespace bake_ast {
     CaseList() : Node(CASELIST) {};
     CaseList(vector<Case*> l) : Node(CASELIST) {
       list = l;
+    }
+    virtual ~CaseList() { 
+     while(!list.empty()){
+        auto tmp = list.back();
+        list.pop_back();
+        delete tmp;
+      } 
     }
 
     void add(Case* n) { list.push_back(n); }
@@ -72,6 +102,10 @@ namespace bake_ast {
     LetStatement(ListFormalDeclare* l, Node* e) : Node(LETSTATEMENT) {
       list = l;
       expr = e;
+    }
+    virtual ~LetStatement() { 
+      delete list;
+      delete expr; 
     }
 
     Node* getExpr() { return this->expr; }
@@ -97,6 +131,12 @@ namespace bake_ast {
       idList = i;
       typeList = t;
       exprList = e;
+    }
+    virtual ~CaseStatement() { 
+      delete caseExpr;
+      delete idList;
+      delete typeList;
+      delete exprList;
     }
 
     Node* getCaseExpr() { return this->caseExpr; }
@@ -129,6 +169,12 @@ namespace bake_ast {
       type = t;
       this->id = id;
       this->exprList = exprList;
+    }
+    virtual ~Dispatch() { 
+      delete exprList; 
+      delete expr;
+      delete type;
+      delete id;
     }
 
     Node* getExpr() { return this->expr; }
@@ -163,6 +209,12 @@ namespace bake_ast {
       type = t;
       expr = e;
     }
+    virtual ~Feature() { 
+      delete list;
+      delete id;
+      delete type;
+      delete expr;  
+    }
     
     Node* getID() { return id; }
     ListFormalDeclare* getList() { return list; }
@@ -188,6 +240,10 @@ namespace bake_ast {
     FeatureOption() : Node(FEATUREOPTION){};
     FeatureOption(Feature* f) : Node(FEATUREOPTION) { feat = f; }
     FeatureOption(FormalDeclare* f) : Node(FEATUREOPTION) { form = f; }
+    virtual ~FeatureOption() { 
+      delete feat;
+      delete form;  
+    }
     
     Feature* getFeat() { return feat; }
     FormalDeclare* getForm() { return form; }
@@ -203,6 +259,13 @@ namespace bake_ast {
   public:
     FeatureList() : Node(FEATURELIST) {};
     FeatureList(vector<Node*> v) : Node(FEATURELIST) { list = v; };
+    virtual ~FeatureList() { 
+      while(!list.empty()){
+        auto tmp = list.back();
+        list.pop_back();
+        delete tmp;
+      }  
+    }
     
     vector<Node*> getList() {return list;}
     

@@ -8,6 +8,10 @@ namespace bake_ast {
   class BinaryOp : public Node {
   public:
     BinaryOp(NodeType type) : Node(type) {};
+    virtual ~BinaryOp() {
+      delete lhs;
+      delete rhs;
+    }
 
     void setLhs(Node* n) { this->lhs = n; }
     Node* getLhs() { return this->lhs; }
