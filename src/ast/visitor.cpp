@@ -23,6 +23,11 @@ void PrettyPrint::visit(IntegerVal* n) {
   cout << "+ Integer: " << n->getValue() << endl;
 }
 
+void PrettyPrint::visit(FloatVal* n) {
+  leadingOps();
+  cout << "+ Float: " << n->getValue() << endl;
+}
+
 void PrettyPrint::visit(StringVal* n) {
   leadingOps();
   cout << "+ String: " << *(n->getValue()) << endl;

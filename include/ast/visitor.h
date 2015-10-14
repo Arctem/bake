@@ -5,6 +5,7 @@
 namespace bake_ast {
   class Node;
   class IntegerVal;
+  class FloatVal;
   class StringVal;
   class BoolVal;
   class Id;
@@ -46,6 +47,7 @@ namespace bake_ast {
     virtual ~Visitor() {};
 
     virtual void visit(IntegerVal*) = 0;
+    virtual void visit(FloatVal*) = 0;
     virtual void visit(StringVal*) = 0;
     virtual void visit(BoolVal*) = 0;
     virtual void visit(Id*) = 0;
@@ -85,6 +87,7 @@ namespace bake_ast {
   public:
     PrettyPrint() : depth(0) {};
     void visit(IntegerVal*);
+    void visit(FloatVal*);
     void visit(StringVal*);
     void visit(BoolVal*);
     void visit(Id*);

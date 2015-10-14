@@ -28,6 +28,19 @@ namespace bake_ast {
   };
 
   /**
+  * Represents an Float
+  */
+  class FloatVal : public Leaf {
+  public:
+    FloatVal(int val) : Leaf(FLOATVAL), val(val) { }
+    void accept(bake_ast::Visitor* v) { v->visit(this); }
+    int getValue() { return val; }
+
+  private:
+    int val;
+  };
+
+  /**
    * Represents a string.
    */
   class StringVal : public Leaf {

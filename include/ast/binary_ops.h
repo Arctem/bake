@@ -5,6 +5,8 @@
 #include "node.h"
 
 namespace bake_ast {
+
+  /*** Binary Ops Parent Class ***/
   class BinaryOp : public Node {
   public:
     BinaryOp(NodeType type) : Node(type) {};
@@ -24,6 +26,7 @@ namespace bake_ast {
     Node* rhs;
   };
   
+  /*** Plus ***/
   class Plus : public BinaryOp {
   public:
     Plus() : BinaryOp(PLUS) {};
@@ -33,6 +36,7 @@ namespace bake_ast {
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
+  /*** Minus ***/
   class Minus : public BinaryOp {
   public:
     Minus() : BinaryOp(MINUS) {};
@@ -42,6 +46,7 @@ namespace bake_ast {
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
+  /*** Multiply ***/
   class Multiply : public BinaryOp {
   public:
     Multiply() : BinaryOp(MULTIPLY) {};
@@ -51,6 +56,7 @@ namespace bake_ast {
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
+  /*** Divide ***/
   class Divide : public BinaryOp {
   public:
     Divide() : BinaryOp(DIVIDE) {};
@@ -60,6 +66,7 @@ namespace bake_ast {
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
+  /*** LessThan ***/
   class LessThan : public BinaryOp {
   public:
     LessThan() : BinaryOp(LESSTHAN) {};
@@ -69,6 +76,7 @@ namespace bake_ast {
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
+  /*** LessThanEqual ***/
   class LessThanEqual : public BinaryOp {
   public:
     LessThanEqual() : BinaryOp(LESSTHANEQUAL) {};
@@ -78,6 +86,7 @@ namespace bake_ast {
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
+  /*** Equality ***/
   class Equal : public BinaryOp {
   public:
     Equal() : BinaryOp(EQUAL) {};
@@ -87,6 +96,7 @@ namespace bake_ast {
     virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
   };
   
+  /*** Assignment ***/
   class Assign : public BinaryOp {
   public:
     Assign() : BinaryOp(ASSIGN) {};

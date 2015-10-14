@@ -6,6 +6,8 @@
 using namespace bake_ast;
 
 namespace bake_ast {
+
+  /*** WhileLoop ***/
   class WhileLoop : public Node {
   public:
     WhileLoop() : Node(WHILELOOP) {};
@@ -31,6 +33,7 @@ namespace bake_ast {
     Node* body;
   };
   
+  /*** Formal Declare: for method arguments and optional expression assignments ***/
   // this class also supports the optional expression assignment.
   class FormalDeclare : public Node {
   public:
@@ -63,6 +66,7 @@ namespace bake_ast {
 
   };
 
+  /*** IfStatement ***/
   class IfStatement : public Node {
   public:
     IfStatement() : Node(IFSTATEMENT) {};
@@ -94,6 +98,7 @@ namespace bake_ast {
     Node* elseBody;
   };
 
+  /*** Case Statements ***/
   // this class also supports the optional expression assignment.
   class Case : public Node {
   public:

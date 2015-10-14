@@ -8,6 +8,12 @@ using namespace std;
 #include "misc_ops.h"
 
 namespace bake_ast {
+  
+  /***** Begin Base Lists *****/
+
+
+  /*** List For Expression ***/
+
   class ExprList : public Node {
   public:
   ExprList() : Node(EXPRLIST) { };
@@ -26,6 +32,9 @@ namespace bake_ast {
   private:
     vector<Node*> children;
   };
+
+
+  /*** List For Classes ***/
 
   class ClassList : public Node {
   public:
@@ -50,6 +59,8 @@ namespace bake_ast {
     vector<Node*> children;
   };
 
+  /*** List for Formal Declares ***/
+
   class ListFormalDeclare : public Node {
   public:
   ListFormalDeclare() : Node(LISTFORMALDECLARE) {};
@@ -66,6 +77,9 @@ namespace bake_ast {
   private:
     vector<FormalDeclare*> list;
   };
+
+
+  /*** List for Cases ***/
 
   class CaseList : public Node {
   public:
@@ -84,6 +98,36 @@ namespace bake_ast {
     vector<Case*> list;
   };
 
+
+  /*** List for Features ***/
+
+  class FeatureList : public Node {
+  public:
+	  FeatureList() : Node(FEATURELIST) {};
+	  FeatureList(vector<Node*> v) : Node(FEATURELIST) { list = v; };
+	  virtual ~FeatureList() {
+		  while (!list.empty()) {
+			  auto tmp = list.back();
+			  list.pop_back();
+			  delete tmp;
+		  }
+	  }
+
+	  vector<Node*> getList() { return list; }
+
+	  void add(Node* n) { list.push_back(n); }
+
+	  virtual void accept(Visitor* v) { v->visit(this); }
+
+  private:
+	  vector<Node*> list;
+  };
+
+
+  /***** Begin Statements that Contain Lists *****/
+
+
+  /*** Let Statement - contains ListFormalDeclare ***/
 
   class LetStatement : public Node {
   public:
@@ -111,6 +155,9 @@ namespace bake_ast {
     Node* expr;
 
   };
+
+  
+  /*** Case Statement - Contains 3 ExprLists ***/
 
   class CaseStatement : public Node {
   public:
@@ -149,6 +196,9 @@ namespace bake_ast {
     ExprList* exprList;
     
   };
+
+
+  /*** Dispatch - Contains an ExprList ***/
 
   class Dispatch : public Node {
   public:
@@ -189,6 +239,9 @@ namespace bake_ast {
 
   };
   
+
+  /*** Feature - Contains ListFormalDeclare ***/
+
   class Feature : public Node {
   public:
   Feature() : Node(FEATURE) {};
@@ -224,6 +277,9 @@ namespace bake_ast {
     Node* expr;
   };
   
+
+  /*** Feature Option - Contains list of Features***/
+
   class FeatureOption : public Node {
   public:
   FeatureOption() : Node(FEATUREOPTION){};
@@ -240,28 +296,9 @@ namespace bake_ast {
     Feature* feat = nullptr;
     FormalDeclare* form = nullptr;
   };
-  
-  class FeatureList : public Node {
-  public:
-  FeatureList() : Node(FEATURELIST) {};
-  FeatureList(vector<Node*> v) : Node(FEATURELIST) { list = v; };
-    virtual ~FeatureList() { 
-      while(!list.empty()){
-        auto tmp = list.back();
-        list.pop_back();
-        delete tmp;
-      }  
-    }
-    
-    vector<Node*> getList() {return list;}
-    
-    void add(Node* n) { list.push_back(n); }
-    
-    virtual void accept(Visitor* v) { v->visit(this); }
-    
-  private:
-    vector<Node*> list;
-  };
+
+
+  /*** Class Statement - contains FeatureList ***/
 
   class ClassStatement : public Node {
   public:
