@@ -2,6 +2,7 @@
 #include "ast/nary.h"
 using namespace bake_ast;
 
+
 /******* ListFormalDeclare methods *******/
 
 ListFormalDeclare::~ListFormalDeclare() { 
@@ -13,7 +14,8 @@ ListFormalDeclare::~ListFormalDeclare() {
 }
 
 void ListFormalDeclare::add(FormalDeclare* n) {
-  list.push_back(n);
+  vector<FormalDeclare *>::iterator it = list.begin();
+  list.insert(it, n);
 }
 
 /******* CaseList methods *******/
@@ -27,7 +29,8 @@ CaseList::~CaseList() {
 }
 
 void CaseList::add(Case* n) {
-  list.push_back(n);
+  vector<Case *>::iterator it = list.begin();
+  list.insert(it, n);
 }
 
 /******* FeatureOption methods *******/
@@ -47,4 +50,18 @@ ClassStatement::~ClassStatement() {
 
 void ClassStatement::add(FeatureOption* n) {
   list->add(n);
+}
+
+Dispatch::Dispatch(Node* e, Node* t, Node* id, ExprList* exprList) : Node(DISPATCH) {
+  setExpr(e);
+  setType(t);
+  setID(id);
+  setExprList(exprList);
+}
+
+Dispatch::~Dispatch() {
+  delete exprList;
+  delete expr;
+  delete type;
+  delete id;
 }

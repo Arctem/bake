@@ -3,6 +3,7 @@ class Main inherits IO {
       case b of
         a <- 1 + 1,
         d : String => a,
-      esac
+      	c, 
+	esac
   };
 };

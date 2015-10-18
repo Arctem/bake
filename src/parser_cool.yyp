@@ -121,13 +121,13 @@ root : class ';' root                                             {printDebug("c
 
 class : CLASS TYPE INHERIT TYPE '{' commandList '}'               {printDebug("class type inherit type { commandlist }\n");
                                                                     $$ = new bake_ast::ClassStatement(
-								      new bake_ast::Type($2), new bake_ast::Type($4), $6);}
+                      new bake_ast::Type($2), new bake_ast::Type($4), $6);}
       | CLASS TYPE '{' commandList '}'                            {printDebug("class type { commandlist }\n");
                                                                     $$ = new bake_ast::ClassStatement(
-								      new bake_ast::Type($2), nullptr, $4);}
+                      new bake_ast::Type($2), nullptr, $4);}
       | CLASS TYPE INHERIT TYPE '{'  '}'                          {printDebug("class type inherit type {  }\n");
                                                                     $$ = new bake_ast::ClassStatement(
-								      new bake_ast::Type($2), new bake_ast::Type($4));}
+                      new bake_ast::Type($2), new bake_ast::Type($4));}
       | CLASS TYPE '{'  '}'                                       {printDebug("class type {  }\n");
                                                                     $$ = new bake_ast::ClassStatement(
                                                                       new bake_ast::Type($2));}
@@ -136,28 +136,28 @@ commandList : command ';'  commandList                            {printDebug("c
                                                                     $3->add($1); $$ = $3;}
       | command ';'                                               {printDebug("command ; \n");
                                                                     $$ = new bake_ast::FeatureList();
-								    $$->add($1);}
+                    $$->add($1);}
 
 command : IDENTIFIER '(' parameters ')' ':' TYPE '{' expr '}'     {printDebug("IDENTIFIER ( parameters ) : TYPE { expr }\n");
                                                                     $$ = new bake_ast::Feature(
-								      new bake_ast::Id($1), $3,
-								      new bake_ast::Type($6), $8);}
+                      new bake_ast::Id($1), $3,
+                      new bake_ast::Type($6), $8);}
       | IDENTIFIER '('  ')' ':' TYPE '{' expr '}'                 {printDebug("IDENTIFIER ( ) : TYPE { expr }\n");
                                                                     $$ = new bake_ast::Feature(
-								      new bake_ast::Id($1), nullptr,
-								      new bake_ast::Type($5), $7);}
+                      new bake_ast::Id($1), nullptr,
+                      new bake_ast::Type($5), $7);}
       | declaration                                               {printDebug("declaration\n"); $$ = $1;}
 
 parameters : IDENTIFIER ':' TYPE                                  {printDebug("IDENTIFIER : TYPE\n");
                                                                     $$ = new bake_ast::ListFormalDeclare();
                                                                     $$->add(new bake_ast::FormalDeclare(new bake_ast::Id($1),
-													new bake_ast::Type($3)));}
+                          new bake_ast::Type($3)));}
       | IDENTIFIER ':' TYPE ',' parameters                        {printDebug("IDENTIFIER : TYPE , parameters\n");
-								      $5->add(new bake_ast::FormalDeclare(new bake_ast::Id($1),
-													  new bake_ast::Type($3))); $$ = $5;}
+                      $5->add(new bake_ast::FormalDeclare(new bake_ast::Id($1),
+                            new bake_ast::Type($3))); $$ = $5;}
 
 expr : NEW TYPE                                                   {printDebug("NEW TYPE\n");
-								    $$ = new bake_ast::New(new bake_ast::Type($2));}
+                    $$ = new bake_ast::New(new bake_ast::Type($2));}
       | IDENTIFIER LARROW expr                                    {printDebug("IDENTIFIER <- expr\n");
                                                                     $$ = new bake_ast::Assign(new bake_ast::Id($1), $3);}
       | LET declarationBlock IN expr                              {printDebug("LET declarationBlock IN expr\n");
@@ -183,12 +183,12 @@ controlFlow: IF expr THEN expr ELSE expr FI                       {printDebug(" 
 cases : IDENTIFIER ':' TYPE GOES_TO expr ','                      {printDebug("IDENTIFIER : TYPE => expr , \n");
                                                                     $$ = new bake_ast::CaseList();
                                                                     $$->add(new bake_ast::Case(
-											       new bake_ast::Id($1),
-											       new bake_ast::Type($3), $5));}
+                             new bake_ast::Id($1),
+                             new bake_ast::Type($3), $5));}
       | IDENTIFIER ':' TYPE GOES_TO expr ',' cases                {printDebug("IDENTIFIER : TYPE => expr, cases \n");
                                                                    $7->add(new bake_ast::Case(new bake_ast::Id($1),
-											      new bake_ast::Type($3), $5));
-								   $$ = $7;}
+                            new bake_ast::Type($3), $5));
+                   $$ = $7;}
 
 math : expr '/' expr                                              {printDebug("/\n"); $$ = new bake_ast::Divide($1, $3);}
       | expr '+' expr                                             {printDebug("+\n"); $$ = new bake_ast::Plus($1, $3);}
@@ -205,34 +205,34 @@ compare : ISVOID expr                                             {printDebug("I
 
 callMethod : expr '.' IDENTIFIER '(' exprList ')'                 {printDebug("expr.IDENTIFIER(exprList)\n");
                                                                     $$ = new bake_ast::Dispatch($1, nullptr,
-												new bake_ast::Id($3), $5);}
+                        new bake_ast::Id($3), $5);}
       | expr '@' TYPE '.' IDENTIFIER '(' exprList ')'             {printDebug("expr@TYPE.IDENTIFIER(exprList)\n" );
                                                                     $$ = new bake_ast::Dispatch($1,
-												new bake_ast::Type($3),
-												new bake_ast::Id($5), $7);}
+                        new bake_ast::Type($3),
+                        new bake_ast::Id($5), $7);}
       | expr '.' IDENTIFIER '(' ')'                               {printDebug("expr.IDENTIFIER()\n");
                                                                     $$ = new bake_ast::Dispatch($1, nullptr,
-												new bake_ast::Id($3), nullptr);}
+                        new bake_ast::Id($3), nullptr);}
       | expr '@' TYPE '.' IDENTIFIER '(' ')'                      {printDebug("expr@TYPE.IDENTIFIER(exprList)\n" );
                                                                     $$ = new bake_ast::Dispatch($1,
-												new bake_ast::Type($3),
-												new bake_ast::Id($5), nullptr);}
+                        new bake_ast::Type($3),
+                        new bake_ast::Id($5), nullptr);}
       | IDENTIFIER '(' exprList ')'                               {printDebug("IDENTIFIER (exprList)\n");
                                                                     $$ = new bake_ast::Dispatch(nullptr, nullptr,
-												new bake_ast::Id($1), $3);}
+                        new bake_ast::Id($1), $3);}
       | IDENTIFIER '(' ')'                                        {printDebug("IDENTIFIER ( )\n" );
                                                                     $$ = new bake_ast::Dispatch(nullptr, nullptr,
-												new bake_ast::Id($1), nullptr);}
+                        new bake_ast::Id($1), nullptr);}
 
 declaration : IDENTIFIER ':' TYPE                                 {printDebug("IDENTIFIER : TYPE\n");
                                                                     $$ = new bake_ast::FormalDeclare(
-												     new bake_ast::Id($1),
-												     new bake_ast::Type($3));}
+                             new bake_ast::Id($1),
+                             new bake_ast::Type($3));}
       | IDENTIFIER ':' TYPE LARROW expr                           {printDebug("IDENTIFIER : TYPE <- expr\n");
                                                                     $$ = new bake_ast::FormalDeclare(
-												     new bake_ast::Id($1),
-												     new bake_ast::Type($3),
-												     $5);}
+                             new bake_ast::Id($1),
+                             new bake_ast::Type($3),
+                             $5);}
 
 declarationBlock : declaration ',' declarationBlock               {printDebug("declaration , declarationBlock\n");
                                                                     $3->add($1); $$ = $3;}

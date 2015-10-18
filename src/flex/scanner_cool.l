@@ -71,8 +71,8 @@ void adjust(void){
 %option stack
 
 /* Chars allowable in element and attribute names */
-IDENTIFIER  [a-z][a-zA-Z0-9._]*
-TYPE        [A-Z][a-zA-Z0-9._]*
+IDENTIFIER  [a-z][a-zA-Z0-9_]*
+TYPE        [A-Z][a-zA-Z0-9_]*
 INTEGER     [0-9]+
 STRING      \"([^\n\Z\"])*\"
 

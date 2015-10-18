@@ -282,13 +282,13 @@ void PrettyPrint::visit(ClassStatement* n) {
   // if there is an inherited type, visit it.
   if(n->getInheritType() != nullptr)
     n->getInheritType()->accept(this);
-  
+
   if(n->getList() != nullptr){
     for(auto curr : n->getList()->getList()){
       curr->accept(this);
     }
   }
- 
+
   depth--;
 }
 
@@ -315,8 +315,10 @@ void PrettyPrint::visit(Dispatch* n) {
     n->getType()->accept(this);
 
   n->getID()->accept(this);
-  for(auto curr : n->getExprList()) {
-    curr->accept(this);
+  if(n->getExprList() != nullptr){
+    for(auto curr : n->getExprList()->getChildren()) {
+      curr->accept(this);
+    }
   }
 
   depth--;
@@ -374,7 +376,7 @@ void PrettyPrint::visit(Feature* n){
   }
   n->getType()->accept(this);
   n->getExpr()->accept(this);
-    
+
   depth--;
 }
 
@@ -388,7 +390,7 @@ void PrettyPrint::visit(FeatureOption* n){
   }else{
     n->getForm()->accept(this);
   }
-    
+
   depth--;
 }
 
@@ -400,6 +402,6 @@ void PrettyPrint::visit(FeatureList* n){
   for(auto curr : n->getList()) {
     curr->accept(this);
   }
-    
+
   depth--;
 }
