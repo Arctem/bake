@@ -10,8 +10,8 @@ using namespace bake_ast;
  * copied into a separate string object inside the StringVal.
  * This was done in the interest of simplifying memory management.
  */
-StringVal::StringVal(const char* val) : Leaf(STRINGVAL) {
-  this->val = strdup(val);
+StringVal::StringVal(const std::string* val) : Leaf(STRINGVAL) {
+  this->val = val;
 }
 
 StringVal::~StringVal() {
@@ -20,8 +20,8 @@ StringVal::~StringVal() {
 
 /*********** Id methods ***********/
 
-Id::Id(const char* name) : Leaf(IDVAL) {
-  this->name = strdup(name);
+Id::Id(const std::string* name) : Leaf(IDVAL) {
+  this->name = name;
 }
 
 Id::~Id() {
@@ -30,8 +30,8 @@ Id::~Id() {
 
 /*********** Type methods ***********/
 
-Type::Type(const char* name) : Leaf(TYPEVAL) {
-  this->name = strdup(name);
+Type::Type(const std::string* name) : Leaf(TYPEVAL) {
+  this->name = name;
 }
 
 Type::~Type() {

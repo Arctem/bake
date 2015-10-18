@@ -2,7 +2,7 @@
 #ifndef __TERMINALS__
 #define __TERMINALS__
 
-#include <string.h>
+#include <string>
 #include "node.h"
 
 namespace bake_ast {
@@ -45,13 +45,13 @@ namespace bake_ast {
    */
   class StringVal : public Leaf {
   public:
-    StringVal(const char* val);
+    StringVal(const std::string* val);
     virtual ~StringVal();
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    char* getValue() { return val; }
+    const std::string* getValue() { return val; }
 
   private:
-    char* val;
+    const std::string* val;
   };
 
   /**
@@ -75,13 +75,13 @@ namespace bake_ast {
    */
   class Id : public Leaf {
   public:
-    Id(const char* name);
+    Id(const std::string* name);
     virtual ~Id();
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    char* getName() { return this->name; }
+    const std::string* getName() { return this->name; }
 
   private:
-    char* name;
+    const std::string* name;
   };
 
   /**
@@ -89,13 +89,13 @@ namespace bake_ast {
    */
   class Type : public Leaf {
   public:
-    Type(const char* name);
+    Type(const std::string* name);
     virtual ~Type();
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    char* getName() { return this->name; }
+    const std::string* getName() { return this->name; }
 
   private:
-    char* name;
+    const std::string* name;
   };
 }
 

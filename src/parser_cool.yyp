@@ -36,9 +36,9 @@ void printDebug(const char *message){
 /* ----------- Union ------------ */
 %union {
   int valueInt;
-  char* keyword;
-  char* type;
-  char* valueString;
+  std::string* keyword;
+  std::string* type;
+  std::string* valueString;
   bool  boolean;
   bake_ast::Node* node;
   bake_ast::ExprList* exprList;

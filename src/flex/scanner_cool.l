@@ -122,14 +122,14 @@ t[r|R][u|U][e|E]             {
                 adjust();
                 outputLex("type");
                 out(yytext);
-                yylval.valueString = yytext;
+                yylval.valueString = new std::string(yytext);
                 return TYPE;
               }
 {IDENTIFIER} {
                 outputLex("identifier");
                 out(yytext);
                 adjust();
-                yylval.valueString = yytext;
+                yylval.valueString = new std::string(yytext);
                 return IDENTIFIER;
               }
 
@@ -180,7 +180,7 @@ t[r|R][u|U][e|E]             {
                 yytext[yyleng - 1] = '\0';
                 outputLex("string");
                 out(yytext + 1);
-                yylval.valueString = strdup(yytext + 1);
+                yylval.valueString = new std::string(yytext + 1);
                 return STRING;
              }
 
