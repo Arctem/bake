@@ -10,10 +10,11 @@ ADD_FLEX_BISON_DEPENDENCY(SCANNER PARSER)
 
 add_subdirectory(flex)
 add_subdirectory(ast)
+add_subdirectory(typecheck)
 
 add_executable(bake
     driver.cpp
     ${BISON_PARSER_OUTPUTS}
     ${FLEX_SCANNER_OUTPUTS}
 )
-target_link_libraries(bake ast)
+target_link_libraries(bake ast typecheck)

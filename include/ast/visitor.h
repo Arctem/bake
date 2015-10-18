@@ -56,8 +56,6 @@ namespace bake_ast {
     virtual void visit(BoolVal*) = 0;
     virtual void visit(Id*) = 0;
     virtual void visit(Type*) = 0;
-    virtual void visit(BinaryOp*) = 0;
-    virtual void visit(UnaryOp*) = 0;
     virtual void visit(LogicalNot*) = 0;
     virtual void visit(BitNot*) = 0;
     virtual void visit(Isvoid*) = 0;
@@ -100,14 +98,12 @@ namespace bake_ast {
     void visit(Type*);
 
     // Unary Operators
-    void visit(UnaryOp*);
     void visit(LogicalNot*);
     void visit(BitNot*);
     void visit(Isvoid*);
     void visit(New*);
 
     // Binary Operators
-    void visit(BinaryOp*);
     void visit(Plus*);
     void visit(Minus*);
     void visit(Multiply*);

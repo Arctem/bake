@@ -55,19 +55,10 @@ void PrettyPrint::visit(Id* n) {
 
 void PrettyPrint::visit(Type* n) {
   leadingOps();
-  cout << "+ ID: " << *(n->getName()) << endl;
+  cout << "+ Type: " << *(n->getName()) << endl;
 }
 
 /*********** Unary operation implementations ***********/
-
-void PrettyPrint::visit(UnaryOp* n) {
-  leadingOps();
-  cout << "+ UnaryOp" << endl;
-
-  depth++;
-  n->get()->accept(this);
-  depth--;
-}
 
 void PrettyPrint::visit(LogicalNot* n) {
   leadingOps();
@@ -106,16 +97,6 @@ void PrettyPrint::visit(New* n) {
 }
 
 /*********** Binary operation implementations ***********/
-
-void PrettyPrint::visit(BinaryOp* n) {
-  leadingOps();
-  cout << "+ BinaryOp" << endl;
-
-  depth++;
-  n->getLhs()->accept(this);
-  n->getRhs()->accept(this);
-  depth--;
-}
 
 void PrettyPrint::visit(Plus* n) {
   leadingOps();
@@ -234,21 +215,10 @@ void PrettyPrint::visit(IfStatement* n){
 void PrettyPrint::visit(CaseStatement* n){
   leadingOps();
   cout << "+ CaseStatement" << endl;
-
-  // get how many different statement sets there are
-  int length = n->getIdList().size();
-
+  
   depth++;
-  // go through first expression.
-  n->getCaseExpr()->accept(this);
-
-  // loop through id, Type, and expr lists
-  for(int i = 0; i < length; i++) {
-    n->getIdList().at(i)->accept(this);
-    n->getTypeList().at(i)->accept(this);
-    n->getExprList().at(i)->accept(this);
-  }
-
+  n->getExpr()->accept(this);
+  n->getCaseList()->accept(this);
   depth--;
 }
 
@@ -294,9 +264,10 @@ void PrettyPrint::visit(ClassStatement* n) {
     n->getInheritType()->accept(this);
 
   if(n->getList() != nullptr){
-    for(auto curr : n->getList()->getList()){
-      curr->accept(this);
-    }
+    // for(auto curr : n->getList()->getList()){
+    //   curr->accept(this);
+    // }
+    n->getList()->accept(this);
   }
 
   depth--;
@@ -364,12 +335,8 @@ void PrettyPrint::visit(LetStatement* n){
   cout << "+ LetStatement" << endl;
 
   depth++;
-  for(auto curr : n->getList()) {
-    curr->accept(this);
-  }
-
+  n->getList()->accept(this);
   n->getExpr()->accept(this);
-
   depth--;
 }
 
