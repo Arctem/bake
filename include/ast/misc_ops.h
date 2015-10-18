@@ -10,15 +10,9 @@ namespace bake_ast {
   /*** WhileLoop ***/
   class WhileLoop : public Node {
   public:
-    WhileLoop() : Node(WHILELOOP) {};
-    WhileLoop(Node* c, Node* b) : Node(WHILELOOP) {
-      cond = c;
-      body = b;
-    }
-    virtual ~WhileLoop() {
-      delete cond;
-      delete body;
-    }
+    WhileLoop() : Node(WHILELOOP) { };
+    WhileLoop(Node* c, Node* b);
+    virtual ~WhileLoop();
 
     void setCond(Node* n) { this->cond = n; }
     Node* getCond() { return this->cond; }
@@ -38,16 +32,8 @@ namespace bake_ast {
   class FormalDeclare : public Node {
   public:
     FormalDeclare() : Node(FORMALDECLARE) {};
-    FormalDeclare(Node* i, Node* t, Node* e = nullptr) : Node(FORMALDECLARE) {
-      id = i;
-      type = t;
-      expr = e;
-    }
-    virtual ~FormalDeclare() {
-      delete id;
-      delete type;
-      delete expr;
-    }
+    FormalDeclare(Node* i, Node* t, Node* e = nullptr);
+    virtual ~FormalDeclare();
 
     Node* getID() { return this->id; }
     Node* getType() { return this->type; }
@@ -70,16 +56,8 @@ namespace bake_ast {
   class IfStatement : public Node {
   public:
     IfStatement() : Node(IFSTATEMENT) {};
-    IfStatement(Node* c, Node* b, Node* e) : Node (IFSTATEMENT) {
-      cond = c;
-      body = b;
-      elseBody = e;
-    }
-    virtual ~IfStatement() {
-      delete cond;
-      delete body;
-      delete elseBody;
-    }
+    IfStatement(Node* c, Node* b, Node* e);
+    virtual ~IfStatement();
 
     void setCond(Node* n) { this->cond = n; }
     Node* getCond() { return this->cond; }
@@ -103,16 +81,8 @@ namespace bake_ast {
   class Case : public Node {
   public:
     Case() : Node(CASE) {};
-    Case(Node* i, Node* t, Node* e = nullptr) : Node(CASE) {
-      id = i;
-      type = t;
-      expr = e;
-    }
-    virtual ~Case() {
-      delete id;
-      delete type;
-      delete expr;
-    }
+    Case(Node* i, Node* t, Node* e = nullptr);
+    virtual ~Case();
 
     Node* getID() { return this->id; }
     Node* getType() { return this->type; }

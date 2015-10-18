@@ -10,10 +10,7 @@ namespace bake_ast {
   class BinaryOp : public Node {
   public:
     BinaryOp(NodeType type) : Node(type) {};
-    virtual ~BinaryOp() {
-      delete lhs;
-      delete rhs;
-    }
+    virtual ~BinaryOp();
 
     void setLhs(Node* n) { this->lhs = n; }
     Node* getLhs() { return this->lhs; }
@@ -29,11 +26,11 @@ namespace bake_ast {
   /*** Plus ***/
   class Plus : public BinaryOp {
   public:
-    Plus() : BinaryOp(PLUS) {};
+    Plus() : BinaryOp(PLUS) { };
     Plus(Node* l, Node* r) : BinaryOp(PLUS) { lhs = l; rhs = r; }
-    virtual ~Plus() {};
+    virtual ~Plus() { };
     
-    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+    virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
   
   /*** Minus ***/
@@ -43,7 +40,7 @@ namespace bake_ast {
     Minus(Node* l, Node* r) : BinaryOp(MINUS) { lhs = l; rhs = r; }
     virtual ~Minus() {};
     
-    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+    virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
   
   /*** Multiply ***/
@@ -53,7 +50,7 @@ namespace bake_ast {
     Multiply(Node* l, Node* r) : BinaryOp(MULTIPLY) { lhs = l; rhs = r; }
     virtual ~Multiply() {};
     
-    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+    virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
   
   /*** Divide ***/
@@ -63,7 +60,7 @@ namespace bake_ast {
     Divide(Node* l, Node* r) : BinaryOp(DIVIDE) { lhs = l; rhs = r; }
     virtual ~Divide() {};
     
-    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+    virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
   
   /*** LessThan ***/
@@ -73,7 +70,7 @@ namespace bake_ast {
     LessThan(Node* l, Node* r) : BinaryOp(LESSTHAN) { lhs = l; rhs = r; }
     virtual ~LessThan() {};
     
-    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+    virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
   
   /*** LessThanEqual ***/
@@ -83,7 +80,7 @@ namespace bake_ast {
     LessThanEqual(Node* l, Node* r) : BinaryOp(LESSTHANEQUAL) { lhs = l; rhs = r; }
     virtual ~LessThanEqual() {};
     
-    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+    virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
   
   /*** Equality ***/
@@ -93,7 +90,7 @@ namespace bake_ast {
     Equal(Node* l, Node* r) : BinaryOp(EQUAL) { lhs = l; rhs = r; }
     virtual ~Equal() {};
     
-    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+    virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
   
   /*** Assignment ***/
@@ -103,7 +100,7 @@ namespace bake_ast {
     Assign(Node* l, Node* r) : BinaryOp(ASSIGN) { lhs = l; rhs = r; }
     virtual ~Assign() {};
     
-    virtual void accept(bake_ast::Visitor* v) {v->visit(this); }
+    virtual void accept(bake_ast::Visitor* v) { v->visit(this); }
   };
 }
 
