@@ -1,25 +1,22 @@
 /*
  *   Authors:        Russell White, Will Rosenberger
  *   Date:           Sept. 20th, 2015
- *   Description:    Flex lexical anylizer for the COOL language
+ *   Description:    Flex lexical analyzer for the COOL language
  *   Bugs:           Probably lots.
  */
 
 #include <iostream>
 #include <string>
-using namespace std;
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <getopt.h>
+#include <vector>
 
 #include "ast/ast.h"
-using namespace bake_ast;
+
 #include "typecheck/symbol_node.h"
 #include "typecheck/build_st.h"
 #include "typecheck/symbol_table_print.h"
 #include "typecheck/visitor_tc.h"
-using namespace typecheck;
+
+#include "lean/optionparser.h"
 
 extern int yylineno;
 extern int nelements;
@@ -33,13 +30,50 @@ int yyparse(void);
 void help(char* cmd_name);
 void yylex_destroy(void);
 
+enum optionIndex { UNKNOWN, HELP, PLUS };
+const option::Descriptor usage[] =
+  {
+    {UNKNOWN, 0, "", "", option::Arg::None, "USAGE: bake [options]\n\n" "Options:" },
+    {HELP,    0, "h", "help", option::Arg::None, "  --help  \tPrint usage and exit." },
+    {UNKNOWN, 0, "", "",option::Arg::None, "\nExamples:\n"
+     "  ./bake src/flex/test/parser_tests/valid-hello.cl\n" },
+
+    {0,0,0,0,0,0}
+  };
+
+
 int main(int argc, char** argv)
 {
   vector<string> in_files; // Names of the input files
   string exe_fname; // Name of the output executable
   bool run_lex_only = false;
 
+  // skip program name argv[0] if present
+  argc -= (argc > 0);
+  argv += (argc > 0);
+  option::Stats stats(usage, argc, argv);
+  option::Option *options = new option::Option[stats.options_max],
+    *buffer = new option::Option[stats.buffer_max];
+  option::Parser parse(usage, argc, argv, options, buffer);
 
+  if (parse.error())
+    return 1;
+
+  if (options[HELP] || argc == 0) {
+    option::printUsage(std::cout, usage);
+    return 0;
+  }
+
+  std::cout << "--plus count: " <<
+    options[PLUS].count() << "\n";
+
+  for (option::Option* opt = options[UNKNOWN]; opt; opt = opt->next())
+    std::cout << "Unknown option: " << opt->name << "\n";
+
+  for (int i = 0; i < parse.nonOptionsCount(); ++i)
+    std::cout << "Non-option #" << i << ": " << parse.nonOption(i) << "\n";
+
+  /*
   // Check whether only an input file (without the -i option) was given
   if(argc == 2) {
     in_files.push_back(string(argv[1]));
@@ -62,6 +96,7 @@ int main(int argc, char** argv)
       }
     }
   }
+  */
 
   // Fail if no input is given
   if(in_files.empty()) {
@@ -142,9 +177,9 @@ int main(int argc, char** argv)
 
 /* Function prints the help message */
 void help(char* cmd_name) {
-  cout << "Usage: " << endl;
-  cout << "\t" << cmd_name << " input_file" << endl;
-  cout << "\t" << cmd_name << " -i input_file -l output_file" << endl;
-  cout << "input_file: File to scan" << endl;
-  cout << "output_file: File in which to place the output. Defaults to <input_file>-lex-bake" << endl;
+  std::cout << "Usage: " << std::endl;
+  std::cout << "\t" << cmd_name << " input_file" << std::endl;
+  std::cout << "\t" << cmd_name << " -i input_file -l output_file" << std::endl;
+  std::cout << "input_file: File to scan" << std::endl;
+  std::cout << "output_file: File in which to place the output. Defaults to <input_file>-lex-bake" << std::endl;
 }
