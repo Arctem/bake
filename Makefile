@@ -1,12 +1,12 @@
 all: CMakeLists.txt lib/googletest-release-1.7.0
 	mkdir -p build
 	cd build &&\
-	cmake .. &&\
-	make
+	cmake -GNinja .. &&\
+	ninja
 
 
 test: all
-	cd build && make test
+	cd build && ninja test
 
 
 lib/googletest-release-1.7.0:
@@ -14,7 +14,7 @@ lib/googletest-release-1.7.0:
 	mkdir -p lib
 	unzip release-1.7.0 -d lib/
 	touch lib/CMakeLists.txt
-	cd lib/googletest-release-1.7.0 && cmake . && make
+	cd lib/googletest-release-1.7.0 && cmake -GNinja . && ninja
 
 clean:
 	rm -rf build
