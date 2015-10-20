@@ -201,7 +201,7 @@ t[r|R][u|U][e|E]             {
  /* ------- Single Line Comment --------- */
 <COMMENT>{
     \n            { adjust(); yy_pop_state(); }
-    [ \t\n\r]*    { adjust(); /* consume the whitespace */ }
+    [ \t\r]*    { adjust(); /* consume the whitespace */ }
     .          { adjust(); }
  }
 
