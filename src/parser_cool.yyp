@@ -10,7 +10,7 @@
 #include "ast/ast.h"
 
 // define line below as 1 to get debugging
-#define PARSER_DEBUG 0
+#define PARSER_DEBUG 1
 #define YYERROR_VERBOSE 1
 extern char yytext[];
 
@@ -36,6 +36,7 @@ void printDebug(const char *message){
 /* ----------- Union ------------ */
 %union {
   int valueInt;
+  double valueFloat;
   std::string* keyword;
   std::string* type;
   std::string* valueString;
@@ -53,6 +54,7 @@ void printDebug(const char *message){
 %token <type> TYPE
 %token <type> IDENTIFIER
 %token <valueInt> INTEGER
+%token <valueFloat> FLOAT
 %token <valueString> STRING
 
 /* -------- Keyword Token ----------- */
@@ -168,6 +170,7 @@ expr : NEW TYPE                                                   {printDebug("N
       | controlFlow                                               {printDebug("controlFlow\n"); $$ = $1;}
       | '{' block '}'                                             {printDebug("{ block }\n"); $$ = $2;}
       | IDENTIFIER                                                {printDebug("IDENTIFIER\n"); $$ = new bake_ast::Id($1);}
+      | FLOAT                                                     {printDebug("FLOAT\n"); $$ = new bake_ast::FloatVal($1);}
       | INTEGER                                                   {printDebug("INTEGER\n"); $$ = new bake_ast::IntegerVal($1);}
       | STRING                                                    {printDebug("STRING\n"); $$ = new bake_ast::StringVal($1);}
       | TRUE                                                      {printDebug(" true \n"); $$ = new bake_ast::BoolVal($1);}

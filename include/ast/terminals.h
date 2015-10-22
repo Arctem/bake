@@ -32,12 +32,12 @@ namespace bake_ast {
   */
   class FloatVal : public Leaf {
   public:
-    FloatVal(int val) : Leaf(FLOATVAL), val(val) { }
+    FloatVal(double val) : Leaf(FLOATVAL), val(val) { }
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    int getValue() { return val; }
+    double getValue() { return val; }
 
   private:
-    int val;
+    double val;
   };
 
   /**
@@ -60,9 +60,9 @@ namespace bake_ast {
   class BoolVal : public Leaf {
   public:
     BoolVal(bool val) : Leaf(BOOLVAL), val(val) { };
-    
+
     virtual ~BoolVal() {};
-    
+
     void accept(bake_ast::Visitor* v) { v->visit(this); }
     bool getValue() { return val; }
 
