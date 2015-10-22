@@ -23,6 +23,16 @@ void PrettyPrint::visit(IntegerVal* n) {
   cout << "+ Integer: " << n->getValue() << endl;
 }
 
+void PrettyPrint::visit(Int8Val* n) {
+  leadingOps();
+  cout << "+ Char: " << (int) n->getValue() << endl;
+}
+
+void PrettyPrint::visit(Int64Val* n) {
+  leadingOps();
+  cout << "+ Long: " << n->getValue() << endl;
+}
+
 void PrettyPrint::visit(FloatVal* n) {
   leadingOps();
   cout << "+ Float: " << n->getValue() << endl;
