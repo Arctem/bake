@@ -35,7 +35,9 @@ void printDebug(const char *message){
 /* ----------- OPTIONS ------------ */
 /* ----------- Union ------------ */
 %union {
-  int valueInt;
+  int valueInt32;
+  char valueInt8;
+  long valueInt64;
   double valueFloat;
   std::string* keyword;
   std::string* type;
@@ -53,7 +55,9 @@ void printDebug(const char *message){
 /* --------- Base Tokens ------------ */
 %token <type> TYPE
 %token <type> IDENTIFIER
-%token <valueInt> INTEGER
+%token <valueInt32> INTEGER
+%token <valueInt8> INT8
+%token <valueInt64> INT64
 %token <valueFloat> FLOAT
 %token <valueString> STRING
 
@@ -172,6 +176,8 @@ expr : NEW TYPE                                                   {printDebug("N
       | IDENTIFIER                                                {printDebug("IDENTIFIER\n"); $$ = new bake_ast::Id($1);}
       | FLOAT                                                     {printDebug("FLOAT\n"); $$ = new bake_ast::FloatVal($1);}
       | INTEGER                                                   {printDebug("INTEGER\n"); $$ = new bake_ast::IntegerVal($1);}
+      | INT8                                                      {printDebug("INT8\n"); $$ = new bake_ast::Int8Val($1);}
+      | INT64                                                     {printDebug("INT64\n"); $$ = new bake_ast::Int64Val($1);}
       | STRING                                                    {printDebug("STRING\n"); $$ = new bake_ast::StringVal($1);}
       | TRUE                                                      {printDebug(" true \n"); $$ = new bake_ast::BoolVal($1);}
       | FALSE                                                     {printDebug(" false \n"); $$ = new bake_ast::BoolVal($1);}

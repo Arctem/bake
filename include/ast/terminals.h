@@ -28,6 +28,32 @@ namespace bake_ast {
   };
 
   /**
+   * Represents an integer
+   */
+  class Int8Val : public Leaf {
+  public:
+    Int8Val(char val) : Leaf(INT8VAL), val(val) { }
+    void accept(bake_ast::Visitor* v) { v->visit(this); }
+    char getValue() { return val; }
+
+  private:
+    char val;
+  };
+
+  /**
+   * Represents an integer
+   */
+  class Int64Val : public Leaf {
+  public:
+    Int64Val(long val) : Leaf(INT64VAL), val(val) { }
+    void accept(bake_ast::Visitor* v) { v->visit(this); }
+    long getValue() { return val; }
+
+  private:
+    long val;
+  };
+
+  /**
   * Represents an Float
   */
   class FloatVal : public Leaf {
