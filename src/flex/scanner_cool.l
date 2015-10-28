@@ -74,7 +74,7 @@ void adjust(void){
 IDENTIFIER  [a-z][a-zA-Z0-9_]*
 TYPE        [A-Z][a-zA-Z0-9_]*
 INTEGER     [0-9]+
-FLOAT       [0-9]*.[0-9]+
+FLOAT       [0-9]*\.[0-9]+
 STRING      \"([^\n\Z\"])*\"
 
 /* Start conditions */
@@ -141,6 +141,20 @@ t[r|R][u|U][e|E]             {
               }
 
 
+{FLOAT} {
+
+             adjust();
+             double num = atof(yytext);
+
+             if(num < 0 ){
+               errorOut("Float is not unsigned. Invalid for COOL. ");
+               exit(-1);
+             }
+             outputLex("float");
+             out(yytext);
+             yylval.valueFloat = atof(yytext);
+             return FLOAT;
+                         }
 
 {INTEGER}    {
                 adjust();
@@ -150,7 +164,7 @@ t[r|R][u|U][e|E]             {
                   errorOut("Integer is not unsigned. Invalid for COOL. ");
                   exit(-1);
                 }
-                else if (num <= 127){
+                else if (num >= -128 && num <= 127){
                   outputLex("int 8");
                   out(yytext);
                   yylval.valueInt8 = (char) atoi(yytext);
@@ -175,13 +189,8 @@ t[r|R][u|U][e|E]             {
 
              }
 
-{FLOAT} {
-               adjust();
-               outputLex("float");
-               out(yytext);
-               yylval.valueFloat = atof(yytext);
-               return FLOAT;
-             }
+
+
 
   /* --------------- Punctuation ------------ */
 \@           { outputLex("at");     adjust(); return '@';}
