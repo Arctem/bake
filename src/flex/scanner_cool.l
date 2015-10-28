@@ -163,25 +163,12 @@ t[r|R][u|U][e|E]             {
                 if(num < 0 ){
                   errorOut("Integer is not unsigned. Invalid for COOL. ");
                   exit(-1);
-                }
-                else if (num >= -128 && num <= 127){
-                  outputLex("int 8");
-                  out(yytext);
-                  yylval.valueInt8 = (char) atoi(yytext);
-                  return INT8;
-                }
-                else if(num <= 2147483647) {
+                } else if(num <= 2147483647) {
                   outputLex("int 32");
                   out(yytext);
                   yylval.valueInt32 = atoi(yytext);
                   return INTEGER;
 
-                } else if(num <= 9223372036854775806 + 1){
-                  // The silly syntax above is due to clang panicing on the 64 bit integer. This tricks it to behave correctly.
-                  outputLex("int 64");
-                  out(yytext);
-                  yylval.valueInt64 = atoll(yytext);
-                  return INT64;
                 }
 
                 errorOut("Integer outside value range over a 8, 32, or 64 bit integer");
