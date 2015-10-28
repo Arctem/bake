@@ -170,7 +170,6 @@ namespace bake_ast {
   
 
   /*** Feature - Contains ListFormalDeclare ***/
-  // TODO: Method, ListFormalDeclare = parameters
   class Feature : public Node {
   public:
     Feature() : Node(FEATURE) { };
@@ -191,7 +190,7 @@ namespace bake_ast {
 
   private:
     Id* id; // Name of method
-    ListFormalDeclare* list; // Parameters
+    ListFormalDeclare* list = nullptr; // Parameters
     Type* type; // Return type
     Node* expr; // Body
   };
@@ -238,7 +237,7 @@ namespace bake_ast {
     Type* typeId; // Name of this class (that is, the name of the type defined by this class)
     Type* inheritType = nullptr;
 
-    FeatureList* list;
+    FeatureList* list = nullptr;
   };
 }
 

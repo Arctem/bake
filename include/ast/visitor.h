@@ -42,7 +42,7 @@ namespace bake_ast {
   class FeatureOption;
   class FeatureList;
   class FormalDeclare;
-
+  
   class Visitor {
   public:
     Visitor() {};
@@ -88,6 +88,8 @@ namespace bake_ast {
   class PrettyPrint : public Visitor {
   public:
     PrettyPrint() : depth(0) {};
+
+    // Terminal nodes
     void visit(IntegerVal*);
     void visit(Int8Val*);
     void visit(Int64Val*);
@@ -130,11 +132,11 @@ namespace bake_ast {
     void visit(FeatureOption*);
     void visit(FeatureList*);
 
+    // Helper methods
+    void leadingOps(); // What should the printer do before it visits every node (e.g., print leading whitespace, etc.)
+
   private:
     int depth; // Holds how many levels down the tree this print has gone
-
-    /* What should the printer do before it visits every node (e.g., print leading whitespace, etc.) */
-    void leadingOps();
   };
 }
 

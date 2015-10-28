@@ -10,7 +10,7 @@
 #include "ast/ast.h"
 
 // define line below as 1 to get debugging
-#define PARSER_DEBUG 1
+#define PARSER_DEBUG 0
 #define YYERROR_VERBOSE 0
 
 extern char yytext[];

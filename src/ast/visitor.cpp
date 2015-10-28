@@ -1,8 +1,27 @@
 
 #include <iostream>
 using namespace std;
+
+#include "ast/node.h"
 #include "ast/ast.h"
+#include "ast/visitor.h"
 using namespace bake_ast;
+
+/*********** Helper functions ***********/
+
+/**
+ * Defines how to print out the inferred type
+ * param pp: Reference to pretty printer that is printing this AST
+ * param infType: The type ID of the type that should be printed.
+ * note: I'd like to make this a method of the PrettyPrint visitor, but, afaik,
+ *       there isn't a way to do that that avoids circular dependencies.
+ */
+void inferredType(PrettyPrint* pp, string* infType) {
+  if(infType != nullptr) {
+    pp->leadingOps();
+    cout << "| = " << *infType << endl;
+  }
+}
 
 /*********** Pretty print methods ***********/
 
@@ -21,41 +40,49 @@ void PrettyPrint::leadingOps() {
 void PrettyPrint::visit(IntegerVal* n) {
   leadingOps();
   cout << "+ Integer: " << n->getValue() << endl;
+  inferredType(this, n->getInfType());
 }
 
 void PrettyPrint::visit(Int8Val* n) {
   leadingOps();
   cout << "+ Char: " << (int) n->getValue() << endl;
+  inferredType(this, n->getInfType());
 }
 
 void PrettyPrint::visit(Int64Val* n) {
   leadingOps();
   cout << "+ Long: " << n->getValue() << endl;
+  inferredType(this, n->getInfType());
 }
 
 void PrettyPrint::visit(FloatVal* n) {
   leadingOps();
   cout << "+ Float: " << n->getValue() << endl;
+  inferredType(this, n->getInfType());
 }
 
 void PrettyPrint::visit(StringVal* n) {
   leadingOps();
   cout << "+ String: " << *(n->getValue()) << endl;
+  inferredType(this, n->getInfType());
 }
 
 void PrettyPrint::visit(BoolVal* n) {
   leadingOps();
   cout << "+ Boolean: " << n->getValue() << endl;
+  inferredType(this, n->getInfType());
 }
 
 void PrettyPrint::visit(Id* n) {
   leadingOps();
   cout << "+ ID: " << *(n->getName()) << endl;
+  inferredType(this, n->getInfType());
 }
 
 void PrettyPrint::visit(Type* n) {
   leadingOps();
   cout << "+ Type: " << *(n->getName()) << endl;
+  inferredType(this, n->getInfType());
 }
 
 /*********** Unary operation implementations ***********/
@@ -63,6 +90,7 @@ void PrettyPrint::visit(Type* n) {
 void PrettyPrint::visit(LogicalNot* n) {
   leadingOps();
   cout << "+ LogicalNot" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->get()->accept(this);
@@ -72,6 +100,7 @@ void PrettyPrint::visit(LogicalNot* n) {
 void PrettyPrint::visit(BitNot* n) {
   leadingOps();
   cout << "+ BitNot" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->get()->accept(this);
@@ -81,6 +110,7 @@ void PrettyPrint::visit(BitNot* n) {
 void PrettyPrint::visit(Isvoid* n) {
   leadingOps();
   cout << "+ Isvoid" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->get()->accept(this);
@@ -90,6 +120,7 @@ void PrettyPrint::visit(Isvoid* n) {
 void PrettyPrint::visit(New* n) {
   leadingOps();
   cout << "+ New" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->get()->accept(this);
@@ -101,6 +132,7 @@ void PrettyPrint::visit(New* n) {
 void PrettyPrint::visit(Plus* n) {
   leadingOps();
   cout << "+ Plus" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getLhs()->accept(this);
@@ -111,6 +143,7 @@ void PrettyPrint::visit(Plus* n) {
 void PrettyPrint::visit(Minus* n) {
   leadingOps();
   cout << "+ Minus" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getLhs()->accept(this);
@@ -121,6 +154,7 @@ void PrettyPrint::visit(Minus* n) {
 void PrettyPrint::visit(Multiply* n) {
   leadingOps();
   cout << "+ Multiply" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getLhs()->accept(this);
@@ -131,6 +165,7 @@ void PrettyPrint::visit(Multiply* n) {
 void PrettyPrint::visit(Divide* n) {
   leadingOps();
   cout << "+ Divide" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getLhs()->accept(this);
@@ -141,6 +176,7 @@ void PrettyPrint::visit(Divide* n) {
 void PrettyPrint::visit(LessThan* n) {
   leadingOps();
   cout << "+ LessThan" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getLhs()->accept(this);
@@ -151,6 +187,7 @@ void PrettyPrint::visit(LessThan* n) {
 void PrettyPrint::visit(LessThanEqual* n) {
   leadingOps();
   cout << "+ LessThanEqual" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getLhs()->accept(this);
@@ -161,6 +198,7 @@ void PrettyPrint::visit(LessThanEqual* n) {
 void PrettyPrint::visit(Equal* n) {
   leadingOps();
   cout << "+ Equal" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getLhs()->accept(this);
@@ -171,6 +209,7 @@ void PrettyPrint::visit(Equal* n) {
 void PrettyPrint::visit(Assign* n) {
   leadingOps();
   cout << "+ Assign" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getLhs()->accept(this);
@@ -183,6 +222,7 @@ void PrettyPrint::visit(Assign* n) {
 void PrettyPrint::visit(ExprList* n) {
   leadingOps();
   cout << "+ ExprList" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   for(auto curr : n->getChildren()) {
@@ -194,6 +234,7 @@ void PrettyPrint::visit(ExprList* n) {
 void PrettyPrint::visit(WhileLoop* n){
   leadingOps();
   cout << "+ WhileLoop" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getCond()->accept(this);
@@ -204,6 +245,7 @@ void PrettyPrint::visit(WhileLoop* n){
 void PrettyPrint::visit(IfStatement* n){
   leadingOps();
   cout << "+ IfStatement" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getCond()->accept(this);
@@ -215,6 +257,7 @@ void PrettyPrint::visit(IfStatement* n){
 void PrettyPrint::visit(CaseStatement* n){
   leadingOps();
   cout << "+ CaseStatement" << endl;
+  inferredType(this, n->getInfType());
   
   depth++;
   n->getExpr()->accept(this);
@@ -225,6 +268,7 @@ void PrettyPrint::visit(CaseStatement* n){
 void PrettyPrint::visit(FormalDeclare* n) {
   leadingOps();
   cout << "+ FormalDeclare" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getID()->accept(this);
@@ -240,6 +284,7 @@ void PrettyPrint::visit(FormalDeclare* n) {
 void PrettyPrint::visit(Case* n) {
   leadingOps();
   cout << "+ Case" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getID()->accept(this);
@@ -255,6 +300,7 @@ void PrettyPrint::visit(Case* n) {
 void PrettyPrint::visit(ClassStatement* n) {
   leadingOps();
   cout << "+ ClassStatement" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getType()->accept(this);
@@ -276,6 +322,7 @@ void PrettyPrint::visit(ClassStatement* n) {
 void PrettyPrint::visit(ClassList* n) {
   leadingOps();
   cout << "+ ClassList" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   for(auto curr : n->getChildren()) {
@@ -288,6 +335,7 @@ void PrettyPrint::visit(ClassList* n) {
 void PrettyPrint::visit(Dispatch* n) {
   leadingOps();
   cout << "+ Dispatch" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   if(n->getExpr() != nullptr)
@@ -308,6 +356,7 @@ void PrettyPrint::visit(Dispatch* n) {
 void PrettyPrint::visit(ListFormalDeclare* n){
   leadingOps();
   cout << "+ ListFormalDeclare" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   for(auto curr : n->getList()) {
@@ -321,6 +370,7 @@ void PrettyPrint::visit(ListFormalDeclare* n){
 void PrettyPrint::visit(CaseList* n){
   leadingOps();
   cout << "+ CaseList" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   for(auto curr : n->getList()) {
@@ -333,6 +383,7 @@ void PrettyPrint::visit(CaseList* n){
 void PrettyPrint::visit(LetStatement* n){
   leadingOps();
   cout << "+ LetStatement" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getList()->accept(this);
@@ -343,6 +394,7 @@ void PrettyPrint::visit(LetStatement* n){
 void PrettyPrint::visit(Feature* n){
   leadingOps();
   cout << "+ Feature" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   n->getID()->accept(this);
@@ -360,6 +412,7 @@ void PrettyPrint::visit(Feature* n){
 void PrettyPrint::visit(FeatureOption* n){
   leadingOps();
   cout << "+ FeatureOption" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   if(n->getFeat() != nullptr){
@@ -374,6 +427,7 @@ void PrettyPrint::visit(FeatureOption* n){
 void PrettyPrint::visit(FeatureList* n){
   leadingOps();
   cout << "+ FeatureList" << endl;
+  inferredType(this, n->getInfType());
 
   depth++;
   for(auto curr : n->getList()) {

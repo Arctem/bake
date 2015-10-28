@@ -2,26 +2,40 @@
 #define __TYPE_NAZI__
 
 #include <string>
+#include <exception>
 using namespace std;
 
 #include "ast/ast.h"
 using namespace bake_ast;
 
 
-namespace bake_tc{
+namespace typecheck {
+  /**
+   * Thrown for all errors encountered when building the symbol tree
+   */
+  class TypeErr : public exception {
+  public:
+    TypeErr(const char* msg) { this->msg = msg; };
+
+    virtual const char* what() const throw() {
+      return msg;
+    }
+
+  private:
+    const char* msg;
+  };
+
   class TypeCheck : public Visitor {
   public:
-    TypeCheck() : lVal("UNDEFTY"), rVal("UNDEFTY"), tmp("UNDEFTY") { };
-
-    // Terminal nodes
+    // Terminal nodes.
     void visit(IntegerVal*);
     void visit(FloatVal*);
     void visit(Int8Val*);
     void visit(Int64Val*);
     void visit(StringVal*);
     void visit(BoolVal*);
-    void visit(Id*);
-    void visit(Type*);
+    void visit(Id*) { }; // TODO: Needs proper implementation
+    void visit(Type*) { };
 
     // Unary Operators
     void visit(LogicalNot*);
@@ -56,13 +70,14 @@ namespace bake_tc{
     void visit(FeatureOption*);
     void visit(FeatureList*);
 
+    // Helper methods
+    string* getTypeOfLast() { return typeOfLast; }
+    void setTypeOfLast(string* s) { typeOfLast = s; }
   private:
-    const string lVal;
-    const string rVal;
-    const string tmp;
-    
-    bool checkVals();
-    NodeType stringToNodeType(string str);
+    string* typeOfLast; // Reference to the string specifying the type of the last node that this visitor was in
+
+    // Private helper methods
+    bool isBuiltin(string* type); // Check whether the given string is the name of a built in type
   };
 }
 

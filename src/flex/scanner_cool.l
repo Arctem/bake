@@ -125,10 +125,8 @@ t[r|R][u|U][e|E]             {
                 out(yytext);
 
                 if(not strcmp(yytext, "Int32")) {
-                  printf("Creating int\n");
                   yylval.valueString = new std::string("Int");
                 } else {
-                  printf("Creating type\n");
                   yylval.valueString = new std::string(yytext);
                 }
 

@@ -1,153 +1,341 @@
+
+#include <string.h>
+#include <sstream>
+using namespace std;
+
 #include "typecheck/visitor_tc.h"
-using namespace bake_tc;
+using namespace typecheck;
 
-/** Visit functions for AST nodes that have a corresponding node in the symbol tree.
-    That is, nodes that have their own scope. **/
 
-// visit each item
-void TypeCheck::visit(LetStatement*) {
-  
-}
-void TypeCheck::visit(ClassStatement*) {
-  
-}
-void TypeCheck::visit(Feature*) {
-  
+
+/********** Terminals ************/
+
+/**
+ * Initialize the IntegerVal terminal
+ */
+void TypeCheck::visit(IntegerVal* n) {
+  n->setInfType("Int");
+  setTypeOfLast(n->getInfType());
 }
 
-/** Terminal nodes **/
-
-// set tmp type as INT
-void TypeCheck::visit(IntegerVal*) {
-  
-}
-// set tmp type as FLOAT
-void TypeCheck::visit(FloatVal*) {
-  
-}
-// set tmp type as INT8VAL
-void visit(Int8Val*) {
-
-}
-// set tmp type as INT64VAL
-void visit(Int64Val*) {
-
-}
-// set tmp type as STR
-void TypeCheck::visit(StringVal*) {
-  
-}
-// set tmp type as BOOL
-void TypeCheck::visit(BoolVal*) {
-  
-}
-// needs to do a lookup of type and set tmp variable
-void TypeCheck::visit(Id*) {
-  
-}
-// needs to set tmp variable
-void TypeCheck::visit(Type*) {
-  
+/**
+ * Initialize the FloatVal terminal
+ */
+void TypeCheck::visit(FloatVal* n) {
+  n->setInfType("Float");
+  setTypeOfLast(n->getInfType());
 }
 
-/** Unary Operators **/
-// check for boolean
-void TypeCheck::visit(LogicalNot*) {
-  
-}
-// check for int?
-void TypeCheck::visit(BitNot*) {
-  
-}
-// check for variable
-void TypeCheck::visit(Isvoid*) {
-  
-}
-void TypeCheck::visit(New*) {
-  
+/**
+ * Initialize the Int8Val terminal
+ */
+void TypeCheck::visit(Int8Val* n) {
+  n->setInfType("Int8");
+  setTypeOfLast(n->getInfType());
 }
 
-/** Binary Operators **/
-// visit left and get type
-// visit right and get type
-// check types
-
-void TypeCheck::visit(Plus*) {
-  
-}
-void TypeCheck::visit(Minus*) {
-  
-}
-void TypeCheck::visit(Multiply*) {
-  
-}
-void TypeCheck::visit(Divide*) {
-  
-}
-// set tmp as bool
-void TypeCheck::visit(LessThan*) {
-  
-}
-// set tmp as bool
-void TypeCheck::visit(LessThanEqual*) {
-  
-}
-// set tmp as bool
-void TypeCheck::visit(Equal*) {
-  
-}
-void TypeCheck::visit(Assign*) {
-  
+/**
+ * Initialize the Int64Val terminal
+ */
+void TypeCheck::visit(Int64Val* n) {
+  n->setInfType("Int64");
+  setTypeOfLast(n->getInfType());
 }
 
-/** Miscellaneous other nodes **/
-
-void TypeCheck::visit(ExprList*) {
-  
-}
-// check to make sure final expression is bool
-void TypeCheck::visit(WhileLoop*) {
-  
-}
-// check to make sure if is bool
-void TypeCheck::visit(IfStatement*) {
-  
+/**
+ * Initialize the StringVal terminal
+ */
+void TypeCheck::visit(StringVal* n) {
+  n->setInfType("String");
+  setTypeOfLast(n->getInfType());
 }
 
-// visit each item
-void TypeCheck::visit(CaseStatement*) {
-  
-}
-// visit each item
-void TypeCheck::visit(CaseList*) {
-  
-}
-
-void TypeCheck::visit(Case*) {
-  
-}
-void TypeCheck::visit(FormalDeclare*) {
-  
+/**
+ * Initialize the BoolVal terminal
+ */
+void TypeCheck::visit(BoolVal* n) {
+  n->setInfType("Bool");
+  setTypeOfLast(n->getInfType());
 }
 
-// visit each item.
-void TypeCheck::visit(ClassList*) {
-  
-}
-void TypeCheck::visit(Dispatch*) {
-  
-}
-void TypeCheck::visit(ListFormalDeclare*) {
-  
+
+
+/********** Unary ops ************/
+
+/**
+ * Typecheck the logical not operator
+ */
+void TypeCheck::visit(LogicalNot* node) {
+  node->setInfType("Bool"); // Return type is guaranteed to be a Bool
+
+  /* Get the type of the expression */
+  node->get()->accept(this);
+  string* subtype = getTypeOfLast();
+
+  /* Check type */
+  if(strcmp(subtype->c_str(), "Bool") != 0) {
+    stringstream msg;
+    msg << "Error: Logical not cannot operate on type '" << *subtype << "'";
+
+    throw TypeErr(msg.str().c_str());
+  }
 }
 
-void TypeCheck::visit(FeatureOption*) {
-  
-}
-void TypeCheck::visit(FeatureList*) {
-  
+/**
+ * Typecheck the bitwise not operator
+ */
+void TypeCheck::visit(BitNot* node) {
+  node->get()->accept(this);
 }
 
-bool TypeCheck::checkVals() {
-  return true; // Placeholder
+/**
+ * Typecheck the Isvoid operator
+ */
+void TypeCheck::visit(Isvoid* node) {
+  node->setInfType("Bool"); // Return type is guaranteed to be a Bool
+
+  /* Get the type of the expression */
+  node->get()->accept(this);
+  string* subtype = getTypeOfLast();
+}
+
+/**
+ * Typecheck the New operator
+ */
+void TypeCheck::visit(New* node) {
+  node->get()->accept(this);
+}
+
+
+
+/********** Binary ops ************/
+
+/**
+ * Typecheck the addition operator
+ */
+void TypeCheck::visit(Plus* node) {
+  node->getLhs()->accept(this);
+  node->getRhs()->accept(this);
+}
+
+/**
+ * Typecheck the subtraction operator
+ */
+void TypeCheck::visit(Minus* node) {
+  node->getLhs()->accept(this);
+  node->getRhs()->accept(this);
+}
+
+/**
+ * Typecheck the multiplication operator
+ */
+void TypeCheck::visit(Multiply* node) {
+  node->getLhs()->accept(this);
+  node->getRhs()->accept(this);
+}
+
+/**
+ * Typecheck the division operator
+ */
+void TypeCheck::visit(Divide* node) {
+  node->getLhs()->accept(this);
+  node->getRhs()->accept(this);
+}
+
+/**
+ * Typecheck the < operator
+ */
+void TypeCheck::visit(LessThan* node) {
+  node->getLhs()->accept(this);
+  node->getRhs()->accept(this);
+}
+
+/**
+ * Typecheck the <= operator
+ */
+void TypeCheck::visit(LessThanEqual* node) {
+  node->getLhs()->accept(this);
+  node->getRhs()->accept(this);
+}
+
+/**
+ * Typecheck the = operator
+ */
+void TypeCheck::visit(Equal* node) {
+  node->getLhs()->accept(this);
+  node->getRhs()->accept(this);
+}
+
+/**
+ * Typecheck the <- operator
+ */
+void TypeCheck::visit(Assign* node) {
+  node->getLhs()->accept(this);
+  node->getRhs()->accept(this);
+}
+
+
+
+/********** Misc ops ************/
+
+/**
+ * Typecheck ExprList
+ */
+void TypeCheck::visit(ExprList* node) {
+  for(auto child : node->getChildren()) {
+    child->accept(this);
+  }
+}
+
+/**
+ * Typecheck WhileLoop
+ */
+void TypeCheck::visit(WhileLoop* node) {
+  node->getCond()->accept(this);
+  node->getBody()->accept(this);
+}
+
+/**
+ * Typecheck IfStatement
+ */
+void TypeCheck::visit(IfStatement* node) {
+  node->getCond()->accept(this);
+  node->getBody()->accept(this);
+  node->getElseBody()->accept(this);
+}
+
+/**
+ * Typecheck LetStatement
+ */
+void TypeCheck::visit(LetStatement* node) {
+  node->getExpr()->accept(this);
+  node->getList()->accept(this);
+}
+
+/**
+ * Typecheck CaseStatement
+ */
+void TypeCheck::visit(CaseStatement* node) {
+  node->getExpr()->accept(this);
+  node->getCaseList()->accept(this);
+}
+
+/**
+ * Typecheck CaseList
+ */
+void TypeCheck::visit(CaseList* node) {
+  for(auto cse : node->getList()) {
+    cse->accept(this);
+  }
+}
+
+/**
+ * Typecheck Case
+ */
+void TypeCheck::visit(Case* node) {
+  node->getID()->accept(this);
+  node->getType()->accept(this);
+
+  if(node->getExpr() != nullptr) {
+    node->getExpr()->accept(this);
+  }
+}
+
+/**
+ * Typecheck FormalDeclare
+ */
+void TypeCheck::visit(FormalDeclare* node) {
+  node->getID()->accept(this);
+  node->getType()->accept(this);
+
+  if(node->getExpr() != nullptr) {
+    node->getExpr()->accept(this);
+  }
+}
+
+/**
+ * Typecheck ClassStatement
+ */
+void TypeCheck::visit(ClassStatement* node) {
+  node->getType()->accept(this);
+
+  if(node->getList() != nullptr) {
+    node->getList()->accept(this);
+  }
+
+  if(node->getInheritType() != nullptr) {
+    node->getInheritType()->accept(this);
+  }
+}
+
+/**
+ * Typecheck ClassList
+ */
+void TypeCheck::visit(ClassList* node) {
+  for(auto cls : node->getChildren()) {
+    cls->accept(this);
+  }
+}
+
+/**
+ * Typecheck Dispatch
+ */
+void TypeCheck::visit(Dispatch* node) {
+  node->getID()->accept(this);
+
+  if(node->getExpr() != nullptr) {
+    node->getExpr()->accept(this);
+  }
+
+  if(node->getType() != nullptr) {
+    node->getType()->accept(this);
+  }
+
+  if(node->getExprList() != nullptr) {
+    node->getExprList()->accept(this);
+  }
+}
+
+/**
+ * Typecheck ListFormalDeclare
+ */
+void TypeCheck::visit(ListFormalDeclare* node) {
+  for(auto decl : node->getList()) {
+    decl->accept(this);
+  }
+}
+
+/**
+ * Typecheck Feature
+ */
+void TypeCheck::visit(Feature* node) {
+  node->getID()->accept(this);
+  node->getType()->accept(this);
+  node->getExpr()->accept(this);
+
+  if(node->getList() != nullptr) {
+    node->getList()->accept(this);
+  }
+}
+
+/**
+ * Typecheck FeatureOption
+ */
+void TypeCheck::visit(FeatureOption* node) {
+  if(node->getFeat() != nullptr) {
+    node->getFeat()->accept(this);
+  }
+
+  if(node->getForm() != nullptr) {
+    node->getForm()->accept(this);
+  }
+}
+
+/**
+ * Typecheck FeatureList
+ */
+void TypeCheck::visit(FeatureList* node) {
+  for(auto feature : node->getList()) {
+    feature->accept(this);
+  }
 }

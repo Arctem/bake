@@ -17,4 +17,4 @@ add_executable(bake
     ${BISON_PARSER_OUTPUTS}
     ${FLEX_SCANNER_OUTPUTS}
 )
-target_link_libraries(bake ast typecheck)
+target_link_libraries(bake typecheck ast)

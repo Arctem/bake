@@ -18,6 +18,7 @@ using namespace bake_ast;
 #include "typecheck/symbol_node.h"
 #include "typecheck/build_st.h"
 #include "typecheck/symbol_table_print.h"
+#include "typecheck/visitor_tc.h"
 using namespace typecheck;
 
 extern int yylineno;
@@ -94,7 +95,8 @@ int main(int argc, char** argv)
 
   PrettyPrint pp;
   ast->accept(&pp);
-  cout << endl << "################" << endl;
+
+  cout << endl << "################" << endl << endl;
 
   BuildST build;
   try {
@@ -106,6 +108,17 @@ int main(int argc, char** argv)
 
   SymbolTablePrint spt;
   build.getCurrScope()->accept(&spt);
+
+  cout << endl << "################" << endl << endl;
+
+  TypeCheck tc;
+  try {
+    ast->accept(&tc);
+    ast->accept(&pp);
+  } catch (TypeErr& e) {
+    cout << e.what() << endl;
+    return 0;
+  }
 
   // Close file handlers
   fclose(yyin);
