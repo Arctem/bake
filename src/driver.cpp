@@ -30,12 +30,15 @@ int yyparse(void);
 void help(char* cmd_name);
 void yylex_destroy(void);
 
-enum optionIndex { UNKNOWN, HELP, PLUS };
+static option::ArgStatus RequireString(const option::Option& opt, bool msg);
+
+enum optionIndex { UNKNOWN, HELP, INPUT };
 const option::Descriptor usage[] =
   {
-    {UNKNOWN, 0, "", "", option::Arg::None, "USAGE: bake [options]\n\n" "Options:" },
-    {HELP,    0, "h", "help", option::Arg::None, "  --help  \tPrint usage and exit." },
-    {UNKNOWN, 0, "", "",option::Arg::None, "\nExamples:\n"
+    {UNKNOWN, 0,  "",      "", option::Arg::None, "USAGE: bake [options]\n\n" "Options:" },
+    {HELP,    0, "h",  "help", option::Arg::None, "  --help, -h  \tPrint usage and exit." },
+    {INPUT,   0, "i", "input",     RequireString, "  --input, -i \tSpecify input file." },
+    {UNKNOWN, 0,  "",      "", option::Arg::None, "\nExamples:\n"
      "  ./bake src/flex/test/parser_tests/valid-hello.cl\n" },
 
     {0,0,0,0,0,0}
@@ -56,16 +59,20 @@ int main(int argc, char** argv)
     *buffer = new option::Option[stats.buffer_max];
   option::Parser parse(usage, argc, argv, options, buffer);
 
-  if (parse.error())
+  if(parse.error())
     return 1;
 
-  if (options[HELP] || argc == 0) {
+  if(options[HELP] || argc == 0) {
     option::printUsage(std::cout, usage);
     return 0;
   }
 
-  std::cout << "--plus count: " <<
-    options[PLUS].count() << "\n";
+  if(options[INPUT]) {
+    in_fname = options[INPUT].last()->arg;
+    std::cout << "File: " << in_fname << std::endl;
+  } else if(argc == 2) {
+
+  }
 
   for (option::Option* opt = options[UNKNOWN]; opt; opt = opt->next())
     std::cout << "Unknown option: " << opt->name << "\n";
@@ -174,6 +181,13 @@ int main(int argc, char** argv)
   return 0;
 }
 
+static option::ArgStatus RequireString(const option::Option& opt, bool msg) {
+  if(!opt.arg) {
+    std::cout << "Error: Argument required by " << opt.name << std::endl;
+    return option::ARG_ILLEGAL;
+  }
+  return option::ARG_OK;
+}
 
 /* Function prints the help message */
 void help(char* cmd_name) {
