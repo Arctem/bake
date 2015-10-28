@@ -28,16 +28,42 @@ namespace bake_ast {
   };
 
   /**
+   * Represents an integer
+   */
+  class Int8Val : public Leaf {
+  public:
+    Int8Val(char val) : Leaf(INT8VAL), val(val) { }
+    void accept(bake_ast::Visitor* v) { v->visit(this); }
+    char getValue() { return val; }
+
+  private:
+    char val;
+  };
+
+  /**
+   * Represents an integer
+   */
+  class Int64Val : public Leaf {
+  public:
+    Int64Val(long val) : Leaf(INT64VAL), val(val) { }
+    void accept(bake_ast::Visitor* v) { v->visit(this); }
+    long getValue() { return val; }
+
+  private:
+    long val;
+  };
+
+  /**
   * Represents an Float
   */
   class FloatVal : public Leaf {
   public:
-    FloatVal(int val) : Leaf(FLOATVAL), val(val) { }
+    FloatVal(double val) : Leaf(FLOATVAL), val(val) { }
     void accept(bake_ast::Visitor* v) { v->visit(this); }
-    int getValue() { return val; }
+    double getValue() { return val; }
 
   private:
-    int val;
+    double val;
   };
 
   /**
@@ -60,9 +86,9 @@ namespace bake_ast {
   class BoolVal : public Leaf {
   public:
     BoolVal(bool val) : Leaf(BOOLVAL), val(val) { };
-    
+
     virtual ~BoolVal() {};
-    
+
     void accept(bake_ast::Visitor* v) { v->visit(this); }
     bool getValue() { return val; }
 

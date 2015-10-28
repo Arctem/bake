@@ -18,7 +18,7 @@
 #include "parser_cool.h"
 
 // define line below as 1 to get debugging
-#define  SCANNER_DEBUG 0
+#define  SCANNER_DEBUG 1
 
 extern int yycol;
 bool printLex = false;
@@ -50,7 +50,7 @@ void outputLex(const char* message){
    }
 
    if(SCANNER_DEBUG == 1){
-      printf("Debug: %d: Lexed: %s", yylineno,message);
+      printf("Debug: %d: Lexed: %s\n", yylineno,message);
    }
 }
 
@@ -74,6 +74,7 @@ void adjust(void){
 IDENTIFIER  [a-z][a-zA-Z0-9_]*
 TYPE        [A-Z][a-zA-Z0-9_]*
 INTEGER     [0-9]+
+FLOAT       [0-9]*\.[0-9]+
 STRING      \"([^\n\Z\"])*\"
 
 /* Start conditions */
@@ -122,7 +123,13 @@ t[r|R][u|U][e|E]             {
                 adjust();
                 outputLex("type");
                 out(yytext);
+
+                if(strcmp(yytext, "Int32")){
+                   yylval.valueString = new std::string("Int");
+                }else {
                 yylval.valueString = new std::string(yytext);
+              }
+
                 return TYPE;
               }
 {IDENTIFIER} {
@@ -133,19 +140,56 @@ t[r|R][u|U][e|E]             {
                 return IDENTIFIER;
               }
 
+
+{FLOAT} {
+
+             adjust();
+             double num = atof(yytext);
+
+             if(num < 0 ){
+               errorOut("Float is not unsigned. Invalid for COOL. ");
+               exit(-1);
+             }
+             outputLex("float");
+             out(yytext);
+             yylval.valueFloat = atof(yytext);
+             return FLOAT;
+                         }
+
 {INTEGER}    {
                 adjust();
-                int num = atoi(yytext);
-                if(num < -2147483647 || num > 2147483647) {
-                  errorOut("Integer outside value range");
+                long long num = atoll(yytext);
+
+                if(num < 0 ){
+                  errorOut("Integer is not unsigned. Invalid for COOL. ");
                   exit(-1);
-                } else {
-                  outputLex("integer");
-                  out(yytext);
                 }
-                yylval.valueInt = atoi(yytext);
-                return INTEGER;
+                else if (num >= -128 && num <= 127){
+                  outputLex("int 8");
+                  out(yytext);
+                  yylval.valueInt8 = (char) atoi(yytext);
+                  return INT8;
+                }
+                else if(num <= 2147483647) {
+                  outputLex("int 32");
+                  out(yytext);
+                  yylval.valueInt32 = atoi(yytext);
+                  return INTEGER;
+
+                } else if(num <= 9223372036854775806 + 1){
+                  // The silly syntax above is due to clang panicing on the 64 bit integer. This tricks it to behave correctly.
+                  outputLex("int 64");
+                  out(yytext);
+                  yylval.valueInt64 = atoll(yytext);
+                  return INT64;
+                }
+
+                errorOut("Integer outside value range over a 8, 32, or 64 bit integer");
+                exit(-1);
+
              }
+
+
 
 
   /* --------------- Punctuation ------------ */
@@ -201,7 +245,7 @@ t[r|R][u|U][e|E]             {
  /* ------- Single Line Comment --------- */
 <COMMENT>{
     \n            { adjust(); yy_pop_state(); }
-    [ \t\n\r]*    { adjust(); /* consume the whitespace */ }
+    [ \t ]*    { adjust(); /* consume the whitespace */ }
     .          { adjust(); }
  }
 
