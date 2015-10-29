@@ -1,4 +1,5 @@
 
+#include "ast/terminals.h"
 #include "ast/nary.h"
 using namespace bake_ast;
 
@@ -26,8 +27,8 @@ ClassList::~ClassList() {
   }
 }
 
-void ClassList::add(Node* n) {
-  vector<Node *>::iterator it = children.begin();
+void ClassList::add(ClassStatement* n) {
+  vector<ClassStatement *>::iterator it = children.begin();
   children.insert(it, n);
 }
 
@@ -71,6 +72,11 @@ FeatureList::~FeatureList() {
   }
 }
 
+void FeatureList::add(FeatureOption* n) {
+  vector<FeatureOption *>::iterator it = list.begin();
+  list.insert(it, n);
+}
+
 /******* LetStatement methods *******/
 LetStatement::LetStatement(ListFormalDeclare* l, Node* e) : Node(LETSTATEMENT) {
   list = l;
@@ -83,25 +89,21 @@ LetStatement::~LetStatement() {
 }
 
 /******* CaseStatement methods *******/
-CaseStatement::CaseStatement(Node* c, ExprList* i, ExprList* t, ExprList* e) : Node(CASESTATEMENT) {
-  caseExpr = c;
-  idList = i;
-  typeList = t;
-  exprList = e;
+CaseStatement::CaseStatement(Node* expr, CaseList* cases) : Node(CASESTATEMENT) {
+  setExpr(expr);
+  setCaseList(cases);
 }
 
 CaseStatement::~CaseStatement() {
   delete caseExpr;
-  delete idList;
-  delete typeList;
-  delete exprList;
+  delete cases;
 }
 
 /******* Feature methods *******/
-Feature::Feature(Node* i, ListFormalDeclare* l, Node* t, Node* e) : Node (FEATURE) {
-  id = i;
+Feature::Feature(Id* id, ListFormalDeclare* l, Type* type, Node* e) : Node (FEATURE) {
+  this->id = id;
   list = l;
-  type = t;
+  this->type = type;
   expr = e;
 }
 
@@ -121,15 +123,15 @@ FeatureOption::~FeatureOption() {
 
 /******* ClassStatement methods *******/
 
-ClassStatement::ClassStatement(Node* t, Node* i, FeatureList* f) : Node(CLASSSTATEMENT) {
-  type = t;
+ClassStatement::ClassStatement(Type* t, Type* i, FeatureList* f) : Node(CLASSSTATEMENT) {
+  typeId = t;
   inheritType = i;
   list = f;
 }
 
 ClassStatement::~ClassStatement() {
   delete inheritType;
-  delete type;
+  delete typeId;
   delete list;
 }
 

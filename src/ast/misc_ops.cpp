@@ -1,5 +1,6 @@
 
 #include "ast/misc_ops.h"
+#include "ast/terminals.h"
 using namespace bake_ast;
 
 /** WhileLoop method definitions **/
@@ -16,7 +17,7 @@ WhileLoop::~WhileLoop() {
 
 /** FormalDeclare method definitions **/
 
-FormalDeclare::FormalDeclare(Node* i, Node* t, Node* e) : Node(FORMALDECLARE) {
+FormalDeclare::FormalDeclare(Id* i, Type* t, Node* e) : Node(FORMALDECLARE) {
   id = i;
   type = t;
   expr = e;

@@ -32,22 +32,22 @@ namespace bake_ast {
   class FormalDeclare : public Node {
   public:
     FormalDeclare() : Node(FORMALDECLARE) {};
-    FormalDeclare(Node* i, Node* t, Node* e = nullptr);
+    FormalDeclare(Id* i, Type* t, Node* e = nullptr);
     virtual ~FormalDeclare();
 
-    Node* getID() { return this->id; }
-    Node* getType() { return this->type; }
+    Id* getID() { return this->id; }
+    Type* getType() { return this->type; }
     Node* getExpr() { return this->expr; }
 
-    void setID(Node* n) { id = n; }
-    void setType(Node* n) { type = n; }
+    void setID(Id* n) { id = n; }
+    void setType(Type* n) { type = n; }
     void setExpr(Node* n) { expr = n; }
 
     void accept(Visitor* v) { v->visit(this); }
 
   private:
-    Node* id;
-    Node* type;
+    Id* id;
+    Type* type;
     Node* expr = nullptr;
 
   };

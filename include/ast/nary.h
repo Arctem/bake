@@ -33,15 +33,15 @@ namespace bake_ast {
   class ClassList : public Node {
   public:
     ClassList() : Node(CLASSLIST) { };
-    ClassList(vector<Node*> c) : Node(CLASSLIST) { children = c; }
+    ClassList(vector<ClassStatement*> c) : Node(CLASSLIST) { children = c; }
     virtual ~ClassList();
 
-    void add(Node* n);
-    vector<Node*> getChildren() { return children; }
+    void add(ClassStatement* n);
+    vector<ClassStatement*> getChildren() { return children; }
     virtual void accept(Visitor* v) { v->visit(this); };
 
   private:
-    vector<Node*> children;
+    vector<ClassStatement*> children;
   };
 
   /*** List for Formal Declares ***/
@@ -82,16 +82,15 @@ namespace bake_ast {
 
   class FeatureList : public Node {
   public:
-    FeatureList() : Node(FEATURELIST) {};
-    FeatureList(vector<Node*> v) : Node(FEATURELIST) { list = v; };
+    FeatureList() : Node(FEATURELIST) { };
     virtual ~FeatureList();
 
-    vector<Node*> getList() { return list; }
-    void add(Node* n) { list.push_back(n); }
+    vector<FeatureOption*> getList() { return list; }
+    void add(FeatureOption* n);
     virtual void accept(Visitor* v) { v->visit(this); }
 
   private:
-    vector<Node*> list;
+    vector<FeatureOption*> list;
   };
 
 
@@ -107,7 +106,7 @@ namespace bake_ast {
     virtual ~LetStatement();
 
     Node* getExpr() { return this->expr; }
-    vector<FormalDeclare*> getList() { return this->list->getList(); }
+    ListFormalDeclare* getList() { return this->list; }
     void setExpr(Node* n) { expr = n; }
     void addToIdList(FormalDeclare* n) { list->add(n); }
     virtual void accept(Visitor* v) { v->visit(this); }
@@ -123,25 +122,19 @@ namespace bake_ast {
 
   class CaseStatement : public Node {
   public:
-    CaseStatement() : Node(CASESTATEMENT) {};
-    CaseStatement(Node* c, ExprList* i, ExprList* t, ExprList* e);
+    CaseStatement() : Node(CASESTATEMENT) { };
+    CaseStatement(Node*, CaseList*);
     virtual ~CaseStatement();
 
-    Node* getCaseExpr() { return this->caseExpr; }
-    vector<Node*> getIdList() { return this->idList->getChildren();}
-    vector<Node*> getTypeList() { return this->typeList->getChildren(); }
-    vector<Node*> getExprList() { return this->exprList->getChildren(); }
-    void setCaseExpr(Node* n) { this->caseExpr = n; }
-    virtual void accept(Visitor* v) { v->visit(this); }
+    Node* getExpr() { return caseExpr; };
+    void setExpr(Node* n) { caseExpr = n; };
+    CaseList* getCaseList() { return cases; };
+    void setCaseList(CaseList* caseList) { cases = caseList; };
+    virtual void accept(bake_ast::Visitor* v) { v->visit(this); };
 
   private:
     Node* caseExpr;
-
-    // there will be at least one in each of these lists.
-    ExprList* idList;
-    ExprList* typeList;
-    ExprList* exprList;
-
+    CaseList* cases;
   };
 
 
@@ -180,32 +173,33 @@ namespace bake_ast {
   class Feature : public Node {
   public:
     Feature() : Node(FEATURE) { };
-    Feature(Node* i, ListFormalDeclare* l, Node* t, Node* e);
+    Feature(Id* i, ListFormalDeclare* l, Type* t, Node* e);
     virtual ~Feature();
 
-    Node* getID() { return id; }
+    Id* getID() { return id; }
     ListFormalDeclare* getList() { return list; }
-    Node* getType() { return type; }
+    Type* getType() { return type; }
     Node* getExpr() { return expr; }
 
-    void setID(Node* i) { id = i; }
+    void setID(Id* i) { id = i; }
     void setList(ListFormalDeclare* l) { list = l; }
-    void setType(Node* t) { type = t; }
+    void setType(Type* t) { type = t; }
     void setExpr(Node* e) { expr = e; }
 
     virtual void accept(Visitor* v) { v->visit(this); }
 
   private:
-    Node* id;
-    ListFormalDeclare* list;
-    Node* type;
-    Node* expr;
+    Id* id; // Name of method
+    ListFormalDeclare* list = nullptr; // Parameters
+    Type* type; // Return type
+    Node* expr; // Body
   };
 
   /*** Feature Option - Contains list of Features***/
+  // TODO : You can have method xor attrbute  features
   class FeatureOption : public Node {
   public:
-    FeatureOption() : Node(FEATUREOPTION){};
+    FeatureOption() : Node(FEATUREOPTION) { };
     FeatureOption(Feature* f) : Node(FEATUREOPTION) { feat = f; }
     FeatureOption(FormalDeclare* f) : Node(FEATUREOPTION) { form = f; }
     virtual ~FeatureOption();
@@ -225,25 +219,25 @@ namespace bake_ast {
   class ClassStatement : public Node {
   public:
     ClassStatement() : Node(CLASSSTATEMENT) {};
-    ClassStatement(Node* t, Node* i = nullptr, FeatureList* f = nullptr);
+    ClassStatement(Type* t, Type* i = nullptr, FeatureList* f = nullptr);
     virtual ~ClassStatement();
 
-    Node* getType() { return this->type; }
-    Node* getInheritType() { return this->inheritType; }
+    Type* getType() { return this->typeId; }
+    Type* getInheritType() { return this->inheritType; }
     FeatureList* getList() { return this->list; }
     
-    void setType(Node* n) { this->type = n; }
-    void setInheritType(Node* n) { this->inheritType = n; }
+    void setType(Type* n) { this->typeId = n; }
+    void setInheritType(Type* n) { this->inheritType = n; }
     void setList(FeatureList* n) { this->list = n; }
     void add(FeatureOption* n);
 
     virtual void accept(Visitor* v) { v->visit(this); }
 
   private:
-    Node* type;
-    Node* inheritType = nullptr;
+    Type* typeId; // Name of this class (that is, the name of the type defined by this class)
+    Type* inheritType = nullptr;
 
-    FeatureList* list;
+    FeatureList* list = nullptr;
   };
 }
 

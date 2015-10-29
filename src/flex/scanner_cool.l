@@ -124,11 +124,11 @@ t[r|R][u|U][e|E]             {
                 outputLex("type");
                 out(yytext);
 
-                if(strcmp(yytext, "Int32")){
-                   yylval.valueString = new std::string("Int");
-                }else {
-                yylval.valueString = new std::string(yytext);
-              }
+                if(not strcmp(yytext, "Int32")) {
+                  yylval.valueString = new std::string("Int");
+                } else {
+                  yylval.valueString = new std::string(yytext);
+                }
 
                 return TYPE;
               }
@@ -232,7 +232,7 @@ t[r|R][u|U][e|E]             {
  /* ------- Single Line Comment --------- */
 <COMMENT>{
     \n            { adjust(); yy_pop_state(); }
-    [ \t ]*    { adjust(); /* consume the whitespace */ }
+    [ \t\r]*    { adjust(); /* consume the whitespace */ }
     .          { adjust(); }
  }
 
