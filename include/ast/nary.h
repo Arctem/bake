@@ -8,7 +8,7 @@ using namespace std;
 #include "misc_ops.h"
 
 namespace bake_ast {
-  
+
   /***** Begin Base Lists *****/
 
 
@@ -118,7 +118,7 @@ namespace bake_ast {
 
   };
 
-  
+
   /*** Case Statement - Contains 3 ExprLists ***/
 
   class CaseStatement : public Node {
@@ -168,7 +168,7 @@ namespace bake_ast {
 
 
   };
-  
+
 
   /*** Feature - Contains ListFormalDeclare ***/
   class Feature : public Node {
@@ -226,7 +226,7 @@ namespace bake_ast {
     Type* getType() { return this->typeId; }
     Type* getInheritType() { return this->inheritType; }
     FeatureList* getList() { return this->list; }
-    
+
     void setType(Type* n) { this->typeId = n; }
     void setInheritType(Type* n) { this->inheritType = n; }
     void setList(FeatureList* n) { this->list = n; }
