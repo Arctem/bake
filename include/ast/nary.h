@@ -220,12 +220,13 @@ namespace bake_ast {
   class ClassStatement : public Node {
   public:
     ClassStatement() : Node(CLASSSTATEMENT) {};
-    ClassStatement(Type* t, Type* i = nullptr, FeatureList* f = nullptr);
+    ClassStatement(Type* t, Type* i = nullptr, FeatureList* f = nullptr, bool cantExtend = false);
     virtual ~ClassStatement();
 
     Type* getType() { return this->typeId; }
     Type* getInheritType() { return this->inheritType; }
     FeatureList* getList() { return this->list; }
+    bool cantExtend() { return nonExtend; }
 
     void setType(Type* n) { this->typeId = n; }
     void setInheritType(Type* n) { this->inheritType = n; }
@@ -237,8 +238,8 @@ namespace bake_ast {
   private:
     Type* typeId; // Name of this class (that is, the name of the type defined by this class)
     Type* inheritType = nullptr;
-
     FeatureList* list = nullptr;
+    bool nonExtend;
   };
 }
 

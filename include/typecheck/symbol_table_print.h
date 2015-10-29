@@ -8,6 +8,7 @@ namespace typecheck {
   class SymbolMethod;
   class SymbolAnon;
 
+  // TODO: Move this class to a more logical place
   class SymbolVisitor {
   public:
     SymbolVisitor() { };

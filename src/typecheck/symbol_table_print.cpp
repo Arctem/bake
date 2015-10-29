@@ -43,8 +43,12 @@ void SymbolTablePrint::visit(Groot* groot) {
 void SymbolTablePrint::visit(ClassNode* cls) {
   leadingOps();
   cout << "|\\ [Inherits]" << endl;
-  leadingOps();
-  cout << "| " << cls->getSuper() << endl;
+
+  if(cls->getSuper() != nullptr) {
+    leadingOps();
+    cout << "| " << *cls->getSuper() << endl;
+  }
+
   leadingOps();
   cout << "|/" << endl;
 

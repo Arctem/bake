@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include <sstream>
 using namespace std;
 
@@ -23,14 +24,20 @@ void BuildST::visit(ClassList* classes) {
  */
 void BuildST::visit(ClassStatement* cls) {
   /** Add class to Groot **/
-  ClassNode* nnode = new ClassNode();
-  nnode->setSuper(*cls->getInheritType()->getName());
+  ClassNode* nnode = new ClassNode(cls->cantExtend());
+
+  if(cls->getInheritType() != nullptr) {
+    nnode->setSuper(cls->getInheritType()->getName());
+  }
+
   string class_name = *cls->getType()->getName();
   ((Groot*) curr_scope)->addClass(class_name, nnode);
 
-  curr_scope = nnode;
-  cls->getList()->accept(this);
-  curr_scope = curr_scope->getLexParent();
+  if(cls->getList() != nullptr) {
+    curr_scope = nnode;
+    cls->getList()->accept(this);
+    curr_scope = curr_scope->getLexParent();
+  }
 }
 
 /**
@@ -49,7 +56,7 @@ void BuildST::visit(FeatureList* list) {
 }
 
 /**
- * Add a new attribute to the class
+ * Add a new attribute to the class, let scope, or method parameter list.
  */
 void BuildST::visit(FormalDeclare* formal) {
   string name = *(formal->getID()->getName());

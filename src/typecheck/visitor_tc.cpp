@@ -66,26 +66,26 @@ void TypeCheck::visit(Id* id) {
   // if it doesn't exist, check parent scopes
   
   // if self
-  if(*(id->getName()) == "self"){
+  if(*(id->getName()) == "self") {
     id->setInfType(curClass.c_str());
     setTypeOfLast(id->getInfType());
   }
   // Symbol Method
-  else if(curScope->getType() == SYMBOLMETHOD){
-    SymbolMethod* cur = (SymbolMethod*)curScope;
+  else if(curScope->getType() == SYMBOLMETHOD) {
+    SymbolMethod* cur = (SymbolMethod*) curScope;
     
     try{
       string typeName = cur->getParams().at(*(id->getName()));
       // if its self type, resolve it
-      if(typeName == "SELF_TYPE"){
+      if(typeName == "SELF_TYPE") {
         id->setInfType(curClass.c_str());
-      }else{
+      } else {
         id->setInfType(typeName.c_str());
       }
       setTypeOfLast(id->getInfType());
     }
-    catch(std::out_of_range oor){ // otherwise, try and find it more
-      SymbolNode* tmp = curScope; // save the current scope
+    catch(std::out_of_range oor) { // otherwise, try and find it more
+      SymbolNode* tmp = curScope;  // save the current scope
       
       typeOfLast = nullptr;
       curScope = curScope->getLexParent();
@@ -103,22 +103,22 @@ void TypeCheck::visit(Id* id) {
     }
   }
   // SymbolAnon
-  else if(curScope->getType() == SYMBOLANON){ 
+  else if(curScope->getType() == SYMBOLANON) {
     SymbolAnon* cur = (SymbolAnon*)curScope;
 
     // check if it exists, if it does, return it
     try{
       string typeName = cur->getMembers().at(*(id->getName()));
       // if its self type, resolve it
-      if(typeName == "SELF_TYPE"){
+      if(typeName == "SELF_TYPE") {
         id->setInfType(curClass.c_str());
-      }else{
+      } else {
         id->setInfType(typeName.c_str());
       }
       setTypeOfLast(id->getInfType());
     }
-    catch(std::out_of_range oor){ // otherwise, try and find it more
-      SymbolNode* tmp = curScope; // save the current scope
+    catch(std::out_of_range oor) { // otherwise, try and find it more
+      SymbolNode* tmp = curScope;  // save the current scope
       
       typeOfLast = nullptr;
       curScope = curScope->getLexParent();
@@ -136,26 +136,34 @@ void TypeCheck::visit(Id* id) {
     }
   }
   // Class
-  else if(curScope->getType() == CLASSNODE){ 
-    ClassNode* cur = (ClassNode*)curScope;
+  else if(curScope->getType() == CLASSNODE) {
+    ClassNode* cur = (ClassNode*) curScope;
     
-    try{
-      string typeName = cur->getMembers().at(*(id->getName()));
+    try {
+      string typeName;
+      //TODO: Not thi
+      if(cur->getMethods().find(*id->getName()) != cur->getMethods().end()) {
+	typeName = cur->getMethods().at(*(id->getName()))->getRetType();
+      } else {
+	typeName = cur->getMembers().at(*(id->getName()));
+      }
       // if its self type, resolve it
-      if(typeName == "SELF_TYPE"){
+      if(typeName == "SELF_TYPE") {
         id->setInfType(curClass.c_str());
-      }else{
+      } else {
         id->setInfType(typeName.c_str());
       }
       setTypeOfLast(id->getInfType());
     }
-    catch(std::out_of_range oor){ // otherwise, try and find it more
+    catch(std::out_of_range oor) { // otherwise, try and find it more
       SymbolNode* tmp = curScope; // save the current scope
       
       typeOfLast = nullptr;
-      curScope = curScope->getLexParent();
+      if(cur->getSuper()) {
+	curScope = cur->getLexParent()->getClasses()[*cur->getSuper()];
       
-      visit(id);
+	visit(id);
+      }
       curScope = tmp; // set scope back to normal
       // if found, return
       if(typeOfLast != nullptr)

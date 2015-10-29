@@ -1,6 +1,4 @@
-
-#ifndef __SYMBOL_NODE__
-#define __SYMBOL_NODE__
+#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -45,7 +43,7 @@ namespace typecheck {
     bool isA(NodeType type) { return type == this->type; };
     NodeType getType() { return type; };
     virtual SymbolNode* getLexParent() = 0; // Get the lexical parent of this namespace
-    virtual void accept(SymbolTablePrint*) = 0;
+    virtual void accept(SymbolVisitor*) = 0;
 
   private:
     NodeType type;
@@ -62,10 +60,16 @@ namespace typecheck {
     unordered_map<string, ClassNode*> getClasses();
     void addClass(string, ClassNode*);
     SymbolNode* getLexParent();
-    virtual void accept(SymbolTablePrint* v) { v->visit(this); }
+    void setMainClass(ClassNode* n) { mainClass = n; }
+    ClassNode* getMainClass() { return mainClass; }
+    void setMainMethod(SymbolMethod* n) { mainMethod = n; }
+    SymbolMethod* getMainMethod() { return mainMethod; }
+    virtual void accept(SymbolVisitor* v) { v->visit(this); }
 
   private:
     unordered_map<string, ClassNode*> classes; // Classes in this program
+    ClassNode* mainClass = nullptr; // Reference to the Main class
+    SymbolMethod* mainMethod = nullptr; // Reference to the main() method.
   };
 
   /**
@@ -73,7 +77,7 @@ namespace typecheck {
    */
   class ClassNode : public SymbolNode {
   public:
-    ClassNode() : SymbolNode(CLASSNODE) { };
+    ClassNode(bool cantExtend) : SymbolNode(CLASSNODE), nonExtend(cantExtend) { };
     virtual ~ClassNode();
 
     unordered_map<string, string> getMembers();
@@ -85,16 +89,18 @@ namespace typecheck {
     Groot* getLexParent();
     void setLexParent(Groot* groot);
     
-    string getSuper() { return super; };
-    void setSuper(string cls) { super = cls; };
-    
-    virtual void accept(SymbolTablePrint* v) { v->visit(this); }
+    string* getSuper() { return super; };
+    void setSuper(const string* cls);
+    bool cantExtend() { return nonExtend; }
+
+    virtual void accept(SymbolVisitor* v) { v->visit(this); }
 
   private:
     Groot* lex_parent;
-    string super;
+    string* super = nullptr;
     unordered_map<string, string> members; // Elements in this scope (instance variables).
     unordered_map<string, SymbolMethod*> methods; // Methods in this class
+    bool nonExtend;
   };
 
   /**
@@ -113,13 +119,13 @@ namespace typecheck {
     void setLexParent(ClassNode* parent);
     unordered_map<string, string> getParams() { return params; };
     void addParam(string id, string type);
-    virtual void accept(SymbolTablePrint* v) { v->visit(this); }
     SymbolAnon* nextMem() { return members[curMem++]; }
+    virtual void accept(SymbolVisitor* v) { v->visit(this); }
 
   private:
     string retType;
     ClassNode* lex_parent;
-    unordered_map<string, string> params; // Parameters to this method.
+    unordered_map<string, string> params; // Parameters to this method. Key: param name. Value: param type
     vector<SymbolAnon*> members; // Sub scopes (e.g., let statement)
     int curMem = 0; // current point in members
   };
@@ -143,7 +149,7 @@ namespace typecheck {
     
     SymbolAnon* nextMem() { return subs[curMem++]; }
 
-    virtual void accept(SymbolTablePrint* v) { v->visit(this); }
+    virtual void accept(SymbolVisitor* v) { v->visit(this); }
 
   private:
     SymbolNode* lex_parent;
@@ -152,5 +158,3 @@ namespace typecheck {
     int curMem = 0; // current point in members
   };
 }
-
-#endif

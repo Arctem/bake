@@ -14,6 +14,7 @@ using namespace bake_ast;
 #include "typecheck/build_st.h"
 #include "typecheck/symbol_table_print.h"
 #include "typecheck/visitor_tc.h"
+#include "typecheck/check_scope.h"
 using namespace typecheck;
 
 extern int yylineno;

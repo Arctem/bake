@@ -131,7 +131,7 @@ FeatureOption::~FeatureOption() {
 
 /******* ClassStatement methods *******/
 
-ClassStatement::ClassStatement(Type* t, Type* i, FeatureList* f) : Node(CLASSSTATEMENT) {
+ClassStatement::ClassStatement(Type* t, Type* i, FeatureList* f, bool cantExtend) : Node(CLASSSTATEMENT), nonExtend(cantExtend) {
   typeId = t;
   inheritType = i;
   list = f;

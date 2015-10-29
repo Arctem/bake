@@ -51,9 +51,17 @@ SymbolNode* Groot::getLexParent() {
  * Destructor
  */
 ClassNode::~ClassNode() {
+  if(super != nullptr) {
+    delete super;
+  }
+
   for(auto method : methods) {
     delete method.second;
   }
+}
+
+void ClassNode::setSuper(const string* cls) {
+  super = new string(*cls);
 }
 
 /**

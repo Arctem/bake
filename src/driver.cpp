@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
 
   // Prints the AST
   PrettyPrint pp;
-  ast->accept(&pp);
+  // ast->accept(&pp);
 
   cout << endl << "################" << endl << endl;
 
@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
   ast->add(buildInt8());
   ast->add(buildInt64());
 
-  ast->accept(&pp);
+  // ast->accept(&pp);
 
   //  Builds the scope table
   BuildST build;
@@ -91,7 +91,16 @@ int main(int argc, char** argv) {
 
   cout << endl << "################" << endl << endl;
 
-  // Runs the type checker
+
+  CheckScope cs;
+  try {
+    build.getCurrScope()->accept(&cs);
+  } catch (ScopeCheckErr& e) {
+    cout << e.what() << endl;
+    return 0;
+  }
+
+  // Runs the type checker  
   TypeCheck tc(build.getCurrScope());
 
   try {
@@ -153,25 +162,25 @@ ClassStatement* buildString() {
   methods->add(new FeatureOption(new Feature(new Id(new string("length")), new ListFormalDeclare(), new Type(new string("Int")), new ExprList())));
   methods->add(new FeatureOption(new Feature(new Id(new string("concat")), concatParam, new Type(new string("String")), new ExprList())));
   methods->add(new FeatureOption(new Feature(new Id(new string("substr")), substrParam, new Type(new string("String")), new ExprList())));
-  return new ClassStatement(new Type(new string("String")), nullptr, methods);
+  return new ClassStatement(new Type(new string("String")), nullptr, methods, true);
 }
 
 ClassStatement* buildInt() {
-  return new ClassStatement(new Type(new string("Int")), nullptr, nullptr);
+  return new ClassStatement(new Type(new string("Int")), nullptr, nullptr, true);
 }
 
 ClassStatement* buildInt8() {
-  return new ClassStatement(new Type(new string("Int8")), nullptr, nullptr);
+  return new ClassStatement(new Type(new string("Int8")), nullptr, nullptr, true);
 }
 
 ClassStatement* buildInt64() {
-  return new ClassStatement(new Type(new string("Int64")), nullptr, nullptr);
+  return new ClassStatement(new Type(new string("Int64")), nullptr, nullptr, true);
 }
 
 ClassStatement* buildFloat() {
-  return new ClassStatement(new Type(new string("Float")), nullptr, nullptr);
+  return new ClassStatement(new Type(new string("Float")), nullptr, nullptr, true);
 }
 
 ClassStatement* buildBool() {
-  return new ClassStatement(new Type(new string("Bool")), nullptr, nullptr);
+  return new ClassStatement(new Type(new string("Bool")), nullptr, nullptr, true);
 }
