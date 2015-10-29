@@ -48,7 +48,7 @@ namespace typecheck {
     virtual void accept(SymbolTablePrint*) = 0;
 
   private:
-    NodeType type;  
+    NodeType type;
   };
 
   /**
@@ -78,12 +78,16 @@ namespace typecheck {
 
     unordered_map<string, string> getMembers();
     void addMember(string, string);
+    
     unordered_map<string, SymbolMethod*> getMethods();
     void addMethod(string, SymbolMethod*);
+    
     Groot* getLexParent();
     void setLexParent(Groot* groot);
+    
     string getSuper() { return super; };
     void setSuper(string cls) { super = cls; };
+    
     virtual void accept(SymbolTablePrint* v) { v->visit(this); }
 
   private:
@@ -110,12 +114,14 @@ namespace typecheck {
     unordered_map<string, string> getParams() { return params; };
     void addParam(string id, string type);
     virtual void accept(SymbolTablePrint* v) { v->visit(this); }
+    SymbolAnon* nextMem() { return members[curMem++]; }
 
   private:
     string retType;
     ClassNode* lex_parent;
     unordered_map<string, string> params; // Parameters to this method.
     vector<SymbolAnon*> members; // Sub scopes (e.g., let statement)
+    int curMem = 0; // current point in members
   };
 
   /**
@@ -128,10 +134,14 @@ namespace typecheck {
 
     unordered_map<string, string> getMembers();
     void addMember(string, string);
+    
     vector<SymbolAnon*> getSubs() { return subs; };
     void addSub(SymbolAnon* sub);
+    
     SymbolNode* getLexParent();
     void setLexParent(SymbolNode* parent);
+    
+    SymbolAnon* nextMem() { return subs[curMem++]; }
 
     virtual void accept(SymbolTablePrint* v) { v->visit(this); }
 
@@ -139,6 +149,7 @@ namespace typecheck {
     SymbolNode* lex_parent;
     unordered_map<string, string> members; // Elements in this scope (variables).
     vector<SymbolAnon*> subs; // Sub let statements
+    int curMem = 0; // current point in members
   };
 }
 

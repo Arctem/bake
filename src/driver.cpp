@@ -92,7 +92,8 @@ int main(int argc, char** argv) {
   cout << endl << "################" << endl << endl;
 
   // Runs the type checker
-  TypeCheck tc;
+  TypeCheck tc(build.getCurrScope());
+
   try {
     ast->accept(&tc);
     ast->accept(&pp);

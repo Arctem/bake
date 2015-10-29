@@ -1,5 +1,4 @@
-#ifndef __TYPE_NAZI__
-#define __TYPE_NAZI__
+#pragma once
 
 #include <string>
 #include <exception>
@@ -7,6 +6,9 @@ using namespace std;
 
 #include "ast/ast.h"
 using namespace bake_ast;
+
+#include "symbol_node.h"
+using namespace typecheck;
 
 
 namespace typecheck {
@@ -27,6 +29,8 @@ namespace typecheck {
 
   class TypeCheck : public Visitor {
   public:
+    TypeCheck(SymbolNode* node) : curScope(node) { };
+
     // Terminal nodes.
     void visit(IntegerVal*);
     void visit(FloatVal*);
@@ -34,8 +38,8 @@ namespace typecheck {
     void visit(Int64Val*);
     void visit(StringVal*);
     void visit(BoolVal*);
-    void visit(Id*) { }; // TODO: Needs proper implementation
-    void visit(Type*) { };
+    void visit(Id*);
+    void visit(Type*);
 
     // Unary Operators
     void visit(LogicalNot*);
@@ -73,12 +77,19 @@ namespace typecheck {
     // Helper methods
     string* getTypeOfLast() { return typeOfLast; }
     void setTypeOfLast(string* s) { typeOfLast = s; }
+
+    SymbolNode* getScope() { return curScope; }
+    void setScope(SymbolNode* scope) { curScope = scope; }
+
   private:
     string* typeOfLast; // Reference to the string specifying the type of the last node that this visitor was in
+    SymbolNode* curScope; // the current reference of the scope table
+    string curClass;
 
     // Private helper methods
     bool isBuiltin(string* type); // Check whether the given string is the name of a built in type
+    const char* numOrder(string* l, string* r); // returns the greatest of the 2 based on int/float order. returns nullptr on error.
+    bool isInt(string* type); // checks if the string is an int
+    const char* isNum(string* s);// returns what number it is, nullptr if it is not a number
   };
 }
-
-#endif
