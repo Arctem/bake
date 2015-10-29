@@ -32,6 +32,14 @@ void ClassList::add(ClassStatement* n) {
   children.insert(it, n);
 }
 
+/* Eats up another ClassList, basically merging two into one. */
+void ClassList::consume(ClassList* n) {
+  children.reserve(children.size() + n->children.size());
+  children.insert(children.end(), n->children.begin(), n->children.end());
+  n->children.clear();
+  delete n;
+}
+
 /******* ListFormalDeclare methods *******/
 
 ListFormalDeclare::~ListFormalDeclare() { 

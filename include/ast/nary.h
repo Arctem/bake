@@ -37,6 +37,7 @@ namespace bake_ast {
     virtual ~ClassList();
 
     void add(ClassStatement* n);
+    void consume(ClassList* n);
     vector<ClassStatement*> getChildren() { return children; }
     virtual void accept(Visitor* v) { v->visit(this); };
 
