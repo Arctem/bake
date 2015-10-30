@@ -9,3 +9,9 @@ class Test {
       }
   };
 };
+
+class Main inherits Test{
+  main() : Object {
+     test1()
+  };
+};

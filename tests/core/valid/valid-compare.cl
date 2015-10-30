@@ -1,5 +1,5 @@
-class Test {
-  test1() : Object {
+class Main {
+  main() : Object {
       {
           a < 1 ;
           a = 3;

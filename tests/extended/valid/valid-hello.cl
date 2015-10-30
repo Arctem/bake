@@ -3,14 +3,10 @@ class Main inherits IO {
 
   main() : Object {
     {
-
-      let a : Int, b : Int <- 12, c : Int in {
-
+      let a : Int, b : Int64 <- 12, c : Float in {
         a <- b + let a : Int in { 4; };
       };
       out_string("Hi World!\n");
-
-      out_string((new Goodbye).get_bye());
     }
   };
 };
