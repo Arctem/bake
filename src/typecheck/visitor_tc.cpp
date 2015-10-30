@@ -690,6 +690,8 @@ void TypeCheck::visit(CaseList* node) {
   }
 
   // TODO: Need find which is the highest possible parent
+  node->setInfType("Object");
+  setTypeOfLast(node->getInfType());
 }
 
 /**
