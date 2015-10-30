@@ -1,10 +1,36 @@
-# bake
+# Bake
 Compiler for CSE423.
 Cake Whisperers:
-  Andrew (AJ) Burns, Melanie Palmer, William Rosenberger, Russell White
+  Andrew (A to the J) Burns, Melanie Palmer, William Rosenberger, Russell White
 
 ## Overview
-Bake is currently in the parser stage of our COOL compiler. Utilizing FLEX, it reads in a .cl file and converts it to line seperated tokens. It ignores comments and extra whitespace while reading the file. The conversion is done as per the COOL specification. It then interfaces with BISON to match our grammar from the tokens returned from flex. As it matches the grammar in BISON, it builds the AST for our grammar. The AST can be pretty printed for testing. 
+Bake currently has the following three parts of compilation implemented: 
+* Lexical analysis
+* Parsing
+* Type checking
+
+####Lexical analysis
+Utilizing FLEX, Bake reads in a .cl file and converts it to line seperated tokens. It ignores comments and extra whitespace while reading the file. The conversion is done as per the COOL specification.
+
+####Parsing
+After lexical analysis, Bake interfaces with BISON to match our grammar from the tokens returned from flex. As it matches the grammar in BISON, it builds the AST for our grammar. The AST can be pretty printed for testing.
+
+####Type checking
+The first step in checking for type validity is to build a symbol table for each scope. Each of these scope tables are stored in a tree structure, allowing Bake to easily determine whether a requested feature is visible in the current scope. We call this tree of scope tables the scope tree. There are four types of nodes in the scope tree:
+* Groot 
+  * Global Root. See also: A magnificent tree that guards the galaxy
+  * Child scopes can only be Class scopes.
+  * Contains a map from the name of the child scope to the scope object for that class
+* Class
+  * Contains the attributes and methods for a class
+  * Attributes are contained in a map from the attribute name to the name of the type of that attribute
+  * Methods are contained in a map from the name of the method to the scope object for that method
+* Method
+  * The only additions method makes to the current scope are the parameters it takes in.
+  * Parameters are stored in a map from the name of the parameter to the name of the type of the parameter
+  * Methods may also contain Let scopes, which are anonymous. Lets are stored in a simple vector.
+* Let statement
+  * Let statements define additional variables. These are, again, contained in a map from name to type.
 
 ## Features
 - Command line arguments for input and lexer output (see How to Compile and Run).
@@ -12,34 +38,21 @@ Bake is currently in the parser stage of our COOL compiler. Utilizing FLEX, it r
 - Matches the grammar off of those tokens
 - Builds an AST off the grammar
 - Pretty print of our AST
+- Builds a scope table off the AST
+- Pretty prints the scope table
+- Verifies the types of the AST off of the scope table
 
 ## Bugs
-- Memory leaks in our AST, fix by building destructors.
-- Ordered lists are currently reversed (i.e. group of expr) the statements will be in
-  reversed order, but everything within that statement (like order of operations) is
-  in the correct order. This bug is due to a minor mistake made while building the
-  tree and is an easy fix but we're tired.
-- Automated testing is kinda borked, so you'll have to run it yourself. Just do
-  `./bake src/flex/test/parser_tests/<test-file>` and you'll see the tree. Exciting!
+- Automated testing is sorta kinda working. You can run it with either `make test` or
+  `bin/lextest` for more detailed output. Unfortunately that's only for testing the
+  flex/bison stuff. Other stuff you'll have to run yourself. Just do
+  `./bake src/typecheck/tests/<test-file>` and you'll see it do its thing. Exciting!
 
 ## How to Compile and Run
-- Run cmake_script.sh in terminal to create the makefile and build the project.
-  - To make clean, delete the build directory and rerun the script.
-- Go into build/src/
-- Run ./bake &lt;input-file&gt;
-  - Alternately, you can run specifying the input and output files:
-    Run ./bake -i &lt;input-file&gt; to run the compiler
-            AND
-    Run ./bake -i &lt;input-file&gt; -l &lt;output-file&gt to recieve the lex output
-      - "-i &lt;input-file&gt;" denotes the name of the input file to the compiler
-      - "-l &lt;output-file&gt;" denotes the name of the output file from the lexer.
-      - default output-file name is: "<input-file>-lex-bake"
-
--- THIS TEST NO LONGER EXISTS, CHECK BACK FOR TESTING SOON! --
-- Run unit tests:
-  - navigate to the bake/tests folder
-    - ./test_lexer.py
-  - Note: this script assumes the cool command is in the path.
+- Run `make`. To build tests, run `make test`.
+- Run `./bake <input-file>`
+- To specify multiple files, run `./bake -i <file1> -i <file2> -i <file3>`. An
+  arbitrary number of files are accepted.
 
 ## How to use COOL Reference Interpreter
 - Make sure you have executable permission on the "cool" executable.
