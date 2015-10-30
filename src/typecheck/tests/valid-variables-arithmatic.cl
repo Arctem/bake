@@ -2,7 +2,7 @@ class Main inherits IO {
   a : Int;
 
   main() : Object {
-    let b : Int8 <- 5, c : Int64 <- 15, d : Float <- 5.2, e : SELF_TYPE in 
+    let b : Int8, c : Int64 <- 15, d : Float <- 5.2, e : SELF_TYPE in 
     {
       a + b;
       b - c;
@@ -10,7 +10,7 @@ class Main inherits IO {
       d / b;
       b + b;
       e <- self;
-      new SELF_TYPE;
+      1;
     }
   };
 };

@@ -509,9 +509,58 @@ void TypeCheck::visit(Equal* node) {
  */
 void TypeCheck::visit(Assign* node) {
   node->getLhs()->accept(this);
+  string* type = getTypeOfLast();
   node->getRhs()->accept(this);
+  string* exprType = getTypeOfLast();
+  
 
-  // TODO: need to know how to see if rhs <= lhs
+  if(canAssign(type, exprType)){
+    node->setInfType(type->c_str());
+    setTypeOfLast(node->getInfType());
+  }
+  else{
+      SymbolNode* tmp = curScope;
+ 
+      if(*type == *exprType){
+        // done
+        node->setInfType(type->c_str());
+        setTypeOfLast(node->getInfType());
+        return;
+      }
+      
+      // get to groot
+      while(tmp->getType() != GROOT){
+        tmp = tmp->getLexParent();
+      }
+      try{
+        ClassNode* cls = ((Groot*)tmp)->getClasses().at(*exprType);
+        
+        while(cls->getSuper() != nullptr){
+          if(*(cls->getSuper()) == *type){
+            node->setInfType(type->c_str());
+            setTypeOfLast(node->getInfType());
+            return;
+          }
+          cls = ((Groot*)tmp)->getClasses().at(*(cls->getSuper()));
+        }
+        if("Object" == *exprType){
+          node->setInfType("Object");
+          setTypeOfLast(node->getInfType());
+          return;
+        }
+        
+        stringstream msg;
+        msg << "Error: Class '" << *exprType << "' cannot be assigned to '" << *type << "'";
+
+        throw TypeErr(msg.str().c_str());
+      }
+      catch (std::out_of_range oor){
+        stringstream msg;
+        msg << "Error: Class '" << *exprType << "' doesn't exist";
+
+        throw TypeErr(msg.str().c_str());
+      }
+    }
 }
 
 
@@ -598,7 +647,6 @@ void TypeCheck::visit(IfStatement* node) {
 /**
  * Typecheck LetStatement
  * *** New Scope ***
- * TODO: Need to finish this
  */
 void TypeCheck::visit(LetStatement* node) {
   // set new scope
@@ -609,7 +657,11 @@ void TypeCheck::visit(LetStatement* node) {
     curScope = ((SymbolAnon*)curScope)->nextMem();
   }
 
+  // visit expr and set the return type
   node->getExpr()->accept(this);
+  node->setInfType(getTypeOfLast()->c_str());
+  setTypeOfLast(node->getInfType());
+  
   node->getList()->accept(this);
 
   // exit scope
@@ -660,23 +712,71 @@ void TypeCheck::visit(Case* node) {
 
 /**
  * Typecheck FormalDeclare
- * TODO: identify whether is a parameter or an attribute.
  * If an attibute see if ID has ever been named in the inheritance tree before hand.
  * Either way make sure that rhs => lhs
  */
 void TypeCheck::visit(FormalDeclare* node) {
   node->getID()->accept(this);
   node->getType()->accept(this);
+  string* type = getTypeOfLast();
 
   if(node->getExpr() != nullptr) {
     node->getExpr()->accept(this);
+    string* exprType = getTypeOfLast();
+    
+    bool cani = canAssign(type, exprType);
+    if(cani){
+      node->setInfType(type->c_str());
+      setTypeOfLast(node->getInfType());
+    }
+    else{
+      SymbolNode* tmp = curScope;
+      if(*type == *exprType){
+        // done
+        node->setInfType(type->c_str());
+        setTypeOfLast(node->getInfType());
+        return;
+      }
+      
+      // get to groot
+      while(tmp->getType() != GROOT){
+        tmp = tmp->getLexParent();
+      }
+      try{
+        ClassNode* cls = ((Groot*)tmp)->getClasses().at(*exprType);
+        
+        while(cls->getSuper() != nullptr){
+          if(*(cls->getSuper()) == *type){
+            node->setInfType(type->c_str());
+            setTypeOfLast(node->getInfType());
+            return;
+          }
+          cls = ((Groot*)tmp)->getClasses().at(*(cls->getSuper()));
+        }
+        if("Object" == *exprType){
+          node->setInfType("Object");
+          setTypeOfLast(node->getInfType());
+          return;
+        }
+        
+        stringstream msg;
+        msg << "Error: Class '" << *exprType << "' cannot be assigned to '" << *type << "'";
+
+        throw TypeErr(msg.str().c_str());
+      }
+      catch (std::out_of_range oor){
+        stringstream msg;
+        msg << "Error: Class '" << *exprType << "' doesn't exist";
+
+        throw TypeErr(msg.str().c_str());
+      }
+    }
   }
 }
-// TODO: Check for SELF_TYPE
+
 /**
  * Typecheck ClassStatement
  * *** New Scope ***
- * TODO: Double check if there is something we have to do here
  */
 void TypeCheck::visit(ClassStatement* node) {
   // enter new scope (Going to be groot)
@@ -700,7 +800,6 @@ void TypeCheck::visit(ClassStatement* node) {
 /**
  * Typecheck ClassList
  * Scope of Groot (AKA "I am Groot")
- * TODO: Double check, should be done
  */
 void TypeCheck::visit(ClassList* node) {
   for(auto cls : node->getChildren()) {
@@ -711,6 +810,7 @@ void TypeCheck::visit(ClassList* node) {
 /**
  * Typecheck Dispatch
  * TODO: Dispatch needs to handle self type.
+ * TODO: add hard coded convert methods
  */
 void TypeCheck::visit(Dispatch* node) {
   node->getID()->accept(this);
@@ -730,7 +830,6 @@ void TypeCheck::visit(Dispatch* node) {
 
 /**
  * Typecheck ListFormalDeclare
- * TODO: Parameters. This will not need to infer a type
  */
 void TypeCheck::visit(ListFormalDeclare* node) {
   for(auto decl : node->getList()) {
@@ -750,11 +849,9 @@ void TypeCheck::visit(Feature* node) {
   
   // don't check id!
   node->getType()->accept(this);
+  string* type = getTypeOfLast();
   node->getExpr()->accept(this);
-
-  if(node->getList() != nullptr) {
-    node->getList()->accept(this);
-  }
+  string* exprType = getTypeOfLast();
 
   // exit scope
   curScope = curScope->getLexParent();
@@ -762,7 +859,6 @@ void TypeCheck::visit(Feature* node) {
 
 /**
  * Typecheck FeatureOption
- * TODO: Shouldn't need to infer types.. should be done
  */
 void TypeCheck::visit(FeatureOption* node) {
   if(node->getFeat() != nullptr) {
@@ -776,7 +872,6 @@ void TypeCheck::visit(FeatureOption* node) {
 
 /**
  * Typecheck FeatureList
- * TODO: Shouldn't need to infer types .. shoudl be done
  */
 void TypeCheck::visit(FeatureList* node) {
   for(auto feature : node->getList()) {
@@ -866,4 +961,41 @@ bool TypeCheck::isInt(string* type) {
     return true;
   else
     return false;
+}
+
+// checks if rhs <= lhs
+bool TypeCheck::canAssign(string* l, string* r){
+  int lorder;
+  int rorder;
+
+  // find the ordering of the left
+  if(*l == "Int64")
+    lorder = 3;
+  else if(*l == "Float")
+    lorder = 4;
+  else if(*l == "Int8")
+    lorder = 1;
+  else if(*l == "Int")
+    lorder = 2;
+  else
+    return false;
+
+
+  // find the ordering of the right
+  if(*r == "Int64")
+    rorder = 3;
+  else if(*r == "Float")
+    rorder = 4;
+  else if(*r == "Int8")
+    rorder = 1;
+  else if(*r == "Int")
+    rorder = 2;
+  else
+    return false;
+
+  // use the larger of the 2
+  if(lorder >= rorder){
+    return true;
+  }
+  return false;
 }
