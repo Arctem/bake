@@ -29,7 +29,7 @@ namespace typecheck {
 
   class TypeCheck : public Visitor {
   public:
-    TypeCheck(SymbolNode* node) : curScope(node) { };
+    TypeCheck(SymbolNode* node) : curScope(node) { groot = (Groot*) node; };
 
     // Terminal nodes.
     void visit(IntegerVal*);
@@ -85,6 +85,7 @@ namespace typecheck {
     string* typeOfLast; // Reference to the string specifying the type of the last node that this visitor was in
     SymbolNode* curScope; // the current reference of the scope table
     string curClass;
+    Groot* groot; // Reference to the global root.
 
     // Private helper methods
     bool isBuiltin(string* type); // Check whether the given string is the name of a built in type
@@ -92,5 +93,6 @@ namespace typecheck {
     bool isInt(string* type); // checks if the string is an int
     const char* isNum(string* s);// returns what number it is, nullptr if it is not a number
     bool canAssign(string* l, string* r); // returns true if lhs >= rhs
+    void checkDispatchParameters(Dispatch*, SymbolMethod*); // Checks whether the parameters match between a method declaration and dispatch.
   };
 }

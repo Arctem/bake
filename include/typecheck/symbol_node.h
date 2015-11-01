@@ -90,14 +90,20 @@ namespace typecheck {
     void setLexParent(Groot* groot);
     
     string* getSuper() { return super; };
-    void setSuper(const string* cls);
+    void setSuper(const string cls);
     bool cantExtend() { return nonExtend; }
+
+    string* getName() { return cls_name; }
+    void setName(const string name);
+
+    bool hasAncestor(string* parent); // Check whether this class is a subclass of parent
 
     virtual void accept(SymbolVisitor* v) { v->visit(this); }
 
   private:
     Groot* lex_parent;
-    string* super = nullptr;
+    string* super = nullptr; // Name of parent class
+    string* cls_name; // Name of this class
     unordered_map<string, string> members; // Elements in this scope (instance variables).
     unordered_map<string, SymbolMethod*> methods; // Methods in this class
     bool nonExtend;
@@ -119,12 +125,14 @@ namespace typecheck {
     void setLexParent(ClassNode* parent);
     unordered_map<string, string> getParams() { return params; };
     void addParam(string id, string type);
+    vector<string> getParamNames() { return param_names; }
     SymbolAnon* nextMem() { return members[curMem++]; }
     virtual void accept(SymbolVisitor* v) { v->visit(this); }
 
   private:
     string retType;
     ClassNode* lex_parent;
+    vector<string> param_names; // List of parameter names, in the order they are specified in the method declaration. Use the params map to determine the types.
     unordered_map<string, string> params; // Parameters to this method. Key: param name. Value: param type
     vector<SymbolAnon*> members; // Sub scopes (e.g., let statement)
     int curMem = 0; // current point in members

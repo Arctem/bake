@@ -218,8 +218,8 @@ string typecheck::CheckScope::getMethodSig(ClassNode* cls, string methodName) {
   SymbolMethod* method = cls->getMethods()[methodName];
 
   sig << method->getRetType();
-  for(auto param_kv : method->getParams()) {
-    sig << param_kv.second;
+  for(auto param_name : method->getParamNames()) {
+    sig << method->getParams()[param_name];
   }
 
   return sig.str();

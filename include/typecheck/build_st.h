@@ -14,8 +14,8 @@ namespace typecheck {
     BuildST();
     ~BuildST() { delete curr_scope; };
 
-    SymbolNode* getCurrScope() { return curr_scope; }   // Get the scope that the visitor is currently at.
-                                                        // After this visitor is finished visiting the AST, this will return Groot.
+    SymbolNode* getCurrScope() { return curr_scope; }  // Get the scope that the visitor is currently at.
+                                                       // After this visitor is finished visiting the AST, this will return Groot.
 
     /** Terminals **/
     void visit(IntegerVal*) { };

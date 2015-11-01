@@ -51,6 +51,8 @@ SymbolNode* Groot::getLexParent() {
  * Destructor
  */
 ClassNode::~ClassNode() {
+  delete cls_name;
+
   if(super != nullptr) {
     delete super;
   }
@@ -60,8 +62,12 @@ ClassNode::~ClassNode() {
   }
 }
 
-void ClassNode::setSuper(const string* cls) {
-  super = new string(*cls);
+void ClassNode::setSuper(const string cls) {
+  super = new string(cls);
+}
+
+void ClassNode::setName(const string name) {
+  cls_name = new string(name);
 }
 
 /**
@@ -125,6 +131,30 @@ void ClassNode::setLexParent(Groot* groot) {
   this->lex_parent = groot;
 }
 
+/**
+ * Check whether this class is a subclass of parent
+ * param parent: Name of the parent class to look for
+ */
+bool ClassNode::hasAncestor(string* parent) {
+  Groot* groot = (Groot*) getLexParent(); // Lexical parent of a Class is always Groot
+
+  ClassNode* curClass = this;
+  if(*curClass->getName() == *parent) { // Are we already in the requested class?
+    return true;
+  }
+
+  /* Walk along the inheritance tree until we hit the end of the tree */
+  while(curClass->getSuper() != nullptr) {
+    curClass = groot->getClasses()[*curClass->getSuper()];
+
+    if(*curClass->getName() == *parent) { // When we find the correct class...
+      return true;
+    }
+  }
+
+  return false;
+}
+
 /************ SymbolMethod method implementation ***********/
 
 /**
@@ -164,6 +194,7 @@ void SymbolMethod::addParam(string id, string type) {
     throw StBuildErr(msg.str().c_str());
   }
 
+  param_names.push_back(id);
   params.insert(pair<string, string>(id, type));
 }
 

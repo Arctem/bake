@@ -3,13 +3,17 @@ class Main inherits IO {
     out_string("Hi World!\n")
   };
 
-  foo(x : String) : Int {
-    2
+  foo() : Int {
+    4
   };
 };
 
 class ThingParent inherits Main {
-  foo(x : Int) : Int {
-    4
+  
+};
+
+class Thing1 inherits ThingParent {
+  func() : Int {
+    foo()
   };
 };

@@ -22,11 +22,12 @@ void BuildST::visit(ClassStatement* cls) {
   ClassNode* nnode = new ClassNode(cls->cantExtend());
 
   if(cls->getInheritType() != nullptr) {
-    nnode->setSuper(cls->getInheritType()->getName());
+    nnode->setSuper(*cls->getInheritType()->getName());
   }
 
   string class_name = *cls->getType()->getName();
   ((Groot*) curr_scope)->addClass(class_name, nnode);
+  nnode->setName(class_name);
 
   if(cls->getList() != nullptr) {
     curr_scope = nnode;

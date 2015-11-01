@@ -102,7 +102,7 @@ void TypeCheck::visit(Id* id) {
       throw TypeErr(msg.str().c_str());
     }
   }
-  // SymbolAnon
+  // SymbolAnon (let statements, etc)
   else if(curScope->getType() == SYMBOLANON) {
     SymbolAnon* cur = (SymbolAnon*)curScope;
 
@@ -143,9 +143,9 @@ void TypeCheck::visit(Id* id) {
       string typeName;
       //TODO: Not this
       if(cur->getMethods().find(*id->getName()) != cur->getMethods().end()) {
-	typeName = cur->getMethods().at(*(id->getName()))->getRetType();
+	      typeName = cur->getMethods().at(*(id->getName()))->getRetType();
       } else {
-	typeName = cur->getMembers().at(*(id->getName()));
+	      typeName = cur->getMembers().at(*(id->getName()));
       }
       // if its self type, resolve it
       if(typeName == "SELF_TYPE") {
@@ -160,9 +160,9 @@ void TypeCheck::visit(Id* id) {
       
       typeOfLast = nullptr;
       if(cur->getSuper()) {
-	curScope = cur->getLexParent()->getClasses()[*cur->getSuper()];
+	      curScope = cur->getLexParent()->getClasses()[*cur->getSuper()];
       
-	visit(id);
+	      visit(id);
       }
       curScope = tmp; // set scope back to normal
       // if found, return
@@ -513,54 +513,24 @@ void TypeCheck::visit(Assign* node) {
   node->getRhs()->accept(this);
   string* exprType = getTypeOfLast();
   
+  /* Get the class node that corresponds to the type of the left and right sides */
+  string* lhsType = node->getLhs()->getInfType();
+  string* rhsType = node->getRhs()->getInfType();
+  ClassNode* rhsClass = groot->getClasses()[*node->getRhs()->getInfType()];
 
-  if(canAssign(type, exprType)){
-    node->setInfType(type->c_str());
-    setTypeOfLast(node->getInfType());
+  if (canAssign(lhsType, rhsType)) {
+    node->setInfType(lhsType->c_str());
+    return;
   }
-  else{
-      SymbolNode* tmp = curScope;
- 
-      if(*type == *exprType){
-        // done
-        node->setInfType(type->c_str());
-        setTypeOfLast(node->getInfType());
-        return;
-      }
-      
-      // get to groot
-      while(tmp->getType() != GROOT){
-        tmp = tmp->getLexParent();
-      }
-      try{
-        ClassNode* cls = ((Groot*)tmp)->getClasses().at(*exprType);
-        
-        while(cls->getSuper() != nullptr){
-          if(*(cls->getSuper()) == *type){
-            node->setInfType(type->c_str());
-            setTypeOfLast(node->getInfType());
-            return;
-          }
-          cls = ((Groot*)tmp)->getClasses().at(*(cls->getSuper()));
-        }
-        if("Object" == *exprType){
-          node->setInfType("Object");
-          setTypeOfLast(node->getInfType());
-          return;
-        }
-        
-        stringstream msg;
-        msg << "Error: Class '" << *exprType << "' cannot be assigned to '" << *type << "'";
+  else if(rhsClass->hasAncestor(lhsType)) {
+    node->setInfType(lhsType->c_str());
 
-        throw TypeErr(msg.str().c_str());
-      }
-      catch (std::out_of_range oor){
-        stringstream msg;
-        msg << "Error: Class '" << *exprType << "' doesn't exist";
+    return;
+  }
 
-        throw TypeErr(msg.str().c_str());
-      }
-    }
+  stringstream msg;
+  msg << "RHS (type: '" << *rhsType << "') is not a subclass of the LHS (type: '" << *lhsType << "')";
+  throw TypeErr(msg.str().c_str());
 }
 
 
@@ -649,6 +619,7 @@ void TypeCheck::visit(IfStatement* node) {
  * *** New Scope ***
  */
 void TypeCheck::visit(LetStatement* node) {
+  string* type;
   // set new scope
   // can come from a let (SymbolAnon) or a method (SymbolMethod)
   if(curScope->getType() == SYMBOLMETHOD) {
@@ -659,9 +630,11 @@ void TypeCheck::visit(LetStatement* node) {
 
   // visit expr and set the return type
   node->getExpr()->accept(this);
-  node->setInfType(getTypeOfLast()->c_str());
+
+  type = getTypeOfLast();
+  node->setInfType(type->c_str());
   setTypeOfLast(node->getInfType());
-  
+
   node->getList()->accept(this);
 
   // exit scope
@@ -728,7 +701,8 @@ void TypeCheck::visit(Case* node) {
  * Either way make sure that rhs => lhs
  */
 void TypeCheck::visit(FormalDeclare* node) {
-  node->getID()->accept(this);
+  // no need to visit the ID, its already in the symbol table.
+
   node->getType()->accept(this);
   string* type = getTypeOfLast();
 
@@ -784,6 +758,35 @@ void TypeCheck::visit(FormalDeclare* node) {
       }
     }
   }
+  string* exprType = getTypeOfLast();
+
+  // compare the variable type and the expr type
+  // no need to propogate anything
+
+  // check if valid numbers
+  if (canAssign(type, exprType)) {
+    return;
+  }
+  // not numbers
+  else {
+    // check if they are equal
+    if (*type == *exprType) {
+      return;
+    }
+    // if not, check parents to see if it is valid
+    else {
+      ClassNode* rhsClass = groot->getClasses()[*exprType];
+      if (rhsClass->hasAncestor(type)) {
+        // it is possible to do!
+        return;
+      }
+      else {
+        stringstream msg;
+        msg << "RHS (type: '" << *exprType << "') is not a subclass of the LHS (type: '" << *type << "') In a formal declare.";
+        throw TypeErr(msg.str().c_str());
+      }
+    }
+  }
 }
 
 /**
@@ -825,19 +828,100 @@ void TypeCheck::visit(ClassList* node) {
  * TODO: add hard coded convert methods
  */
 void TypeCheck::visit(Dispatch* node) {
-  node->getID()->accept(this);
+  // Forward to ID
+  // node->getID()->accept(this);
 
+  // Forward to expression
   if(node->getExpr() != nullptr) {
     node->getExpr()->accept(this);
   }
 
+  // Forward to type specifier
   if(node->getType() != nullptr) {
     node->getType()->accept(this);
   }
 
+  // Forward to list of parameters
   if(node->getExprList() != nullptr) {
     node->getExprList()->accept(this);
   }
+
+  const string* methodName = ((Id*) node->getID())->getName(); // Get the name of the method that is being called
+
+  /* Walk up the symbol tree until the first class is found */
+  SymbolNode* step = getScope();
+  while(step->getLexParent()->getLexParent() != nullptr) { // Classes are always on the second level of the scope tree. So, the grandparent of a class should always be null.
+    step = step->getLexParent();
+  }
+
+  /* Find the class that this method _should_ be a member of */
+  ClassNode* curClass = nullptr;
+  Groot* groot = (Groot*) step->getLexParent();
+  if(node->getExpr() != nullptr) { // If this dispatch is attached to an expression (e.g., x.foo()), find the type of x
+    string* oftype = node->getExpr()->getInfType();
+    curClass = groot->getClasses()[*oftype];
+  } else { // If this dispatch is not attached to an expression (e.g., foo()), simply use the class that the current scope is a member of.
+    curClass = (ClassNode*) step;
+  }
+
+  /* Get the name of the class that this dispatch is a lexical member of */
+  string* className = curClass->getName();
+
+  /* If a cast type is specified, walk across the inheritance tree until we hit that type */
+  if(node->getType() != nullptr) { // If a cast type is specified ...
+    while(curClass->getSuper() != nullptr) {
+      if(*curClass->getName() == *node->getType()->getInfType()) { // When we find the specified cast type, break out of the loop
+        break;
+      }
+
+      curClass = groot->getClasses()[*curClass->getSuper()];
+    }
+
+    // Check if we actually found the right class, or if we just walked off the edge of the inheritance tree 
+    if(*curClass->getName() != *node->getType()->getInfType()) {
+      stringstream msg;
+      msg << "Error: class '" << *className << "' does not extend '" << *node->getType()->getInfType() << "'";
+
+      throw TypeErr(msg.str().c_str());
+    }
+  }
+
+  /* Walk across the inheritance tree, looking for the correct method */
+  while(curClass->getSuper() != nullptr) {
+    if(curClass->getMethods().find(*methodName) != curClass->getMethods().end()) { // Check if this class has the requested method
+      break;
+    }
+
+    curClass = groot->getClasses()[*curClass->getSuper()];
+  }
+
+  /* If we didn't find a class with the correct method, complain */
+  if(curClass->getMethods().find(*methodName) == curClass->getMethods().end()) {
+    stringstream msg;
+    msg << "Error: method '" << *methodName << "' not visible in current scope";
+
+    throw TypeErr(msg.str().c_str());
+  }
+  SymbolMethod* methodObj = curClass->getMethods()[*methodName]; // Get the SymbolMethod object itself
+
+  /* Check parameter types */
+  bool noParamsInDef = methodObj->getParamNames().empty(); // Are there any parameters in the method definition?
+  bool noParamsInDisp = node->getExprList() == nullptr; // Are there any parameters in the dispatch?
+  if(noParamsInDef && !noParamsInDisp) { // If parameters are listed in the definition but not in the dispatch...
+    stringstream msg;
+    msg << "Error: Dispatch provides parameters to a parameterless method";
+
+    throw TypeErr(msg.str().c_str());
+  } else if(!noParamsInDef && noParamsInDisp) { // If parameters are listed in the dispatch but not in the definition...
+    stringstream msg;
+    msg << "Error: Dispatch does not specify required parameters";
+
+    throw TypeErr(msg.str().c_str());
+  } else if(!noParamsInDef && !noParamsInDisp) { // If both the dispatch and definition specify parameters...
+    checkDispatchParameters(node, methodObj);
+  }
+
+  node->setInfType(methodObj->getRetType().c_str());
 }
 
 /**
@@ -863,8 +947,11 @@ void TypeCheck::visit(Feature* node) {
   node->getType()->accept(this);
   string* type = getTypeOfLast();
   node->getExpr()->accept(this);
-  string* exprType = getTypeOfLast();
 
+  if(node->getList() != nullptr) {
+    node->getList()->accept(this);
+  }
+  
   // exit scope
   curScope = curScope->getLexParent();
 }
@@ -975,38 +1062,63 @@ bool TypeCheck::isInt(string* type) {
     return false;
 }
 
-// checks if rhs <= lhs
-bool TypeCheck::canAssign(string* l, string* r){
+
+/**
+ * Checks whether the parameters match between a method declaration and dispatch.
+ */
+void TypeCheck::checkDispatchParameters(Dispatch* node, SymbolMethod* methodObj) {
+  /* Construct string of the form P1P2...Pn where each P is the type of the next parameter in the method definition */
+  stringstream declParams;
+  for(auto param_name : methodObj->getParamNames()) {
+    declParams << methodObj->getParams()[param_name];
+  }
+
+  /* Construct string of parameter types in the dispatch */
+  stringstream dispatchParams;
+  for(auto param : node->getExprList()->getChildren()) {
+    dispatchParams << *param->getInfType();
+  }
+
+  /* Confirm that the parameters are of the same type */
+  if(dispatchParams.str() != declParams.str()) {
+    stringstream msg;
+    msg << "Error: Dispatch parameter types differ from the method's declaration";
+    
+    throw TypeErr(msg.str().c_str());
+  }
+}
+
+// returns true if r can be store in l, otherwise false.
+bool TypeCheck::canAssign(string* l, string* r) {
   int lorder;
   int rorder;
 
   // find the ordering of the left
-  if(*l == "Int64")
+  if (*l == "Int64")
     lorder = 3;
-  else if(*l == "Float")
+  else if (*l == "Float")
     lorder = 4;
-  else if(*l == "Int8")
+  else if (*l == "Int8")
     lorder = 1;
-  else if(*l == "Int")
+  else if (*l == "Int")
     lorder = 2;
   else
     return false;
 
 
   // find the ordering of the right
-  if(*r == "Int64")
+  if (*r == "Int64")
     rorder = 3;
-  else if(*r == "Float")
+  else if (*r == "Float")
     rorder = 4;
-  else if(*r == "Int8")
+  else if (*r == "Int8")
     rorder = 1;
-  else if(*r == "Int")
+  else if (*r == "Int")
     rorder = 2;
   else
     return false;
 
-  // use the larger of the 2
-  if(lorder >= rorder){
+  if (lorder >= rorder) {
     return true;
   }
   return false;
