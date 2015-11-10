@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     while((c = getopt(argc, argv, "i:l:")) != -1) {
       switch(c) {
       case 'i': // Input file
-	in_files.push_back(string(optarg));
+	      in_files.push_back(string(optarg));
         break;
       case 'l' :
         printLex = true;

@@ -1,0 +1,1 @@
+add_library(ir STATIC build_ir.cpp basic_block.cpp op.cpp class_list.cpp)
