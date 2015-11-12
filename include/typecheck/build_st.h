@@ -1,6 +1,7 @@
+#pragma once
 
-#ifndef __BUILD_ST__
-#define __BUILD_ST__
+#include <iostream>
+#include <sstream>
 
 #include "ast/visitor.h"
 #include "ast/ast.h"
@@ -48,7 +49,7 @@ namespace typecheck {
     void visit(IfStatement*  n);
     void visit(CaseStatement* n);
     void visit(CaseList* n);
-    void visit(Case* n) { };
+    void visit(Case* n);
     void visit(FormalDeclare* n);
     void visit(ClassList* n);
     void visit(Dispatch* n) { };
@@ -65,5 +66,3 @@ namespace typecheck {
     SymbolNode* curr_scope;
   };
 }
-
-#endif

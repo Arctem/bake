@@ -1,4 +1,3 @@
-
 #include "ast/terminals.h"
 #include "ast/nary.h"
 using namespace bake_ast;

@@ -141,7 +141,7 @@ void TypeCheck::visit(Id* id) {
     
     try {
       string typeName;
-      //TODO: Not thi
+      //TODO: Not this
       if(cur->getMethods().find(*id->getName()) != cur->getMethods().end()) {
 	typeName = cur->getMethods().at(*(id->getName()))->getRetType();
       } else {
@@ -651,10 +651,10 @@ void TypeCheck::visit(IfStatement* node) {
 void TypeCheck::visit(LetStatement* node) {
   // set new scope
   // can come from a let (SymbolAnon) or a method (SymbolMethod)
-  if(curScope->getType() == SYMBOLMETHOD){
-    curScope = ((SymbolMethod*)curScope)->nextMem();
-  }else{ // SymbolAnon
-    curScope = ((SymbolAnon*)curScope)->nextMem();
+  if(curScope->getType() == SYMBOLMETHOD) {
+    curScope = ((SymbolMethod*) curScope)->nextMem();
+  } else { // SymbolAnon
+    curScope = ((SymbolAnon*) curScope)->nextMem();
   }
 
   // visit expr and set the return type
@@ -698,18 +698,28 @@ void TypeCheck::visit(CaseList* node) {
  * Typecheck Case
  */
 void TypeCheck::visit(Case* node) {
+  // set new scope
+  // can come from a let (SymbolAnon) or a method (SymbolMethod)
+  if(curScope->getType() == SYMBOLMETHOD) {
+    curScope = ((SymbolMethod*) curScope)->nextMem();
+  } else { // SymbolAnon
+    curScope = ((SymbolAnon*) curScope)->nextMem();
+  }
+  
   string* type;
   node->getID()->accept(this);
   node->getType()->accept(this);
 
-  if(node->getExpr() != nullptr) {
-    node->getExpr()->accept(this);
-  }
+  node->getExpr()->accept(this);
+
   type = getTypeOfLast();
 
   // Good types!
   node->setInfType(type->c_str());
   setTypeOfLast(node->getInfType());
+
+  //exit scope
+  curScope = curScope->getLexParent();
 }
 
 /**

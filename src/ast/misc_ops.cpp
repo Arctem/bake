@@ -44,7 +44,7 @@ IfStatement::~IfStatement() {
 }
 
 /** Case method definitions **/
-Case::Case(Node* i, Node* t, Node* e) : Node(CASE) {
+Case::Case(Id* i, Type* t, Node* e) : Node(CASE) {
   id = i;
   type = t;
   expr = e;

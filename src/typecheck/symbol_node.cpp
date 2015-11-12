@@ -147,7 +147,7 @@ vector<SymbolAnon*> SymbolMethod::getMembers() {
  * Add a sub-scope
  */
 void SymbolMethod::addMember(SymbolAnon* sub) {
-  members.insert(members.begin(), sub);
+  members.push_back(sub);
   sub->setLexParent(this);
 }
 

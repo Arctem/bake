@@ -1,8 +1,3 @@
-
-#include <iostream>
-#include <sstream>
-using namespace std;
-
 #include "typecheck/build_st.h"
 using namespace typecheck;
 
@@ -164,4 +159,28 @@ void BuildST::visit(CaseList* list) {
   for(auto el : list->getList()) {
     el->accept(this);
   }
+}
+
+/**
+ * Each case works like a Let with only one new variable.
+ */
+void BuildST::visit(Case* case_item) {
+  SymbolAnon* sub = new SymbolAnon();
+
+  //Add this case's variable to scope.
+  string name = *(case_item->getID()->getName());
+  string type = *(case_item->getType()->getName());
+  sub->addMember(name, type);
+
+  if(curr_scope->isA(SYMBOLMETHOD)) {
+    ((SymbolMethod*) curr_scope)->addMember(sub);
+  } else if(curr_scope->isA(SYMBOLANON)) {
+    ((SymbolAnon*) curr_scope)->addSub(sub);
+  }
+
+  curr_scope = sub;
+
+  case_item->getExpr()->accept(this);
+
+  curr_scope = curr_scope->getLexParent();
 }

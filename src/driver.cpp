@@ -29,8 +29,7 @@ int main(int argc, char** argv) {
         break;
       case '?':
         help(argv[0]);
-        exit(-1);
-        break;
+        return -1;
       }
     }
   }
@@ -55,7 +54,7 @@ int main(int argc, char** argv) {
 
   // Prints the AST
   PrettyPrint pp;
-  // ast->accept(&pp);
+  ast->accept(&pp);
 
   cout << endl << "################" << endl << endl;
 
