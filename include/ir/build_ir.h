@@ -6,7 +6,8 @@
 namespace ir {
   class BuildIR : bake_ast::Visitor {
   public:
-    BuildIR();
+    BuildIR() { };
+    ClassList* getClassList() { return classlist; }
 
     // Terminal nodes
     void visit(bake_ast::IntegerVal*);
@@ -52,6 +53,6 @@ namespace ir {
     void visit(bake_ast::FeatureList*);
 
   private:
-    ClassList* classes;
+    ClassList* classlist;
   };
 }

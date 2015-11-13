@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "ir/op.h"
+#include "ir/ir_visitor.h"
 
 namespace ir {
   class BasicBlock {
@@ -14,6 +15,8 @@ namespace ir {
     void setBrOnTrue(BasicBlock* block) { brOnTrue = block; }
     void setBrOnFalse(BasicBlock* block) { brOnFalse = block; }
     void addOp(Op* op);
+
+    virtual void accept(IrVisitor* v) { v->visit(this); }
 
   private:
     BasicBlock* brOnTrue = nullptr;

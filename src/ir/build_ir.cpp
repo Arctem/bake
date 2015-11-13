@@ -1,10 +1,8 @@
 
-#include "ast/ast.h"
+#include <string>
 #include "ir/build_ir.h"
-
-ir::BuildIR::BuildIR() {
-  classes = new ClassList();
-}
+#include "ast/ast.h"
+#include "ir/class_list.h"
 
 /******************/
 /* Terminal nodes */
@@ -247,6 +245,10 @@ void ir::BuildIR::visit(bake_ast::FormalDeclare* n) {
 void ir::BuildIR::visit(bake_ast::ClassStatement* n) {
   n->getType()->accept(this);
 
+  std::string className = *n->getType()->getName();
+
+  classlist->addClass(className, new ClassDef());
+
   if(n->getInheritType() != nullptr) {
     n->getInheritType()->accept(this);
   }
@@ -260,6 +262,8 @@ void ir::BuildIR::visit(bake_ast::ClassStatement* n) {
  * Generate IR code for ClassList
  */
 void ir::BuildIR::visit(bake_ast::ClassList* n) {
+  classlist = new ir::ClassList();
+
   for(auto child : n->getChildren()) {
     child->accept(this);
   }

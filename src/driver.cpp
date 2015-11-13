@@ -25,6 +25,57 @@ void add_builtins() {
   add_nums();
 
   ast->add(buildConvert());
+
+  // Adds the extended built ins: Float, Int8, Int32, Int64
+  ast->add(buildFloat());
+  ast->add(buildInt8());
+  ast->add(buildInt64());
+
+  // ast->accept(&pp);
+
+  //  Builds the scope table
+  BuildST build;
+  try {
+    ast->accept(&build);
+  } catch (StBuildErr& e) {
+    cout << e.what() << endl;
+    return 0;
+  }
+
+  SymbolTablePrint spt;
+  build.getCurrScope()->accept(&spt);
+
+  cout << endl << "################" << endl << endl;
+
+
+  CheckScope cs;
+  try {
+    build.getCurrScope()->accept(&cs);
+  } catch (ScopeCheckErr& e) {
+    cout << e.what() << endl;
+    return 0;
+  }
+
+  // Runs the type checker  
+  TypeCheck tc(build.getCurrScope());
+
+  try {
+    ast->accept(&tc);
+    ast->accept(&pp);
+  } catch (TypeErr& e) {
+    cout << e.what() << endl;
+    return 0;
+  }
+
+  ir::BuildIR bir;
+  bir.visit(ast);
+
+  ir::IrPrint irp;
+  irp.visit(bir.getClassList());
+
+  delete ast;
+
+  return 0;
 }
 
 void add_nums() {

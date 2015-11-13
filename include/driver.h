@@ -14,6 +14,8 @@ using namespace std;
 #include "typecheck/symbol_table_print.h"
 #include "typecheck/visitor_tc.h"
 #include "typecheck/check_scope.h"
+#include "ir/build_ir.h"
+#include "ir/ir_visitor.h"
 
 extern int yylineno;
 extern int nelements;

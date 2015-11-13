@@ -3,7 +3,7 @@ class Main inherits IO {
 
   main() : Object {
     {
-      let a : Int, b : Int64 <- 12, c : Float in {
+      let a : Int64, b : Int64 <- 12, c : Float in {
         a <- b + let a : Int in { 4; };
       };
       out_string("Hi World!\n");

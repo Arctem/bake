@@ -18,6 +18,7 @@ namespace ir {
   public:
     void addClass(std::string, ClassDef*);
     std::unordered_map<std::string, ClassDef*> getClasses() { return classes; }
+    virtual void accept(IrVisitor* v) { v->visit(this); }
 
   private:
     std::unordered_map<std::string, ClassDef*> classes; // Classes in this program
@@ -33,6 +34,7 @@ namespace ir {
     std::vector<BasicBlock*> getMethods() { return methods; }
     void addAttr(int);
     std::vector<int> gertAttrs() { return attrs; }
+    virtual void accept(IrVisitor* v) { v->visit(this); }
 
   private:
     std::vector<BasicBlock*> methods; // References to each of the methods defined in this class

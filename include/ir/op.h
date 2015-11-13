@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "ir/ir_visitor.h"
+
 namespace ir {
   class Op {
   public:
@@ -19,53 +21,231 @@ namespace ir {
   };
 
   /* Placeholder classes meant to replace the need of Type enum. */
-  class Nop : Op { };
-  class Fnop : Op { };
-  class Sub : Op { };
-  class Mul : Op { };
-  class Div : Op { };
-  class Mod : Op { };
-  class Fadd : Op { };
-  class Fsub : Op { };
-  class Fmul : Op { };
-  class Fdiv : Op { };
-  class Copy : Op { };
-  class Fcopy : Op { };
-  class Conv : Op { };
-  class Fconv : Op { };
-  class LoadI : Op { };
-  class LoadO : Op { };
-  class StoreI : Op { };
-  class StoreO : Op { };
-  class CmpLT : Op { };
-  class CmpLE : Op { };
-  class CmpEQ : Op { };
-  class FcmpLT : Op { };
-  class FcmpLE : Op { };
-  class FcmpEQ : Op { };
-  class Br : Op { };
-  class Cbr : Op { };
-  class Call : Op { };
-  class Dcall : Op { };
-  class Fcall : Op { };
-  class Dfcall : Op { };
-  class Push : Op { };
-  class Fpush : Op { };
-  class Pop : Op { };
-  class Fpop : Op { };
-  class Ccall : Op { };
-  class Alloc : Op { };
-  class Free : Op { } ;
+  class Nop : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Fnop : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Sub : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Mul : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Div : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Mod : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Fadd : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Fsub : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Fmul : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Fdiv : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Copy : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Fcopy : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Conv : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Fconv : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class LoadI : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class LoadO : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class StoreI : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class StoreO : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class CmpLT : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class CmpLE : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class CmpEQ : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class FcmpLT : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class FcmpLE : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class FcmpEQ : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Br : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Cbr : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Call : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Dcall : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Fcall : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Dfcall : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Push : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Fpush : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Pop : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Fpop : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Ccall : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Alloc : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class Free : Op {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
 
   /* Built-ins */
-  class Abort { };
-  class TypeName { };
-  class ShallowCopy { };
-  class OutString { };
-  class OutInt { };
-  class InString { };
-  class InInt { };
-  class Length { };
-  class Concat { };
-  class Substr { };
+  class Abort {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+  class TypeName {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+  class ShallowCopy {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+  class OutString {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+  class OutInt {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+  class InString {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+  class InInt {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+  class Length {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+  class Concat {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+  class Substr {
+  public:
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
 }
