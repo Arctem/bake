@@ -1,0 +1,157 @@
+\documentclass[10pt, onecolumn]{extarticle}
+\usepackage[top=1.0in, bottom=1.0in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+
+\pagestyle{fancy}
+
+\lhead{IR Design}
+\rhead{Cake Whisperers}
+
+\title{Cake Whisperers - Design Document for the Intermediate Representation}
+\author{Andrew (A to the J) Burns,  Melanie Palmer, Will Rosenberger, \& Russell White}
+\date{}
+
+\begin{document}
+
+\maketitle{}
+
+\tableofcontents
+
+\section{Introduction} %high level overview of our plan
+This document provides an overview of how we plan on implementing the intermediate representation for our compiler. Currently, our compiler is capable of translating the user's source code to an AST, as well as type-checking the source to ensure it can actually be translated. The next stage in creating our compiler is to translate the AST into a low-level intermediate representation, and then converting that IR into assembly. The following sections will describe the design of our IR.
+
+\section{Structure of Intermediate Representation}
+This section outlines what our IR is, and how we are going to represent COOL in it. A list of the instructions and
+summaries of their functionality are shown in Table~\ref{cmdlist}. For an explanation of the argument types, refer
+to Section~\ref{argtypes}.
+
+\begin{longtable}{| r | c | c | l |}
+  \caption{IR Commands}
+  \label{cmdlist}
+  \endfirsthead
+  \caption{IR Commands}
+  \endhead
+  \hline
+  Command & Arg(s) & Target(s) & Operation\\\hline
+  \texttt{nop} & & & No operation.\\\hline
+  \texttt{fnop} & & & No operation, but in a more floaty way.\\\hline\hline
+
+  \texttt{sub} & \texttt{r, r} & \texttt{r} & Integer subtract.\\\hline
+  \texttt{mul} & \texttt{r, r} & \texttt{r} & Integer multiple.\\\hline
+  \texttt{div} & \texttt{r, r} & \texttt{r} & Integer division.\\\hline
+  \texttt{mod} & \texttt{r, r} & \texttt{r} & Integer modulus.\\\hline\hline
+
+  \texttt{fadd} & \texttt{f, f} & \texttt{f} & Floating point add.\\\hline
+  \texttt{fsub} & \texttt{f, f} & \texttt{f} & Floating point subtract.\\\hline
+  \texttt{fmul} & \texttt{f, f} & \texttt{f} & Floating point multiple.\\\hline
+  \texttt{fdiv} & \texttt{f, f} & \texttt{f} & Floating point division.\\\hline\hline
+
+  \texttt{copy} & \texttt{c} & \texttt{r} & Copy integer constant to register.\\\hline
+  \texttt{fcopy} & \texttt{c} & \texttt{f} & Copy floating point constant to register.\\\hline
+  \texttt{conv} & \texttt{r} & \texttt{f} & Convert an integer register to a float.\\\hline
+  \texttt{fconv} & \texttt{r} & \texttt{f} & Convert a float to an integer register.\\\hline
+  \texttt{loadI} & \texttt{r, c} & \texttt{r} & Load memory value at address $r + c$ into $r$.\\\hline
+  \texttt{loadO} & \texttt{r, r} & \texttt{r} & Load memory value at address $r + r$ into $r$.\\\hline
+  \texttt{storeI} & \texttt{r} & \texttt{r, c} & Store value in $r$ at address $r + c$.\\\hline
+  \texttt{storeO} & \texttt{r} & \texttt{r, r} & Store value in $r$ at address $r + r$.\\\hline\hline
+
+  \texttt{cmpLT} & \texttt{r, r} & \texttt{r} & Perform $r < r$ and store result in $r$.\\\hline
+  \texttt{cmpLE} & \texttt{r, r} & \texttt{r} & Perform $r \leq r$ and store result in $r$.\\\hline
+  \texttt{cmpEQ} & \texttt{r, r} & \texttt{r} & Perform $r == r$ and store result in $r$.\\\hline\hline
+
+  \texttt{fcmpLT} & \texttt{f, f} & \texttt{r} & Perform $f < f$ and store result in $r$.\\\hline
+  \texttt{fcmpLE} & \texttt{f, f} & \texttt{r} & Perform $f \leq f$ and store result in $r$.\\\hline
+  \texttt{fcmpEQ} & \texttt{f, f} & \texttt{r} & Perform $f == f$ and store result in $r$.\\\hline\hline
+  
+  \texttt{br} & \texttt{} & \texttt{B} & Jump to $B$.\\\hline
+  \texttt{cbr} & \texttt{r} & \texttt{B, B} & Based on the value of $r$ jump to $B$ or $B$.\\\hline\hline
+  
+  \texttt{call} & \texttt{c} & \texttt{r} & Call function $c$ of the stack topping object and store retval in $r$.\\\hline
+  \texttt{dcall} & \texttt{c, c} & \texttt{r} & Call object $c$'s function $c$ on top of stack and store retval in $r$.\\\hline
+  \texttt{fcall} & \texttt{c} & \texttt{f} & Call function $c$ of the stack topping object and store retval in $f$.\\\hline
+  \texttt{dfcall} & \texttt{c, c} & \texttt{r} & Call object $c$'s function $c$ on top of stack and store retval in $f$.\\\hline
+  \texttt{push} & \texttt{r} & \texttt{} & Push $r$ onto stack.\\\hline
+  \texttt{fpush} & \texttt{f} & \texttt{} & Push $f$ onto stack.\\\hline
+  \texttt{pop} & \texttt{} & \texttt{r} & Pop from stack into $r$.\\\hline
+  \texttt{fpop} & \texttt{} & \texttt{f} & Pop from stack into $f$.\\\hline\hline
+  
+  \texttt{ccall} & \texttt{S} & \texttt{} & Call C function $S$.\\\hline
+  \texttt{alloc} & \texttt{c} & \texttt{r} & Malloc2 $c$ amount of memory and store address in $r$.\\\hline
+  \texttt{free} & \texttt{r} & \texttt{} & Free memory at address $r$.\\\hline
+
+  %\texttt{} & \texttt{} & \texttt{} & \\\hline
+\end{longtable}
+
+\subsubsection{Argument Types}
+\label{argtypes}
+There are 5 kinds of parameters for our instructions: \texttt{r}, \texttt{f}, \texttt{c}, \texttt{B}, and \texttt{S}.
+
+\begin{description}
+  \item[\texttt{r}] This is a 64-bit register. If given as an argument, we are reading from the register. If given
+    as a target, we are writing to the register.
+  \item[\texttt{f}] This is a floating point register. In reality this will be a value on the floating point stack,
+    but for simplicity the IR acts as though we have a unique set of floating point registers. It behaves similarly
+    to \texttt{r} otherwise.
+  \item[\texttt{c}] This is a constant determined at compile time. It can only appear as an argument.
+  \item[\texttt{B}] This is a memory block, representing where to go after a branch. During code generation it will
+    become a label to the destination.
+  \item[\texttt{S}] This is a string representing the name of a C function to call.
+\end{description}
+
+\subsection{Type}
+For our intermediate representation we are building a CFG that will contain quadruples to represent our program. The CFG will (obviously) outlay every branch the program can take. The quadruples will represent a near-assembly set of operations (see Table~\ref{cmdlist}) that all code will be converted to.
+
+We chose to do a CFG to enable us to have a clear control flow, and we liked that quadruples gave us more power than the tuple. We discussed creating an SSA for a long time, but decided that the benefit towards optimization in COOL did not outweigh the difficulty in creating it. 
+
+\subsection{Semantics}
+\subsubsection{Dispatch}
+The IR includes four instructions to call a function: \texttt{call}, \texttt{dcall}, \texttt{fcall}, and \texttt{dfcall}.
+They all work similarly, so I will focus on \texttt{call}. Before a \texttt{call} the arguments for that function should
+be pushed using \texttt{push} and \texttt{fpush} to add the arguments to the stack in reverse order. The last parameter
+pushed should always be the memory address of the object that the function is being called on. This is where \texttt{call}
+and \texttt{fcall} differ from \texttt{dcall} and \texttt{dfcall}. \texttt{call} and \texttt{fcall} take a single constant argument: the
+offset of the function being called. They then use this offset along with the type stored in the object in order to find
+the correct function to call. For \texttt{dcall} and \texttt{dfcall} the first constant instead refers to the memory address
+of the class of the function. This class may be the same as the object's or a parent of it. The second constant is the offset
+of the function in that class.
+
+Either way, the function is then executed, fetching its parameters from the stack. Once the function is executed, its return
+value is stored in either a normal (for \texttt{call} and \texttt{dcall}) or floating point register (for \texttt{fcall}
+and \texttt{dfcall}).
+
+\subsection{Object Orientation}
+In this section we describe how we handle the object oriented features of the COOL language in our IR.
+
+\subsubsection{Classes}
+Classes will be stored in a table of records. Each record contains a list of methods the class contains, including classes inherited. It also contains a pointer to the parent class to figure out \textless{}TYPE\textgreater{}@ dispatch. These are referenced in method calls within the IR to determine which call is being done as described in the dispatch section. These references will make it easy to create labels and call the proper labels within assembly.
+
+\subsubsection{Object Records}
+When we instantiate each object, we create an object record for it! This record contains the number of pointers pointing to it, a pointer to the class definition (for function calls), and all variables that exist in that class--including all parents--from child$\Rightarrow$parent etc. This should easily translate into assembly.
+
+\section{Design Structure of Our C++ Code}
+In the following sections, we will provide an overview of the implementation of our IR. The C++ implementation will use four primary types of objects. These are the class list, method list, basic blocks, and operation.
+
+\subsection{Class List}
+Any given IR will contain one and only one class list. This object contains a map from the name of a class to the method list for that class.
+
+\subsection{Method List}
+Each class contains one and only one method list. A given method list is a vector of references to the first basic block for the corresponding function. Again, it is the responsibility of the IR to abstract away method names. Because of this, we do not record the names of the methods. Rather, we rely on the index of each method in its parent to identify the correct function.
+
+\subsection{Basic Block}
+Each method is constructed from a graph of basic blocks. A basic block indicates a set of non-branching commands.
+
+\subsection{Operations}
+We will be representing operations using quadruples. That is, calling any given operation will involve specifying the name of the instruction, two parameters, and where to place the result. We will define a single class that contains two integers representing the virtual register ID for the two parameters, an integer containing the ID for the return register, and a value specifying the name of the operation. We will use an Enum to represent each operation type.
+\subsection{Design Patterns}
+We are using a visitor for our AST to build the IR. We are also building our CFG with a visitor pattern. This visitor will be used to build the actual assembly in the next phase of code-gen.
+%visitor, consider a builder?
+
+\section{Conclusion}
+
+\subsection{Problem Mitigation}
+Currently our main problem could be the amount of time this implementation could take. This can be mitigated by keeping on track throughout the project. We plan to split into two main groups, one to create the IR and the other to translate that into assembly. We tried to balance the design of our IR to keep the time to complete those two classes equivalent. Within those two groups we plan break down the issues into small batches that can easily be worked on. Finally, we will be meeting significantly more than we have on the previous projects as time has been an issue in the past. 
+
+Optimization could be more difficult in the next project since we chose not to use an SSA. 
+
+\end{document}
