@@ -104,7 +104,7 @@ int perform_lex(string in_fname, bool print_lex) {
 /* -------- Keyword Token ----------- */
 %token <keyword> CLASS
 %token <keyword> INHERIT
-%token <keyword> CASE
+%token <keyword> CASES
 %token <keyword> ESAC
 %token <keyword> IF
 %token <keyword> THEN
@@ -230,7 +230,7 @@ controlFlow: IF expr THEN expr ELSE expr FI                       {printDebug(" 
                                                                     $$ = new bake_ast::IfStatement($2, $4, $6);}
       | WHILE expr LOOP expr POOL                                 {printDebug("WHILE expr LOOP expr\n");
                                                                     $$ = new bake_ast::WhileLoop($2, $4);}
-      | CASE expr OF cases ESAC                                   {printDebug("CASE expr OF cases ESAC\n");
+      | CASES expr OF cases ESAC                                   {printDebug("CASES expr OF cases ESAC\n");
                                                                     $$ = new bake_ast::CaseStatement($2, $4);}
 
 cases : IDENTIFIER ':' TYPE GOES_TO expr ';'                      {printDebug("IDENTIFIER : TYPE => expr , \n");
