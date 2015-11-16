@@ -61,15 +61,23 @@ INSTANTIATE_TEST_CASE_P(ValidCoresPass,
 			LexTest,
 			::testing::ValuesIn(GetAllFiles(TESTDIR "core/valid/", true)));
 
-/*
-INSTANTIATE_TEST_CASE_P(ValidExtendedsPass,
+/* Extended test cases */
+INSTANTIATE_TEST_CASE_P(LexExtendsFail,
+			LexTest,
+			::testing::ValuesIn(GetAllFiles(TESTDIR "extended/lex/", false)));
+
+INSTANTIATE_TEST_CASE_P(ParseExtendsPass,
+			LexTest,
+			::testing::ValuesIn(GetAllFiles(TESTDIR "extended/parse/", false)));
+
+INSTANTIATE_TEST_CASE_P(TypeExtendsPass,
+			LexTest,
+			::testing::ValuesIn(GetAllFiles(TESTDIR "extended/type/", true)));
+
+INSTANTIATE_TEST_CASE_P(ValidExtendsPass,
 			LexTest,
 			::testing::ValuesIn(GetAllFiles(TESTDIR "extended/valid/", true)));
 
-INSTANTIATE_TEST_CASE_P(InvalidExtendedsPass,
-			LexTest,
-			::testing::ValuesIn(GetAllFiles(TESTDIR "extended/invalid/", false)));
-*/
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

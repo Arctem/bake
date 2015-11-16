@@ -3,6 +3,6 @@ class Main {
   b : Int8 <- 90;
 
   main() : Object{{
-
+    b;
   }};
 };
