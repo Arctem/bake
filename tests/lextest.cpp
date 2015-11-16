@@ -8,17 +8,18 @@
 
 #define TESTDIR "tests/"
 
-class LexTest : public ::testing::TestWithParam<string> {
+class LexTest : public ::testing::TestWithParam<pair<string, bool>> {
 protected:
   virtual void SetUp() {
   }
 };
 
 TEST_P(LexTest, TestSuccess) {
-  if(GetParam().find("/invalid/") == string::npos)
-    ASSERT_FALSE(perform_lex(GetParam(), false));
+  //If the bool is true, it should pass
+  if(GetParam().second)
+    ASSERT_FALSE(perform_lex(GetParam().first, false));
   else
-    ASSERT_TRUE(perform_lex(GetParam(), false));
+    ASSERT_TRUE(perform_lex(GetParam().first, false));
 }
 
 // From http://stackoverflow.com/questions/874134/find-if-string-ends-with-another-string-in-c
@@ -29,36 +30,46 @@ inline bool ends_with(std::string const & value, std::string const & ending)
 }
 
 // From http://stackoverflow.com/questions/612097/how-can-i-get-the-list-of-files-in-a-directory-using-c-or-c
-std::vector<string> GetAllFiles(string directory) {
+std::vector<pair<string, bool>> GetAllFiles(string directory, bool valid) {
   printf("%s\n", directory.c_str());
   DIR *dir = opendir(directory.c_str());
   struct dirent *ent;
-  std::vector<string> files;
+  std::vector<pair<string, bool>> files;
   while((ent = readdir(dir)) != NULL) {
     std::string file(ent->d_name);
     if(ends_with(file, ".cl")) {
-      files.push_back(directory + file);
+      files.push_back(make_pair(directory + file, valid));
     }
   }
   closedir(dir);
   return files;
 }
 
+INSTANTIATE_TEST_CASE_P(LexCoresFail,
+			LexTest,
+			::testing::ValuesIn(GetAllFiles(TESTDIR "core/lex/", false)));
+
+INSTANTIATE_TEST_CASE_P(ParseCoresPass,
+			LexTest,
+			::testing::ValuesIn(GetAllFiles(TESTDIR "core/parse/", false)));
+
+INSTANTIATE_TEST_CASE_P(TypeCoresPass,
+			LexTest,
+			::testing::ValuesIn(GetAllFiles(TESTDIR "core/type/", true)));
+
 INSTANTIATE_TEST_CASE_P(ValidCoresPass,
 			LexTest,
-			::testing::ValuesIn(GetAllFiles(TESTDIR "core/valid/")));
+			::testing::ValuesIn(GetAllFiles(TESTDIR "core/valid/", true)));
 
-INSTANTIATE_TEST_CASE_P(InvalidCoresFail,
-			LexTest,
-			::testing::ValuesIn(GetAllFiles(TESTDIR "core/invalid/")));
-
+/*
 INSTANTIATE_TEST_CASE_P(ValidExtendedsPass,
 			LexTest,
-			::testing::ValuesIn(GetAllFiles(TESTDIR "extended/valid/")));
+			::testing::ValuesIn(GetAllFiles(TESTDIR "extended/valid/", true)));
 
 INSTANTIATE_TEST_CASE_P(InvalidExtendedsPass,
 			LexTest,
-			::testing::ValuesIn(GetAllFiles(TESTDIR "extended/invalid/")));
+			::testing::ValuesIn(GetAllFiles(TESTDIR "extended/invalid/", false)));
+*/
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
