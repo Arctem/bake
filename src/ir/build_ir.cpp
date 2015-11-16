@@ -1,4 +1,3 @@
-
 #include <string>
 #include "ir/build_ir.h"
 #include "ast/ast.h"
@@ -11,7 +10,7 @@
  * Generate IR code for IntegerVal
  */
 void ir::BuildIR::visit(bake_ast::IntegerVal*) {
-
+    
 }
 
 /**
@@ -252,7 +251,7 @@ void ir::BuildIR::visit(bake_ast::ClassStatement* n) {
   if(n->getInheritType() != nullptr) {
     n->getInheritType()->accept(this);
   }
-  
+
   if(n->getList() != nullptr) {
     n->getList()->accept(this);
   }
