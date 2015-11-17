@@ -25,16 +25,16 @@ namespace bake_ast {
    */
   class Node {
   public:
-    NodeType type;
-
     Node(NodeType type) : type(type) { }
     virtual ~Node();
 
     void setInfType(char const* t);
-    std::string* getInfType() { return infType; }
+    string* getInfType() { return infType; }
+    NodeType getNodeType() { return type; }
     virtual void accept(Visitor*) = 0;
 
   private:
-    std::string* infType = nullptr; // The inferred type of this node. If nullptr, this node's type has not been resolved.
+    string* infType = nullptr; // The inferred type of this node. If nullptr, this node's type has not been resolved.
+    NodeType type;
   };
 }

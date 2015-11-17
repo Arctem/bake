@@ -1,4 +1,4 @@
-#include <string>
+
 #include "ir/build_ir.h"
 #include "ast/ast.h"
 #include "ir/class_list.h"
@@ -236,6 +236,17 @@ void ir::BuildIR::visit(bake_ast::FormalDeclare* n) {
   if(n->getExpr() != nullptr) {
     n->getExpr()->accept(this);
   }
+
+  int size; // Will hold the size that this variable needs to have allocated
+  if(type_sizes.find(*n->getType()->getName()) == type_sizes.end()) { // If not found in list of explicit sizes, assume pointer
+    size = 8;
+  } else {
+    size = type_sizes[*n->getType()->getName()];
+  }
+
+  if(not in_method) { // Check if we are in a class. If so, add this as an attribute.
+    curr_class->addAttr(size);
+  }
 }
 
 /**
@@ -244,9 +255,11 @@ void ir::BuildIR::visit(bake_ast::FormalDeclare* n) {
 void ir::BuildIR::visit(bake_ast::ClassStatement* n) {
   n->getType()->accept(this);
 
-  std::string className = *n->getType()->getName();
+  std::string class_name = *n->getType()->getName();
+  ir::ClassDef* this_class = new ClassDef(class_name);
 
-  classlist->addClass(className, new ClassDef());
+  setCurrClass(this_class);
+  classlist->addClass(class_name, this_class);
 
   if(n->getInheritType() != nullptr) {
     n->getInheritType()->accept(this);
@@ -300,6 +313,12 @@ void ir::BuildIR::visit(bake_ast::ListFormalDeclare* n) {
  * Generate IR code for Feature
  */
 void ir::BuildIR::visit(bake_ast::Feature* n) {
+  in_method = true; // State that we are currently generating code for a method.
+
+  /* Create first basic block for this method */
+  curr_bb = new ir::BasicBlock();
+  curr_class->addMethod(curr_bb);
+
   n->getID()->accept(this);
 
   if(n->getList() != nullptr) {
@@ -308,6 +327,8 @@ void ir::BuildIR::visit(bake_ast::Feature* n) {
 
   n->getType()->accept(this);
   n->getExpr()->accept(this);
+
+  in_method = false; // State that we're no longer in the method
 }
 
 /**

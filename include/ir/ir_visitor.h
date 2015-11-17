@@ -109,6 +109,8 @@ namespace ir {
 
   class IrPrint : IrVisitor {
   public:
+    void preops();
+
     virtual void visit(ClassList*);
     virtual void visit(ClassDef*);
     virtual void visit(BasicBlock*);
@@ -159,5 +161,8 @@ namespace ir {
     virtual void visit(Length*);
     virtual void visit(Concat*);
     virtual void visit(Substr*);
+
+  private:
+    int level = 0;
   };
 }

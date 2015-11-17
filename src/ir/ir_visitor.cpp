@@ -6,12 +6,16 @@
 #include "ir/basic_block.h"
 #include "ir/op.h"
 
+void ir::IrPrint::preops() {
+  for(int i = 0; i < level; i++) {
+    std::cout << "  ";
+  }
+}
+
 /**
  * Pretty print the IR for ClassList
  */
 void ir::IrPrint::visit(ClassList* n) {
-  std::cout << "What classes exist?" << std::endl;
-
   for(auto cls : n->getClasses()) {
     cls.second->accept(this);
   }
@@ -21,14 +25,28 @@ void ir::IrPrint::visit(ClassList* n) {
  * Pretty print the IR for ClassDef
  */
 void ir::IrPrint::visit(ClassDef* n) {
-  std::cout << "It's a class!!!!!" << std::endl;
+  preops();
+  std::cout << "[ " << n->getName() << " ]" << std::endl;
+
+  level++;
+  for(auto attr : n->getAttrs()) {
+    preops();
+    std::cout << " + " << attr << std::endl;
+  }
+
+  for(auto method : n->getMethods()) {
+    method->accept(this);
+  }
+  level--;
 }
 
 /**
  * Pretty print the IR for BasicBlock
  */
 void ir::IrPrint::visit(BasicBlock* n) {
+  preops();
 
+  std::cout << " ( Method )" << std::endl;
 }
 
 /**

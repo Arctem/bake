@@ -70,6 +70,8 @@ void add_builtins() {
   ir::BuildIR bir;
   bir.visit(ast);
 
+  cout << endl << "################" << endl << endl;
+
   ir::IrPrint irp;
   irp.visit(bir.getClassList());
 
