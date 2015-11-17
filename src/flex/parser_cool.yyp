@@ -14,7 +14,7 @@
 #define YYERROR_VERBOSE 0
 
 extern char yytext[];
-extern bake_ast::ClassList* ast; // Reference to the root of the AST
+bake_ast::ClassList* ast; // Reference to the root of the AST
 
 int yylex();
 extern int yylineno;

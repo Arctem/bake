@@ -3,6 +3,8 @@ add_subdirectory(typecheck)
 add_subdirectory(flex)
 add_subdirectory(ir)
 
-add_executable(bake driver.cpp)
+add_library(driver STATIC driver.cpp)
 
-target_link_libraries(bake typecheck ast flex ir)
+add_executable(bake main.cpp)
+
+target_link_libraries(bake driver typecheck ast flex ir)

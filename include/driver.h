@@ -9,26 +9,25 @@ using namespace std;
 #include <getopt.h>
 
 #include "ast/ast.h"
-using namespace bake_ast;
 #include "typecheck/symbol_node.h"
 #include "typecheck/build_st.h"
 #include "typecheck/symbol_table_print.h"
 #include "typecheck/visitor_tc.h"
 #include "typecheck/check_scope.h"
-using namespace typecheck;
 
 extern int yylineno;
 extern int nelements;
 extern FILE* yyin;
 extern FILE* yyout;
 extern bool printLex;
-ClassList* ast;
+extern ClassList* ast;
 
 int yylex(void);
 int yyparse(void);
 void help(char* cmd_name);
 void yylex_destroy(void);
 int perform_lex(string in_fname, bool print_lex);
+void add_builtins();
 
 ClassStatement* buildObject();
 ClassStatement* buildIO();
