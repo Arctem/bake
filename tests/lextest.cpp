@@ -35,10 +35,12 @@ std::vector<pair<string, bool>> GetAllFiles(string directory, bool valid) {
   DIR *dir = opendir(directory.c_str());
   struct dirent *ent;
   std::vector<pair<string, bool>> files;
-  while((ent = readdir(dir)) != NULL) {
-    std::string file(ent->d_name);
-    if(ends_with(file, ".cl")) {
-      files.push_back(make_pair(directory + file, valid));
+  if(dir) {
+    while((ent = readdir(dir)) != NULL) {
+      std::string file(ent->d_name);
+      if(ends_with(file, ".cl")) {
+	files.push_back(make_pair(directory + file, valid));
+      }
     }
   }
   closedir(dir);

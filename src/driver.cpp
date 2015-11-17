@@ -21,17 +21,24 @@ void add_builtins() {
   ast->add(buildObject());
   ast->add(buildIO());
   ast->add(buildString());
-  ast->add(buildInt());
   ast->add(buildBool());
+  add_nums();
 
   // TODO: Need self type?
 
   // TODO: Needs Convert()
+  ast->add(buildConvert());
+}
 
-  // Adds the extended built ins: Float, Int8, Int32, Int64
-  ast->add(buildFloat());
-  ast->add(buildInt8());
-  ast->add(buildInt64());
+void add_nums() {
+  ast->add(new ClassStatement(new Type(new string("_Num")), nullptr, nullptr, false));
+  ast->add(new ClassStatement(new Type(new string("Int")), new Type(new string("_Num")), nullptr, true));
+
+  // Add the extended built ins: Float, Int8, Int32, Int64
+  ast->add(new ClassStatement(new Type(new string("Float")), new Type(new string("_Num")), nullptr, true));
+  ast->add(new ClassStatement(new Type(new string("Int8")), new Type(new string("_Num")), nullptr, true));
+  ast->add(new ClassStatement(new Type(new string("Int32")), new Type(new string("_Num")), nullptr, true));
+  ast->add(new ClassStatement(new Type(new string("Int64")), new Type(new string("_Num")), nullptr, true));
 }
 
 /* Build Object */
@@ -73,22 +80,21 @@ ClassStatement* buildString() {
   return new ClassStatement(new Type(new string("String")), nullptr, methods, true);
 }
 
-ClassStatement* buildInt() {
-  return new ClassStatement(new Type(new string("Int")), nullptr, nullptr, true);
-}
-
-ClassStatement* buildInt8() {
-  return new ClassStatement(new Type(new string("Int8")), nullptr, nullptr, true);
-}
-
-ClassStatement* buildInt64() {
-  return new ClassStatement(new Type(new string("Int64")), nullptr, nullptr, true);
-}
-
-ClassStatement* buildFloat() {
-  return new ClassStatement(new Type(new string("Float")), nullptr, nullptr, true);
-}
-
 ClassStatement* buildBool() {
   return new ClassStatement(new Type(new string("Bool")), nullptr, nullptr, true);
+}
+
+ClassStatement* buildConvert() {
+  FeatureList* methods = new FeatureList();
+  ListFormalDeclare* convertArgs = new ListFormalDeclare();
+
+  convertArgs->add(new FormalDeclare(new Id(new string("s")), new Type(new string("_Num")), nullptr));
+
+  methods->add(new FeatureOption(new Feature(new Id(new string("toInt")), convertArgs, new Type(new string("Int")), new ExprList())));
+  methods->add(new FeatureOption(new Feature(new Id(new string("toInt64")), convertArgs, new Type(new string("Int64")), new ExprList())));
+  methods->add(new FeatureOption(new Feature(new Id(new string("toInt32")), convertArgs, new Type(new string("Int32")), new ExprList())));
+  methods->add(new FeatureOption(new Feature(new Id(new string("toInt8")), convertArgs, new Type(new string("Int8")), new ExprList())));
+  methods->add(new FeatureOption(new Feature(new Id(new string("toFloat")), convertArgs, new Type(new string("Float")), new ExprList())));
+
+  return new ClassStatement(new Type(new string("Convert")), nullptr, methods, true);
 }

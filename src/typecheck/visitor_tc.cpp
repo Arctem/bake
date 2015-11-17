@@ -1082,7 +1082,7 @@ void TypeCheck::checkDispatchParameters(Dispatch* node, SymbolMethod* methodObj)
   /* Confirm that the parameters are of the same type */
   if(dispatchParams.str() != declParams.str()) {
     stringstream msg;
-    msg << "Error: Dispatch parameter types differ from the method's declaration";
+    msg << "Error: Dispatch parameter types differ from the method's declaration: " << dispatchParams.str() << " and " << declParams.str();
     
     throw TypeErr(msg.str().c_str());
   }

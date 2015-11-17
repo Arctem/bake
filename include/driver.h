@@ -28,13 +28,10 @@ void help(char* cmd_name);
 void yylex_destroy(void);
 int perform_lex(string in_fname, bool print_lex);
 void add_builtins();
+void add_nums();
 
 ClassStatement* buildObject();
 ClassStatement* buildIO();
 ClassStatement* buildString();
-ClassStatement* buildInt();
-ClassStatement* buildInt8();
-ClassStatement* buildInt64();
 ClassStatement* buildBool();
-ClassStatement* buildFloat();
-
+ClassStatement* buildConvert();

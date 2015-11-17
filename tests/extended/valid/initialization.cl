@@ -1,12 +1,12 @@
 class Main {
-  a : Int64 <- Convert.toInt64(2147483647);
-  b : Int8 <- Convert.toInt8(90);
+  a : Int64 <- (new Convert).toInt64(2147483647);
+  b : Int8 <- (new Convert).toInt8(90);
   x : Int;
 
   main() : Object{{
-    x <- Convert.toInt(a);
-    x <- Convert.toInt32(a);
-    x <- Convert.toInt(b);
-    x <- Convert.toInt32(b);
+    x <- (new Convert).toInt(a);
+    x <- (new Convert).toInt32(a);
+    x <- (new Convert).toInt(b);
+    x <- (new Convert).toInt32(b);
   }};
 };
