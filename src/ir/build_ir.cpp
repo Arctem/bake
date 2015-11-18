@@ -10,14 +10,16 @@
  * Generate IR code for IntegerVal
  */
 void ir::BuildIR::visit(bake_ast::IntegerVal*) {
-    
+    reg_count++;
+    throwup = reg_count;
+    //curr_bb.addOp(new )
 }
 
 /**
  * Generate IR code for Int8Val
  */
 void ir::BuildIR::visit(bake_ast::Int8Val*) {
-
+ // TODO Isn't this not used
 }
 
 /**

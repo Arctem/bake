@@ -4,20 +4,32 @@
 #include "ir/ir_visitor.h"
 
 namespace ir {
+
+  enum RegisterType { INT8 = 8, INT = 32, INT64 = 64, FLOAT = 64, BOOL = 8};
+
   class Op {
   public:
-    int getSrc1() { return src1; }
-    int getSrc2() { return src2; }
-    int getDest() { return dest; }
+    int getSrc1Register() { return src1.first; }
+    int getSrc2Register() { return src2.first; }
+    int getDestRegister() { return dest.first; }
 
-    void setSrc1(int reg) { src1 = reg; }
-    void setSrc2(int reg) { src2 = reg; }
-    void setDest(int reg) { dest = reg; }
+    RegisterType getSrc1Size() { return src1.second; }
+    RegisterType getSrc2Size() { return src2.second; }
+    RegisterType getDestSize() { return dest.second; }
+
+    void setSrc1Register(int reg) { src1.first = reg; }
+    void setSrc2Register(int reg) { src2.first= reg; }
+    void setDestRegister(int reg) { dest.first = reg; }
+
+    void setSrc1Size(RegisterType type) { src1.second = type; }
+    void setSrc2Size(RegisterType type) { src2.second = type; }
+    void setDestSize(RegisterType type) { dest.second = type; }
 
   private:
-    int src1;
-    int src2;
-    int dest;
+    std::pair <int,RegisterType> src1;
+    std::pair <int,RegisterType> src2;
+    std::pair <int,RegisterType> dest;
+
   };
 
   /* Placeholder classes meant to replace the need of Type enum. */

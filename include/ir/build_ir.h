@@ -71,6 +71,8 @@ namespace ir {
     ClassList* classlist;
     ClassDef* curr_class; // Reference to the current class being compiled
     BasicBlock* curr_bb; // Reference to the current basic block being compiled
+    int reg_count = 0; // Number of virtual registers that have been created. The next register that should be created is reg_count + 1
+    int throwup = reg_count; // Used to specify which register the result of an operation is stored in. 
     bool in_method = false; // Flag indicating whether we are currently generating code for a method. This is messy, disgusting, and icky. Oh, and did I mention dangerous? If you have a better idea, please, please implement it.
   };
 }
