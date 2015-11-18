@@ -1,4 +1,3 @@
-
 #include <iostream>
 
 #include "ir/ir_visitor.h"
@@ -87,6 +86,14 @@ void ir::IrPrint::visit(Nop* n) {
 void ir::IrPrint::visit(Fnop* n) {
 
 }
+
+/**
+ * Pretty print the IR for Add
+ */
+void ir::IrPrint::visit(Add* n) {
+
+}
+
 
 /**
  * Pretty print the IR for Sub

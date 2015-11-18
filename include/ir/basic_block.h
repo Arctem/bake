@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <string>
@@ -17,7 +16,7 @@ namespace ir {
 
     void setBrOnTrue(BasicBlock* block) { brOnTrue = block; }
     void setBrOnFalse(BasicBlock* block) { brOnFalse = block; }
-    void addOp(Op* op);
+    void addOp(Op* op, int pos = -1);
 
     virtual void accept(IrVisitor* v) { v->visit(this); }
 
@@ -27,7 +26,7 @@ namespace ir {
     std::vector<Op*> ops;
   };
 
-  class Method : BasicBlock{
+  class Method : public BasicBlock {
   public:
     Method(std::string name) : name(name) {  }
 

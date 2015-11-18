@@ -9,13 +9,15 @@ using namespace std;
 #include <getopt.h>
 
 #include "ast/ast.h"
+#include "codegen/director.h"
+#include "ir/build_ir.h"
+#include "ir/class_list.h"
+#include "ir/ir_visitor.h"
 #include "typecheck/symbol_node.h"
 #include "typecheck/build_st.h"
 #include "typecheck/symbol_table_print.h"
 #include "typecheck/visitor_tc.h"
 #include "typecheck/check_scope.h"
-#include "ir/build_ir.h"
-#include "ir/ir_visitor.h"
 
 extern int yylineno;
 extern int nelements;

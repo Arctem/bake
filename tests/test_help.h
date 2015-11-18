@@ -5,6 +5,7 @@
 
 #include "gtest/gtest.h"
 #include "driver.h"
+#include "codegen/director.h"
 
 #define TESTDIR "tests/"
 

@@ -63,8 +63,8 @@ namespace ir {
     virtual void visit(Method*) = 0;
     virtual void visit(Nop*) = 0;
     virtual void visit(Fnop*) = 0;
-    virtual void visit(Sub*) = 0;
     virtual void visit(Add*) = 0;
+    virtual void visit(Sub*) = 0;
     virtual void visit(Mul*) = 0;
     virtual void visit(Div*) = 0;
     virtual void visit(Mod*) = 0;
@@ -121,8 +121,8 @@ namespace ir {
     virtual void visit(Method*);
     virtual void visit(Nop*);
     virtual void visit(Fnop*);
-    virtual void visit(Sub*);
     virtual void visit(Add*);
+    virtual void visit(Sub*);
     virtual void visit(Mul*);
     virtual void visit(Div*);
     virtual void visit(Mod*);

@@ -1,4 +1,3 @@
-
 #include "ir/class_list.h"
 
 /**

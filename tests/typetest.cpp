@@ -23,8 +23,6 @@ protected:
 };
 
 TEST_P(TypeTest, TestSuccess) {
-  std::cout << GetParam().first << "Should pass: " << GetParam().second << std::endl;
-
   if(GetParam().second)
     ASSERT_NO_THROW(build_and_typecheck());
   else
