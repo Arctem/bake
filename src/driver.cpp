@@ -42,12 +42,6 @@ void add_builtins() {
     return 0;
   }
 
-  SymbolTablePrint spt;
-  build.getCurrScope()->accept(&spt);
-
-  cout << endl << "################" << endl << endl;
-
-
   CheckScope cs;
   try {
     build.getCurrScope()->accept(&cs);
@@ -67,13 +61,18 @@ void add_builtins() {
     return 0;
   }
 
-  ir::BuildIR bir;
+  ir::BuildIR bir((typecheck::Groot*) build.getCurrScope());
   bir.visit(ast);
 
   cout << endl << "################" << endl << endl;
 
   ir::IrPrint irp;
   irp.visit(bir.getClassList());
+
+  cout << endl << "################" << endl << endl;
+
+  SymbolTablePrint spt;
+  build.getCurrScope()->accept(&spt);
 
   delete ast;
 

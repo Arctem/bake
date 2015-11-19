@@ -96,6 +96,9 @@ namespace typecheck {
     string* getName() { return cls_name; }
     void setName(const string name);
 
+    unordered_map<string, int> getAttrOffsets() { return attr_offsets; }
+    void setAttrOffset(string attr_name, int offset);
+
     bool hasAncestor(string* parent); // Check whether this class is a subclass of parent
 
     virtual void accept(SymbolVisitor* v) { v->visit(this); }
@@ -105,6 +108,7 @@ namespace typecheck {
     string* super = nullptr; // Name of parent class
     string* cls_name; // Name of this class
     unordered_map<string, string> members; // Elements in this scope (instance variables).
+    unordered_map<string, int> attr_offsets; // map from attribute names to the index into the IR's vector of attributes for this class
     unordered_map<string, SymbolMethod*> methods; // Methods in this class
     bool nonExtend;
   };

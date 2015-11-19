@@ -58,7 +58,13 @@ void SymbolTablePrint::visit(ClassNode* cls) {
   level++;
   for(auto member : cls->getMembers()) {
     leadingOps();
-    cout << member.first << " : " << member.second << endl;
+    cout << member.first << " : " << member.second;
+
+    int attr_offset = cls->getAttrOffsets()[member.first];
+    if(attr_offset != -1) {
+      cout << " @ " << attr_offset;
+    }
+    cout << endl;
   }
   level--;
 

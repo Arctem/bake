@@ -1,7 +1,19 @@
 
+#include <iostream>
 #include "ir/build_ir.h"
 #include "ast/ast.h"
 #include "ir/class_list.h"
+
+/**
+ * Update the class we're currently in. Also sets the current scope to the correct class
+ */
+void ir::BuildIR::setCurrClass(ClassDef* cls) {
+  curr_class = cls;
+
+  if(cls != nullptr) {
+    curScope = symbol_tree->getClasses()[cls->getName()];
+  }
+}
 
 /******************/
 /* Terminal nodes */
@@ -247,7 +259,11 @@ void ir::BuildIR::visit(bake_ast::FormalDeclare* n) {
   }
 
   if(not in_method) { // Check if we are in a class. If so, add this as an attribute.
+    int offset;
+
     curr_class->addAttr(size);
+    offset = curr_class->getAttrs().size() - 1;
+    ((ClassNode*) curScope)->setAttrOffset(*n->getID()->getName(), offset);
   }
 }
 
@@ -300,6 +316,21 @@ void ir::BuildIR::visit(bake_ast::Dispatch* n) {
   if(n->getExprList() != nullptr) {
     n->getExprList()->accept(this);
   }
+
+  // const std::string* methodName = ((Id*) node->getID())->getName(); // Get the name of the method that is being called
+
+  // /* Walk up the symbol tree until the first class is found */
+  // typecheck::SymbolNode* step = curScope;
+
+  // /* Find the class that this method _should_ be a member of */
+  // typecheck::ClassNode* curClass = nullptr;
+  // typecheck::Groot* groot = (typecheck::Groot*) step->getLexParent();
+  // if(node->getExpr() != nullptr) { // If this dispatch is attached to an expression (e.g., x.foo()), find the type of x
+  //   std::string* oftype = node->getExpr()->getInfType();
+  //   curClass = groot->getClasses()[*oftype];
+  // } else { // If this dispatch is not attached to an expression (e.g., foo()), simply use the class that the current scope is a member of.
+  //   curClass = (typecheck::ClassNode*) step;
+  // }
 }
 
 /**

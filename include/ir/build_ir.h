@@ -2,8 +2,9 @@
 
 #include <string>
 #include "ast/visitor.h"
-#include "ir/class_list.h"
 #include "ast/node.h"
+#include "ir/class_list.h"
+#include "typecheck/symbol_node.h"
 
 namespace ir {
   // Map from numeric types to their sizes. If a type isn't in this hash,
@@ -17,12 +18,12 @@ namespace ir {
 
   class BuildIR : bake_ast::Visitor {
   public:
-    BuildIR() { };
+    BuildIR(typecheck::Groot* groot) { symbol_tree = groot; }
 
     ClassList* getClassList() { return classlist; }
     ClassDef* getCurrClass() { return curr_class; }
 
-    void setCurrClass(ClassDef* cls) { curr_class = cls; }
+    void setCurrClass(ClassDef* cls);
 
     // Terminal nodes
     void visit(bake_ast::IntegerVal*);
@@ -69,6 +70,9 @@ namespace ir {
 
   private:
     ClassList* classlist;
+    
+    typecheck::Groot* symbol_tree; // Reference to the root of the symbol tree (i.e., Groot)
+    typecheck::SymbolNode* curScope; // Reference to the current scope being generated
     ClassDef* curr_class; // Reference to the current class being compiled
     BasicBlock* curr_bb; // Reference to the current basic block being compiled
     int reg_count = 0; // Number of virtual registers that have been created. The next register that should be created is reg_count + 1

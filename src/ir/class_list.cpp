@@ -16,7 +16,7 @@ void ir::ClassDef::addMethod(ir::BasicBlock* method) {
 }
 
 /**
- * Adds a new attribute to this method. Only the size of the variable needs to be recorded.
+ * Adds a new attribute to this method. Also records and returns the virtual offset.
  */
 void ir::ClassDef::addAttr(int attr_size) {
   attrs.push_back(attr_size);

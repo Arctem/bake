@@ -1,3 +1,5 @@
+
+#include <iostream>
 #include <sstream>
 using namespace std;
 
@@ -100,6 +102,14 @@ void ClassNode::addMember(string id, string type) {
   }
 
   members.insert(pair<string, string>(id, type));
+  attr_offsets.insert(pair<string, int>(id, -1)); // Set place-holder virtual offset for this attribute
+}
+
+/**
+ * Sets the virtual offset for this attribute in the IR
+ */
+void ClassNode::setAttrOffset(string attr_name, int offset) {
+  attr_offsets[attr_name] = offset;
 }
 
 /**

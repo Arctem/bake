@@ -33,11 +33,13 @@ namespace ir {
   public:
     ClassDef(std::string name) : name(name) {  };
 
-    void addMethod(BasicBlock*);
+    void addMethod(BasicBlock*); // Add a method to this class. Returns the virtual offset into the vector of methods where this method is stored.
+    void addAttr(int); // Add an attribute to this class. Returns the virtual offset for the attr.
+    
     std::vector<BasicBlock*> getMethods() { return methods; }
-    void addAttr(int);
-    std::vector<int> getAttrs() { return attrs; }
+    std::vector<int> getAttrs() { return attrs; } // get the list of sizes of attributes
     std::string getName() { return name; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
 
   private:
