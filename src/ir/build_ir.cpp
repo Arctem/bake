@@ -34,7 +34,7 @@ void ir::BuildIR::setCurrClass(ClassDef* cls) {
 void ir::BuildIR::visit(bake_ast::IntegerVal*) {
     reg_count++;
     throwup = reg_count;
-    //curr_bb.addOp(new )
+    //curr_bb.addOp(new Copy(std::make_pair(1,FLOAT)));
 }
 
 /**
