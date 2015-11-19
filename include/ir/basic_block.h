@@ -25,4 +25,14 @@ namespace ir {
     BasicBlock* brOnFalse = nullptr;
     std::vector<Op*> ops;
   };
+
+  class Method {
+  public:
+    std::vector<int> getStackVars() { return stack_vars; }
+
+    void addStackVar(int);
+
+  private:
+    std::vector<int> stack_vars; // Vector containing the size of each variable that needs to be included in stack frames for this method
+  };
 }

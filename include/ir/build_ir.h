@@ -7,18 +7,9 @@
 #include "typecheck/symbol_node.h"
 
 namespace ir {
-  // Map from numeric types to their sizes. If a type isn't in this hash,
-  // assume it should be stored as a pointer.
-  static std::unordered_map<std::string, int> type_sizes({{std::string("Int8"), 8},
-                                                          {std::string("Int"), 32},
-                                                          {std::string("Int64"), 64},
-                                                          {std::string("Float"), 64},
-                                                          {std::string("Bool"), 8}
-                                                         });
-
   class BuildIR : bake_ast::Visitor {
   public:
-    BuildIR(typecheck::Groot* groot) { symbol_tree = groot; }
+    BuildIR(typecheck::Groot* groot);
 
     ClassList* getClassList() { return classlist; }
     ClassDef* getCurrClass() { return curr_class; }

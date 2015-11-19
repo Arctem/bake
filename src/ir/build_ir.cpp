@@ -3,6 +3,16 @@
 #include "ir/build_ir.h"
 #include "ast/ast.h"
 #include "ir/class_list.h"
+#include "ir/calculate_offsets.h"
+
+ir::BuildIR::BuildIR(typecheck::Groot* groot) {
+  symbol_tree = groot;
+
+  ir::CalcOffsets offset_visitor;
+  offset_visitor.visit(groot);
+
+  classlist = offset_visitor.getClassList();
+}
 
 /**
  * Update the class we're currently in. Also sets the current scope to the correct class
@@ -250,21 +260,6 @@ void ir::BuildIR::visit(bake_ast::FormalDeclare* n) {
   if(n->getExpr() != nullptr) {
     n->getExpr()->accept(this);
   }
-
-  int size; // Will hold the size that this variable needs to have allocated
-  if(type_sizes.find(*n->getType()->getName()) == type_sizes.end()) { // If not found in list of explicit sizes, assume pointer
-    size = 8;
-  } else {
-    size = type_sizes[*n->getType()->getName()];
-  }
-
-  if(not in_method) { // Check if we are in a class. If so, add this as an attribute.
-    int offset;
-
-    curr_class->addAttr(size);
-    offset = curr_class->getAttrs().size() - 1;
-    ((ClassNode*) curScope)->setAttrOffset(*n->getID()->getName(), offset);
-  }
 }
 
 /**
@@ -274,10 +269,13 @@ void ir::BuildIR::visit(bake_ast::ClassStatement* n) {
   n->getType()->accept(this);
 
   std::string class_name = *n->getType()->getName();
-  ir::ClassDef* this_class = new ClassDef(class_name);
-
+  ir::ClassDef* this_class = classlist->getClasses()[class_name];
   setCurrClass(this_class);
-  classlist->addClass(class_name, this_class);
+
+  std::cout << "the thing" << std::endl;
+  for(auto e_p : classlist->getClasses()) {
+    std::cout << e_p.first << " : " << e_p.second << std::endl;
+  }
 
   if(n->getInheritType() != nullptr) {
     n->getInheritType()->accept(this);
@@ -292,8 +290,6 @@ void ir::BuildIR::visit(bake_ast::ClassStatement* n) {
  * Generate IR code for ClassList
  */
 void ir::BuildIR::visit(bake_ast::ClassList* n) {
-  classlist = new ir::ClassList();
-
   for(auto child : n->getChildren()) {
     child->accept(this);
   }
@@ -346,8 +342,6 @@ void ir::BuildIR::visit(bake_ast::ListFormalDeclare* n) {
  * Generate IR code for Feature
  */
 void ir::BuildIR::visit(bake_ast::Feature* n) {
-  in_method = true; // State that we are currently generating code for a method.
-
   /* Create first basic block for this method */
   curr_bb = new ir::BasicBlock();
   curr_class->addMethod(curr_bb);
@@ -360,8 +354,6 @@ void ir::BuildIR::visit(bake_ast::Feature* n) {
 
   n->getType()->accept(this);
   n->getExpr()->accept(this);
-
-  in_method = false; // State that we're no longer in the method
 }
 
 /**
