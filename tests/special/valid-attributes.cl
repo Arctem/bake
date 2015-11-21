@@ -3,12 +3,19 @@ class Main inherits IO {
   y : Bool <- true;
   z : Float <- 34;
 
+  bar(k : Float, z : Bool) : Int {{
+    let a : Float, z : Int64 <- 12, c : Float in {
+      a <- k + let a : Int in { 4; };
+    };
+  }};
+
   main() : Object {
     {
-      let a : Int64, b : Int64 <- 12, c : Float in {
-        a <- b + let a : Int in { 4; };
-      };
       out_string("Hi World!\n");
     }
   };
+
+  foo(k : Float) : Int {{
+    4 + 4;
+  }};
 };

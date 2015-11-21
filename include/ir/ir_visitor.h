@@ -5,6 +5,7 @@ namespace ir {
   class ClassList;
   class ClassDef;
   class BasicBlock;
+  class Method;
   class Nop;
   class Fnop;
   class Sub;
@@ -58,6 +59,7 @@ namespace ir {
     virtual void visit(ClassList*) = 0;
     virtual void visit(ClassDef*) = 0;
     virtual void visit(BasicBlock*) = 0;
+    virtual void visit(Method*) = 0;
     virtual void visit(Nop*) = 0;
     virtual void visit(Fnop*) = 0;
     virtual void visit(Sub*) = 0;
@@ -114,6 +116,7 @@ namespace ir {
     virtual void visit(ClassList*);
     virtual void visit(ClassDef*);
     virtual void visit(BasicBlock*);
+    virtual void visit(Method*);
     virtual void visit(Nop*);
     virtual void visit(Fnop*);
     virtual void visit(Sub*);

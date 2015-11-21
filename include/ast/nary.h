@@ -6,6 +6,7 @@
 using namespace std;
 #include "node.h"
 #include "misc_ops.h"
+#include "typecheck/symbol_node.h"
 
 namespace bake_ast {
 
@@ -55,6 +56,7 @@ namespace bake_ast {
 
     void add(FormalDeclare* n);
     vector<FormalDeclare*> getList() { return list; }
+
     virtual void accept(Visitor* v) { v->visit(this); }
 
   private:
@@ -108,14 +110,19 @@ namespace bake_ast {
 
     Node* getExpr() { return this->expr; }
     ListFormalDeclare* getList() { return this->list; }
+
     void setExpr(Node* n) { expr = n; }
     void addToIdList(FormalDeclare* n) { list->add(n); }
+
+    typecheck::SymbolAnon* getScope() { return scope; } // Get the symbol tree node corresponding to this scope
+    void setScope(typecheck::SymbolAnon* s) { scope = s; } // Get the symbol tree node corresponding to this scope
+
     virtual void accept(Visitor* v) { v->visit(this); }
 
   private:
     ListFormalDeclare* list;
     Node* expr;
-
+    typecheck::SymbolAnon* scope = nullptr; // Reference to the Symbol Tree ClassNode corresponding to this scope
   };
 
 
@@ -165,8 +172,6 @@ namespace bake_ast {
 
     Node* id;
     ExprList* exprList = nullptr; // optional
-
-
   };
 
 
@@ -181,11 +186,13 @@ namespace bake_ast {
     ListFormalDeclare* getList() { return list; }
     Type* getType() { return type; }
     Node* getExpr() { return expr; }
+    typecheck::SymbolMethod* getScope() { return scope; } // Get the symbol tree node corresponding to this method
 
     void setID(Id* i) { id = i; }
     void setList(ListFormalDeclare* l) { list = l; }
     void setType(Type* t) { type = t; }
     void setExpr(Node* e) { expr = e; }
+    void setScope(typecheck::SymbolMethod* s) { scope = s; } // Get the symbol tree node corresponding to this method
 
     virtual void accept(Visitor* v) { v->visit(this); }
 
@@ -194,6 +201,8 @@ namespace bake_ast {
     ListFormalDeclare* list = nullptr; // Parameters
     Type* type; // Return type
     Node* expr; // Body
+
+    typecheck::SymbolMethod* scope = nullptr; // Symbol tree node corresponding to this method
   };
 
   /*** Feature Option - Contains list of Features***/
@@ -226,12 +235,14 @@ namespace bake_ast {
     Type* getType() { return this->typeId; }
     Type* getInheritType() { return this->inheritType; }
     FeatureList* getList() { return this->list; }
+    typecheck::ClassNode* getScope() { return scope; } // Get the symbol tree node corresponding to this method
     bool cantExtend() { return nonExtend; }
 
     void setType(Type* n) { this->typeId = n; }
     void setInheritType(Type* n) { this->inheritType = n; }
     void setList(FeatureList* n) { this->list = n; }
     void add(FeatureOption* n);
+    void setScope(typecheck::ClassNode* s) { scope = s; } // Get the symbol tree node corresponding to this method
 
     virtual void accept(Visitor* v) { v->visit(this); }
 
@@ -239,6 +250,7 @@ namespace bake_ast {
     Type* typeId; // Name of this class (that is, the name of the type defined by this class)
     Type* inheritType = nullptr;
     FeatureList* list = nullptr;
+    typecheck::ClassNode* scope = nullptr; // Reference to the Symbol Tree ClassNode corresponding to this class
     bool nonExtend;
   };
 }

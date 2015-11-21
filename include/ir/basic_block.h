@@ -6,6 +6,7 @@
 #include <vector>
 #include "ir/op.h"
 #include "ir/ir_visitor.h"
+#include "ast/ast.h"
 
 namespace ir {
   class BasicBlock {
@@ -28,11 +29,20 @@ namespace ir {
 
   class Method {
   public:
-    std::vector<int> getStackVars() { return stack_vars; }
+    Method(std::string name) : name(name) {  }
 
+    void setAst(bake_ast::Feature* n) { ast = n; } // Set the AST node corresponding to this class
     void addStackVar(int);
 
+    std::vector<int> getStackVars() { return stack_vars; }
+    bake_ast::Feature* getAst() { return ast; } // Return the AST node corresponding to this class
+    std::string getName() { return name; }
+
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+
   private:
-    std::vector<int> stack_vars; // Vector containing the size of each variable that needs to be included in stack frames for this method
+    std::string name;
+    std::vector<int> stack_vars; // Vector containing the size of each parameter that this method takes
+    bake_ast::Feature* ast; // Reference to the AST node defining this class
   };
 }

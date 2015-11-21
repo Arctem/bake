@@ -60,9 +60,8 @@ void SymbolTablePrint::visit(ClassNode* cls) {
     leadingOps();
     cout << member.first << " : " << member.second;
 
-    int attr_offset = cls->getAttrOffsets()[member.first];
-    if(attr_offset != -1) {
-      cout << " @ " << attr_offset;
+    if(cls->getAttrOffsets().find(member.first) != cls->getAttrOffsets().end()) {
+      cout << " @ " << cls->getAttrOffsets()[member.first];
     }
     cout << endl;
   }
@@ -75,7 +74,14 @@ void SymbolTablePrint::visit(ClassNode* cls) {
   level++;
   for(auto method : cls->getMethods()) {
     leadingOps();
-    cout << "+ " << method.first << endl;
+    cout << "+ " << method.first;
+
+    int method_offset = cls->getMethodOffsets()[method.first];
+    if(method_offset != -1) {
+      cout << " @ " << method_offset;
+    }
+    cout << endl;
+
     method.second->accept(this);
   }
   level--;
@@ -100,7 +106,12 @@ void SymbolTablePrint::visit(SymbolMethod* method) {
   level++;
   for(auto param : method->getParams()) {
     leadingOps();
-    cout << param.first << " : " << param.second << endl;
+    cout << param.first << " : " << param.second;
+
+    if(method->getStackOffsets().find(param.first) != method->getStackOffsets().end()) {
+      cout << " @ " << method->getStackOffsets()[param.first];
+    }
+    cout << endl;
   }
   level--;
   leadingOps();
@@ -127,9 +138,14 @@ void SymbolTablePrint::visit(SymbolAnon* let) {
   cout << "|\\ [Let]" << endl;
 
   level++;
-  for(auto var : let->getMembers()) {
+  for(auto var_kv : let->getMembers()) {
     leadingOps();
-    cout << var.first << " : " << var.second << endl;
+    cout << var_kv.first << " : " << var_kv.second;
+
+    if(let->getLVarOffsets().find(var_kv.first) != let->getLVarOffsets().end()) {
+      cout << " @ " << let->getLVarOffsets()[var_kv.first];
+    }
+    cout << endl;
   }
   level--;
   leadingOps();

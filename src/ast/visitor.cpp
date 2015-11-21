@@ -299,7 +299,14 @@ void PrettyPrint::visit(Case* n) {
 
 void PrettyPrint::visit(ClassStatement* n) {
   leadingOps();
-  cout << "+ ClassStatement" << endl;
+  cout << "+ ClassStatement";
+
+  // If a reference to the symbol tree has been set, print it.
+  if(n->getScope() !=  nullptr) {
+    cout << " @ " << n->getScope();
+  }
+  cout << endl;
+
   inferredType(this, n->getInfType());
 
   depth++;
@@ -382,7 +389,14 @@ void PrettyPrint::visit(CaseList* n){
 
 void PrettyPrint::visit(LetStatement* n){
   leadingOps();
-  cout << "+ LetStatement" << endl;
+  cout << "+ LetStatement";
+
+  // If a reference to the symbol tree has been set, print it.
+  if(n->getScope() !=  nullptr) {
+    cout << " @ " << n->getScope();
+  }
+  cout << endl;
+  
   inferredType(this, n->getInfType());
 
   depth++;
@@ -393,7 +407,14 @@ void PrettyPrint::visit(LetStatement* n){
 
 void PrettyPrint::visit(Feature* n){
   leadingOps();
-  cout << "+ Feature" << endl;
+  cout << "+ Feature";
+
+  // If a reference to the symbol tree has been set, print it.
+  if(n->getScope() !=  nullptr) {
+    cout << " @ " << n->getScope();
+  }
+  cout << endl;
+
   inferredType(this, n->getInfType());
 
   depth++;

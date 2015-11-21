@@ -113,6 +113,13 @@ void ClassNode::setAttrOffset(string attr_name, int offset) {
 }
 
 /**
+ * Sets the virtual offset for this method in the IR
+ */
+void ClassNode::setMethodOffset(string method_name, int offset) {
+  method_offsets[method_name] = offset;
+}
+
+/**
  * Get the member instance variables
  */
 unordered_map<string, string> ClassNode::getMembers() {
@@ -221,6 +228,13 @@ void SymbolMethod::setLexParent(ClassNode* parent) {
   this->lex_parent = parent;
 }
 
+/**
+ * Sets the virtual offset for this parameter in the IR
+ */
+void SymbolMethod::setStackOffset(string var_name, int offset) {
+  stack_offsets[var_name] = offset;
+}
+
 /************ SymbolAnon method implementation ***********/
 
 SymbolAnon::~SymbolAnon() {
@@ -272,4 +286,23 @@ void SymbolAnon::setLexParent(SymbolNode* parent) {
 void SymbolAnon::addSub(SymbolAnon* sub) {
   subs.insert(subs.begin(), sub);
   sub->setLexParent(this);
+}
+
+/**
+ * Walk up the tree from this node until the first method is found
+ */
+SymbolMethod* SymbolAnon::getOwningMethod() {
+  SymbolNode* curr_node = this;
+  while(curr_node->getType() != SYMBOLMETHOD) {
+    curr_node = curr_node->getLexParent();
+  }
+
+  return (SymbolMethod*) curr_node;
+}
+
+/**
+ * Set the offset of a local variable
+ */
+void SymbolAnon::setLVarOffset(string var_name, int offset) {
+  lvar_offsets[var_name] = offset;
 }

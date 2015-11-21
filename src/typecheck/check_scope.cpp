@@ -132,7 +132,7 @@ void typecheck::CheckScope::checkClass(typecheck::ClassNode* cls) {
       ClassNode* superClass = groot->getClasses()[*superName]; // Get the node for the symbol class. Note that cls->getLexParent() returns Groot.
 
       /* If the this super class has the same variable, throw error */
-      if(superClass->getMembers().find(attr_kv.first) != superClass->getMembers().end()) {
+      if(superClass->getMembers().count(attr_kv.first) >= 1) {
         std::stringstream msg;
         msg << "Error: Instance variable '" << attr_kv.first << "' already exists in a super class '" << *superName << "'" << endl;
   

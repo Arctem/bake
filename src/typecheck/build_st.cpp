@@ -21,14 +21,20 @@ void BuildST::visit(ClassStatement* cls) {
   /** Add class to Groot **/
   ClassNode* nnode = new ClassNode(cls->cantExtend());
 
+  // Set class this inherits from 
   if(cls->getInheritType() != nullptr) {
     nnode->setSuper(*cls->getInheritType()->getName());
   }
 
+  // Add new class to groot
   string class_name = *cls->getType()->getName();
   ((Groot*) curr_scope)->addClass(class_name, nnode);
   nnode->setName(class_name);
 
+  // Set AST reference up so the new class scope can be easily found from the AST
+  cls->setScope(nnode);
+
+  // Forward visitor
   if(cls->getList() != nullptr) {
     curr_scope = nnode;
     cls->getList()->accept(this);
@@ -71,14 +77,20 @@ void BuildST::visit(FormalDeclare* formal) {
  * Add a new method to the class
  */
 void BuildST::visit(Feature* feat) {
+  // Get name and type info
   string name = *(feat->getID()->getName());
   string retType = *(feat->getType()->getName());
 
+  // Create new method node
   SymbolMethod* method = new SymbolMethod();
   method->setRetType(retType); // Set return type
 
+  // Add method to class
   ((ClassNode*) curr_scope)->addMethod(name, method);
   curr_scope = method;
+
+  // Create reference from AST to symbol tree
+  feat->setScope(method);
 
   /* Add parameters to the scope tree */
   if(feat->getList() != nullptr) {
@@ -111,6 +123,8 @@ void BuildST::visit(LetStatement* let) {
   } else if(curr_scope->isA(SYMBOLANON)) {
     ((SymbolAnon*) curr_scope)->addSub(sub);
   }
+
+  let->setScope(sub);
 
   curr_scope = sub;
   let->getList()->accept(this); // Forward the visitor

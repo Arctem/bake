@@ -99,6 +99,9 @@ namespace typecheck {
     unordered_map<string, int> getAttrOffsets() { return attr_offsets; }
     void setAttrOffset(string attr_name, int offset);
 
+    unordered_map<string, int> getMethodOffsets() { return method_offsets; }
+    void setMethodOffset(string method_name, int offset);
+
     bool hasAncestor(string* parent); // Check whether this class is a subclass of parent
 
     virtual void accept(SymbolVisitor* v) { v->visit(this); }
@@ -110,6 +113,7 @@ namespace typecheck {
     unordered_map<string, string> members; // Elements in this scope (instance variables).
     unordered_map<string, int> attr_offsets; // map from attribute names to the index into the IR's vector of attributes for this class
     unordered_map<string, SymbolMethod*> methods; // Methods in this class
+    unordered_map<string, int> method_offsets; // map from method name to the index into the IR's vector of methods for this class
     bool nonExtend;
   };
 
@@ -123,14 +127,23 @@ namespace typecheck {
 
     string getRetType() { return retType; };
     void setRetType(string type) { retType = type; };
+
     vector<SymbolAnon*> getMembers();
     void addMember(SymbolAnon*);
+
     ClassNode* getLexParent();
     void setLexParent(ClassNode* parent);
+
     unordered_map<string, string> getParams() { return params; };
     void addParam(string id, string type);
+
     vector<string> getParamNames() { return param_names; }
+
     SymbolAnon* nextMem() { return members[curMem++]; }
+
+    unordered_map<string, int> getStackOffsets() { return stack_offsets; }
+    void setStackOffset(string, int);
+
     virtual void accept(SymbolVisitor* v) { v->visit(this); }
 
   private:
@@ -138,6 +151,7 @@ namespace typecheck {
     ClassNode* lex_parent;
     vector<string> param_names; // List of parameter names, in the order they are specified in the method declaration. Use the params map to determine the types.
     unordered_map<string, string> params; // Parameters to this method. Key: param name. Value: param type
+    unordered_map<string, int> stack_offsets; // map from parameter name to the index into the IR's vector of parameters for this method
     vector<SymbolAnon*> members; // Sub scopes (e.g., let statement)
     int curMem = 0; // current point in members
   };
@@ -150,8 +164,13 @@ namespace typecheck {
     SymbolAnon() : SymbolNode(SYMBOLANON) { };
     virtual ~SymbolAnon();
 
+    SymbolMethod* getOwningMethod();
+
     unordered_map<string, string> getMembers();
     void addMember(string, string);
+
+    unordered_map<string, int> getLVarOffsets() { return lvar_offsets; }
+    void setLVarOffset(string, int);
     
     vector<SymbolAnon*> getSubs() { return subs; };
     void addSub(SymbolAnon* sub);
@@ -166,6 +185,7 @@ namespace typecheck {
   private:
     SymbolNode* lex_parent;
     unordered_map<string, string> members; // Elements in this scope (variables).
+    unordered_map<string, int> lvar_offsets; // map from local variable name to the index into the IR's vector of variables for this method
     vector<SymbolAnon*> subs; // Sub let statements
     int curMem = 0; // current point in members
   };

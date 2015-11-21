@@ -44,9 +44,16 @@ void ir::IrPrint::visit(ClassDef* n) {
  * Pretty print the IR for BasicBlock
  */
 void ir::IrPrint::visit(BasicBlock* n) {
+
+}
+
+/**
+ * Pretty print the IR for Method
+ */
+void ir::IrPrint::visit(Method* n) {
   preops();
 
-  std::cout << " ( Method )" << std::endl;
+  std::cout << " ( " << n->getName() << " )" << std::endl;
 }
 
 /**

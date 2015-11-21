@@ -5,13 +5,19 @@
 #include "ir/class_list.h"
 #include "ir/calculate_offsets.h"
 
-ir::BuildIR::BuildIR(typecheck::Groot* groot) {
-  symbol_tree = groot;
-
+/**
+ * Constructor.
+ * Generates the virtual offsets then automatically runs the BuildIR visitor
+ */
+ir::BuildIR::BuildIR(bake_ast::ClassList* ast_root) {
+  /* Assign virtual offsets */
   ir::CalcOffsets offset_visitor;
-  offset_visitor.visit(groot);
+  offset_visitor.visit(ast_root);
 
   classlist = offset_visitor.getClassList();
+
+  /* Build the IR */
+  // visit(ast_root);
 }
 
 /**
@@ -20,9 +26,9 @@ ir::BuildIR::BuildIR(typecheck::Groot* groot) {
 void ir::BuildIR::setCurrClass(ClassDef* cls) {
   curr_class = cls;
 
-  if(cls != nullptr) {
-    curScope = symbol_tree->getClasses()[cls->getName()];
-  }
+  // if(cls != nullptr) {
+  //   curScope = symbol_tree->getClasses()[cls->getName()];
+  // }
 }
 
 /******************/
@@ -272,11 +278,6 @@ void ir::BuildIR::visit(bake_ast::ClassStatement* n) {
   ir::ClassDef* this_class = classlist->getClasses()[class_name];
   setCurrClass(this_class);
 
-  std::cout << "the thing" << std::endl;
-  for(auto e_p : classlist->getClasses()) {
-    std::cout << e_p.first << " : " << e_p.second << std::endl;
-  }
-
   if(n->getInheritType() != nullptr) {
     n->getInheritType()->accept(this);
   }
@@ -312,21 +313,6 @@ void ir::BuildIR::visit(bake_ast::Dispatch* n) {
   if(n->getExprList() != nullptr) {
     n->getExprList()->accept(this);
   }
-
-  // const std::string* methodName = ((Id*) node->getID())->getName(); // Get the name of the method that is being called
-
-  // /* Walk up the symbol tree until the first class is found */
-  // typecheck::SymbolNode* step = curScope;
-
-  // /* Find the class that this method _should_ be a member of */
-  // typecheck::ClassNode* curClass = nullptr;
-  // typecheck::Groot* groot = (typecheck::Groot*) step->getLexParent();
-  // if(node->getExpr() != nullptr) { // If this dispatch is attached to an expression (e.g., x.foo()), find the type of x
-  //   std::string* oftype = node->getExpr()->getInfType();
-  //   curClass = groot->getClasses()[*oftype];
-  // } else { // If this dispatch is not attached to an expression (e.g., foo()), simply use the class that the current scope is a member of.
-  //   curClass = (typecheck::ClassNode*) step;
-  // }
 }
 
 /**
@@ -342,10 +328,6 @@ void ir::BuildIR::visit(bake_ast::ListFormalDeclare* n) {
  * Generate IR code for Feature
  */
 void ir::BuildIR::visit(bake_ast::Feature* n) {
-  /* Create first basic block for this method */
-  curr_bb = new ir::BasicBlock();
-  curr_class->addMethod(curr_bb);
-
   n->getID()->accept(this);
 
   if(n->getList() != nullptr) {

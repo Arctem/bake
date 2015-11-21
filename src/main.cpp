@@ -45,12 +45,6 @@ int main(int argc, char** argv) {
     }
   }
 
-  // Prints the AST
-  PrettyPrint pp;
-  ast->accept(&pp);
-
-  cout << endl << "################" << endl << endl;
-
   add_builtins();
 
   // ast->accept(&pp);
@@ -63,12 +57,6 @@ int main(int argc, char** argv) {
     cout << e.what() << endl;
     return 0;
   }
-
-  SymbolTablePrint spt;
-  build.getCurrScope()->accept(&spt);
-
-  cout << endl << "################" << endl << endl;
-
 
   CheckScope cs;
   try {
@@ -83,11 +71,29 @@ int main(int argc, char** argv) {
 
   try {
     ast->accept(&tc);
-    ast->accept(&pp);
   } catch (TypeErr& e) {
     cout << e.what() << endl;
     return 0;
   }
+
+  // Build the IR
+  ir::BuildIR bir(ast);
+
+  // Prints the AST
+  PrettyPrint pp;
+  ast->accept(&pp);
+
+  cout << endl << "################" << endl << endl;
+
+  // Prints the symbol tree
+  SymbolTablePrint spt;
+  build.getCurrScope()->accept(&spt);
+
+  cout << endl << "################" << endl << endl;
+
+  // Prints the IR
+  ir::IrPrint irp;
+  irp.visit(bir.getClassList());
 
   delete ast;
 

@@ -11,7 +11,7 @@ void ir::ClassList::addClass(std::string id, ir::ClassDef* cls) {
 /**
  * Adds a method to the end of the list of methods for this class
  */
-void ir::ClassDef::addMethod(ir::BasicBlock* method) {
+void ir::ClassDef::addMethod(ir::Method* method) {
   methods.push_back(method);
 }
 

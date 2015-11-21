@@ -59,8 +59,9 @@ namespace ir {
     void setLoadBaseSize(RegisterType type) { src1.second = type; }
     void setLoadOffsetSize(RegisterType type) { src2.second = type; }
     void setStoreBaseSize(RegisterType type) { src2.second = type; }
-    void sestStoreOffsetSize(RegisterType type) { dest.second = type; }(RegisterType type) { src1.second = type; }(RegisterType type) { src1.second = type; }
-    void setSrcSize(RegisterType type) { src1.second = type; }(RegisterType type) { src1.second = type; }
+
+    void sestStoreOffsetSize(RegisterType type) { dest.second = type; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
     void setFunctionOffsetSize(RegisterType type) { src1.second = type; }
     void setObjectOffsetSize(RegisterType type) { src2.second = type; }
 
