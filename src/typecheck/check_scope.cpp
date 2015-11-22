@@ -30,6 +30,13 @@ void typecheck::CheckScope::visit(typecheck::Groot* groot) {
     }
   }
 
+  /* Second pass to check for inheritance problems */
+  for(auto cls_kv : groot->getClasses()) {
+    checkInheritanceCycles(cls_kv.second);
+    checkValidInherit(cls_kv.second);
+    checkMethods(cls_kv.second);
+  }
+
   checkForMains(groot);
 }
 
@@ -38,9 +45,6 @@ void typecheck::CheckScope::visit(typecheck::Groot* groot) {
  */
 void typecheck::CheckScope::visit(typecheck::ClassNode* cls) {
   checkClass(cls);
-  checkInheritanceCycles(cls);
-  checkMethods(cls);
-  checkValidInherit(cls);
 
   /* Forward visitor to children */
   for(auto method_kv : cls->getMethods()) {
