@@ -14,15 +14,11 @@ using namespace bake_ast;
  * Method copies the string and handles memory cleanup for itself.
  */
 void Node::setInfType(char const* t) {
-  if(infType != nullptr) {
-    delete infType;
-  }
+  delete infType;
   
-  infType = new string(t);
+  infType = new std::string(t);
 }
 
 Node::~Node() {
-  if(infType != nullptr) {
-    delete infType;
-  }
+  delete infType;
 }

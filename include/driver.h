@@ -35,3 +35,4 @@ ClassStatement* buildIO();
 ClassStatement* buildString();
 ClassStatement* buildBool();
 ClassStatement* buildConvert();
+FeatureOption* buildConvertFunc(string name);

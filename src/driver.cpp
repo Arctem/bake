@@ -86,15 +86,17 @@ ClassStatement* buildBool() {
 
 ClassStatement* buildConvert() {
   FeatureList* methods = new FeatureList();
-  ListFormalDeclare* convertArgs = new ListFormalDeclare();
 
-  convertArgs->add(new FormalDeclare(new Id(new string("s")), new Type(new string("_Num")), nullptr));
-
-  methods->add(new FeatureOption(new Feature(new Id(new string("toInt")), convertArgs, new Type(new string("Int")), new ExprList())));
-  methods->add(new FeatureOption(new Feature(new Id(new string("toInt64")), convertArgs, new Type(new string("Int64")), new ExprList())));
-  methods->add(new FeatureOption(new Feature(new Id(new string("toInt32")), convertArgs, new Type(new string("Int32")), new ExprList())));
-  methods->add(new FeatureOption(new Feature(new Id(new string("toInt8")), convertArgs, new Type(new string("Int8")), new ExprList())));
-  methods->add(new FeatureOption(new Feature(new Id(new string("toFloat")), convertArgs, new Type(new string("Float")), new ExprList())));
+  const char * const types[] = { "Int", "Int64", "Int32", "Int8", "Float" };
+  for(string type : types) {
+    methods->add(buildConvertFunc(type));
+  }
 
   return new ClassStatement(new Type(new string("Convert")), nullptr, methods, true);
+}
+
+FeatureOption* buildConvertFunc(string name) {
+  ListFormalDeclare* convertArgs = new ListFormalDeclare();
+  convertArgs->add(new FormalDeclare(new Id(new string("s")), new Type(new string("_Num")), nullptr));
+  return new FeatureOption(new Feature(new Id(new string("to" + name)), convertArgs, new Type(new string(name)), new ExprList()));
 }

@@ -92,7 +92,8 @@ namespace typecheck {
     const char* numOrder(string* l, string* r); // returns the greatest of the 2 based on int/float order. returns nullptr on error.
     bool isInt(string* type); // checks if the string is an int
     const char* isNum(string* s);// returns what number it is, nullptr if it is not a number
-    bool canAssign(string* l, string* r); // returns true if lhs >= rhs
     void checkDispatchParameters(Dispatch*, SymbolMethod*); // Checks whether the parameters match between a method declaration and dispatch.
+    bool canAssign(string* l, string* r); // returns true if lhs >= rhs
+    int getNumOrder(string* type);
   };
 }

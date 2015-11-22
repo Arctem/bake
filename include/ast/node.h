@@ -1,4 +1,3 @@
-
 /*
 *   Authors:        AJ Burns, Will Rosenberger
 *   Date:           Sept. 22nd, 2015
@@ -6,11 +5,10 @@
 *   Bugs:           None known
 */
 
-#ifndef __AST_NODE__
-#define __AST_NODE__
+#pragma once
 
 #include <string>
-using namespace std;
+#include <iostream>
 
 #include "visitor.h"
 
@@ -33,12 +31,10 @@ namespace bake_ast {
     virtual ~Node();
 
     void setInfType(char const* t);
-    string* getInfType() { return infType; }
+    std::string* getInfType() { return infType; }
     virtual void accept(Visitor*) = 0;
 
   private:
-    string* infType = nullptr; // The inferred type of this node. If nullptr, this node's type has not been resolved.
+    std::string* infType = nullptr; // The inferred type of this node. If nullptr, this node's type has not been resolved.
   };
 }
-
-#endif

@@ -520,17 +520,11 @@ void TypeCheck::visit(Assign* node) {
 
   if (canAssign(lhsType, rhsType)) {
     node->setInfType(lhsType->c_str());
-    return;
+  } else {
+    stringstream msg;
+    msg << "RHS (type: '" << *rhsType << "') is not a subclass of the LHS (type: '" << *lhsType << "')";
+    throw TypeErr(msg.str().c_str());
   }
-  else if(rhsClass->hasAncestor(lhsType)) {
-    node->setInfType(lhsType->c_str());
-
-    return;
-  }
-
-  stringstream msg;
-  msg << "RHS (type: '" << *rhsType << "') is not a subclass of the LHS (type: '" << *lhsType << "')";
-  throw TypeErr(msg.str().c_str());
 }
 
 
@@ -996,70 +990,26 @@ const char* TypeCheck::isNum(string* s){
  * nullptr on error.
  */
 const char* TypeCheck::numOrder(string* l, string* r){
-  int lorder;
-  int rorder;
+  int maxType = max(getNumOrder(l), getNumOrder(r));
 
-  // find the ordering of the left
-  if(*l == "Int64")
-    lorder = 3;
-  else if(*l == "Float")
-    lorder = 4;
-  else if(*l == "Int8")
-    lorder = 1;
-  else if(*l == "Int")
-    lorder = 2;
-  else
+  switch(maxType) {
+  case 1:
+    return "Int8";
+  case 2:
+    return "Int";
+  case 3:
+    return "In64";
+  case 4:
+    return "Float";
+  default:
     return nullptr;
-
-
-  // find the ordering of the right
-  if(*r == "Int64")
-    rorder = 3;
-  else if(*r == "Float")
-    rorder = 4;
-  else if(*r == "Int8")
-    rorder = 1;
-  else if(*r == "Int")
-    rorder = 2;
-  else
-    return nullptr;
-
-  // use the larger of the 2
-  if(lorder < rorder){
-    switch(rorder){
-      case 1:
-        return "Int8";
-      case 2:
-        return "Int";
-      case 3:
-        return "Int64";
-      case 4:
-        return "Float";
-    }
   }
-  else{
-    switch(lorder){
-      case 1:
-        return "Int8";
-      case 2:
-        return "Int";
-      case 3:
-        return "Int64";
-      case 4:
-        return "Float";
-    }
-  } 
+
 }
 
 bool TypeCheck::isInt(string* type) {
-  if(*type == "Int64")
-    return true;
-  else if(*type == "Int8")
-    return true;
-  else if(*type == "Int")
-    return true;
-  else
-    return false;
+  int order = getNumOrder(type);
+  return order == 1 || order == 2 || order == 3;
 }
 
 
@@ -1067,59 +1017,70 @@ bool TypeCheck::isInt(string* type) {
  * Checks whether the parameters match between a method declaration and dispatch.
  */
 void TypeCheck::checkDispatchParameters(Dispatch* node, SymbolMethod* methodObj) {
-  /* Construct string of the form P1P2...Pn where each P is the type of the next parameter in the method definition */
-  stringstream declParams;
-  for(auto param_name : methodObj->getParamNames()) {
-    declParams << methodObj->getParams()[param_name];
-  }
+  /* collect all of the types given and expected */
+  vector<string*> given;
+  vector<string> expected;
 
-  /* Construct string of parameter types in the dispatch */
-  stringstream dispatchParams;
   for(auto param : node->getExprList()->getChildren()) {
-    dispatchParams << *param->getInfType();
+    given.push_back(param->getInfType());
   }
 
-  /* Confirm that the parameters are of the same type */
-  if(dispatchParams.str() != declParams.str()) {
+  for(auto param_name : methodObj->getParamNames()) {
+    expected.push_back(methodObj->getParams()[param_name]);
+  }
+
+  if(given.size() != expected.size()) {
     stringstream msg;
-    msg << "Error: Dispatch parameter types differ from the method's declaration: " << dispatchParams.str() << " and " << declParams.str();
-    
+    msg << "Error: Method " << node->getID() << " expects " << expected.size() <<
+      " args but got " << given.size();
+
     throw TypeErr(msg.str().c_str());
+  } else {
+    for(int i = 0; i < given.size(); i++) {
+      if(!canAssign(&expected[i], given[i])) {
+	stringstream msg;
+	msg << "Error: Method " <<node->getID() << " expected " << expected[i] <<
+	  " but received " << given[i] << " for parameter #" << i;
+
+	throw TypeErr(msg.str().c_str());
+
+      }
+    }
   }
 }
 
-// returns true if r can be store in l, otherwise false.
+/*
+ * returns true if r can be store in l, otherwise false.
+ * takes into account Int type weirdness
+ */
 bool TypeCheck::canAssign(string* l, string* r) {
-  int lorder;
-  int rorder;
+  int lorder = getNumOrder(l);
+  int rorder = getNumOrder(r);
 
-  // find the ordering of the left
-  if (*l == "Int64")
-    lorder = 3;
-  else if (*l == "Float")
-    lorder = 4;
-  else if (*l == "Int8")
-    lorder = 1;
-  else if (*l == "Int")
-    lorder = 2;
-  else
-    return false;
-
-
-  // find the ordering of the right
-  if (*r == "Int64")
-    rorder = 3;
-  else if (*r == "Float")
-    rorder = 4;
-  else if (*r == "Int8")
-    rorder = 1;
-  else if (*r == "Int")
-    rorder = 2;
-  else
-    return false;
-
-  if (lorder >= rorder) {
-    return true;
+  // Check if both are num types.
+  if(lorder && rorder) {
+    return lorder >= rorder;
+  } else {
+    // If at least one isn't a num then check ancestors
+    ClassNode* rhsClass = groot->getClasses()[*r];
+    return rhsClass->hasAncestor(l);
   }
-  return false;
+}
+
+/*
+ * Returns the order of a number type (Int and Float types) or 0 if not one of those.
+ * Lower numbers may be assigned to higher numbers.
+ */
+int TypeCheck::getNumOrder(string* type) {
+  if(*type == "Float") {
+    return 4;
+  } else if(*type == "Int64") {
+    return 3;
+  } else if(*type == "Int" || *type == "Int32") {
+    return 2;
+  } else if(*type == "Int8") {
+    return 1;
+  } else {
+    return 0;
+  }
 }
