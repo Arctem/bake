@@ -652,12 +652,23 @@ void TypeCheck::visit(CaseStatement* node) {
  * Typecheck CaseList
  */
 void TypeCheck::visit(CaseList* node) {
+  string* retType = nullptr;
   for(auto cse : node->getList()) {
     cse->accept(this);
+    std::cout << "Type of case: " << *cse->getInfType() << std::endl;
+
+    if(retType == nullptr) {
+      retType = cse->getInfType();
+    } else {
+      /* Walk up until we find a common parent. */
+      while(!canAssign(retType, cse->getInfType())) {
+	retType = groot->getClasses()[*retType]->getName();
+      }
+    }
   }
 
-  // TODO: Need find which is the highest possible parent
-  node->setInfType("Object");
+  // TODO: Need find which is the lowest possible parent
+  node->setInfType(retType->c_str());
   setTypeOfLast(node->getInfType());
 }
 
