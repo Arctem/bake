@@ -221,7 +221,7 @@ void TypeCheck::visit(LogicalNot* node) {
   string* subtype = getTypeOfLast();
 
   /* Check type */
-  if(*subtype== "Bool") {
+  if(*subtype != "Bool") {
     stringstream msg;
     msg << "Error: Logical not cannot operate on type '" << *subtype << "'";
 
