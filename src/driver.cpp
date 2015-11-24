@@ -24,9 +24,6 @@ void add_builtins() {
   ast->add(buildBool());
   add_nums();
 
-  // TODO: Need self type?
-
-  // TODO: Needs Convert()
   ast->add(buildConvert());
 }
 

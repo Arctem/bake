@@ -998,7 +998,7 @@ const char* TypeCheck::numOrder(string* l, string* r){
   case 2:
     return "Int";
   case 3:
-    return "In64";
+    return "Int64";
   case 4:
     return "Float";
   default:
