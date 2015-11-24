@@ -562,7 +562,7 @@ void TypeCheck::visit(WhileLoop* node) {
 
   if(*cond != "Bool"){
     stringstream msg;
-    msg << "Error: If condition must be a Boolean Expression not " << *cond << "";
+    msg << "Error: While condition must be a Boolean Expression not " << *cond << "";
 
     throw TypeErr(msg.str().c_str());
   }
@@ -818,13 +818,8 @@ void TypeCheck::visit(ClassList* node) {
 
 /**
  * Typecheck Dispatch
- * TODO: Dispatch needs to handle self type.
- * TODO: add hard coded convert methods
  */
 void TypeCheck::visit(Dispatch* node) {
-  // Forward to ID
-  // node->getID()->accept(this);
-
   // Forward to expression
   if(node->getExpr() != nullptr) {
     node->getExpr()->accept(this);
@@ -916,6 +911,7 @@ void TypeCheck::visit(Dispatch* node) {
   }
 
   node->setInfType(methodObj->getRetType().c_str());
+  setTypeOfLast(node->getInfType());
 }
 
 /**
