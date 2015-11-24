@@ -86,9 +86,18 @@ void typecheck::CheckScope::checkForMains(Groot* groot) {
   }
 
   /* Complain about missing main() */
-  if(mainClass == nullptr) {
+  if(mainMethod == nullptr) {
     std::stringstream msg;
-    msg << "Error: No definition for method 'main()' in class 'Main'" << endl;
+    msg << "Error: No definition for method 'main()' in class 'Main'" << std::endl;
+
+    throw ScopeCheckErr(msg.str().c_str());
+  }
+
+  /* Check if our main has no arguments */
+  if(mainMethod->getParamNames().size() != 0) {
+    std::stringstream msg;
+    msg << "Error: Method 'main()' in class 'Main' has " <<
+      mainMethod->getParamNames().size() << " (0 expected)." << std::endl;
 
     throw ScopeCheckErr(msg.str().c_str());
   }
