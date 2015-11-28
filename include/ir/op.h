@@ -49,6 +49,13 @@ namespace ir {
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
+  class Add : Op {
+  public:
+    Add(std::pair<int,RegisterType> src1, std::pair<int,RegisterType> src2, std::pair<int,RegisterType> dest)
+        : Op(src1, src2, dest) {};
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
   class Sub : Op {
   public:
     Sub(std::pair<int,RegisterType> src1, std::pair<int,RegisterType> src2, std::pair<int,RegisterType> dest)
