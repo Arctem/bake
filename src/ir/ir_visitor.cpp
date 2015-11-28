@@ -26,14 +26,21 @@ void ir::IrPrint::visit(ClassList* n) {
  */
 void ir::IrPrint::visit(ClassDef* n) {
   preops();
-  std::cout << "[ " << n->getName() << " ]" << std::endl;
+  std::cout << "[ " << n->getName();
 
-  level++;
+  if(n->getAttrs().size() != 0) {
+    std::cout << ": ";
+  } else {
+    std::cout << " ";
+  }
+  
   for(auto attr : n->getAttrs()) {
     preops();
-    std::cout << " + " << attr << std::endl;
+    std::cout << attr << " ";
   }
+  std::cout << "]" << std::endl;
 
+  level++;
   for(auto method : n->getMethods()) {
     method->accept(this);
   }
@@ -53,7 +60,18 @@ void ir::IrPrint::visit(BasicBlock* n) {
 void ir::IrPrint::visit(Method* n) {
   preops();
 
-  std::cout << " ( " << n->getName() << " )" << std::endl;
+  std::cout << " ( " << n->getName();
+
+  if(n->getStackVars().size() != 0) {
+    std::cout << ": ";
+  } else {
+    std::cout << " ";
+  }
+
+  for(auto var : n->getStackVars()) {
+    std::cout << var << " ";
+  }
+  std::cout << ")" << std::endl;
 }
 
 /**
