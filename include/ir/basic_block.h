@@ -44,5 +44,6 @@ namespace ir {
     std::string name;
     std::vector<int> stack_vars; // Vector containing the size of each parameter that this method takes
     bake_ast::Feature* ast; // Reference to the AST node defining this class
+
   };
 }

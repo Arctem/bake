@@ -28,44 +28,8 @@ namespace ir {
     void setSrc2Size(RegisterType type) { src2.second = type; }
     void setDestSize(RegisterType type) { dest.second = type; }
 
-    // Aliased Registers getters
-    int getLoadBaseRegister() { return src1.first; }
-    int getLoadOffsetRegister() { return src2.first; }
-    int getStoreBaseRegister() { return src2.first; }
-    int gestStoreOffsetRegister() { return dest.first; }
-    int getSrcRegister() { return src1.first; }
-    int getFunctionOffsetRegister() { return src1.first; }
-    int getObjectOffsetRegister() { return src2.first; }
 
-    // Alliased Register Sizes getters
-    RegisterType getLoadBaseSize() { return src1.second; }
-    RegisterType getLoadOffsetSize() { return src2.second; }
-    RegisterType getStoreBaseSize() { return src2.second; }
-    RegisterType gestStoreOffsetSize() { return dest.second; }
-    RegisterType getSrcSize() { return src1.second; }
-    RegisterType getFunctionOffsetSize() { return src1.second; }
-    RegisterType getObjectOffsetSize() { return src2.second; }
-
-    // Aliased Registers setters
-    void setLoadBaseRegister(int reg) { src1.first = reg; }
-    void setLoadOffsetRegister(int reg) { src2.first = reg; }
-    void setStoreBaseRegister(int reg) { src2.first = reg; }
-    void sestStoreOffsetRegister(int reg) { dest.first = reg; }
-    void setSrcRegister(int reg) { src1.first = reg; }
-    void setFunctionOffsetRegister(int reg) { src1.first = reg; }
-    void setObjectOffsetRegister(int reg) { src2.first = reg; }
-
-    // Alliased Register Sizes setters
-    void setLoadBaseSize(RegisterType type) { src1.second = type; }
-    void setLoadOffsetSize(RegisterType type) { src2.second = type; }
-    void setStoreBaseSize(RegisterType type) { src2.second = type; }
-
-    void sestStoreOffsetSize(RegisterType type) { dest.second = type; }
-    void setSrcSize(RegisterType type) { src1.second = type; }
-    void setFunctionOffsetSize(RegisterType type) { src1.second = type; }
-    void setObjectOffsetSize(RegisterType type) { src2.second = type; }
-
-  private:
+  protected:
     std::pair <int,RegisterType> src1;
     std::pair <int,RegisterType> src2;
     std::pair <int,RegisterType> dest;
@@ -145,13 +109,26 @@ namespace ir {
   public:
     Copy(std::pair<int,RegisterType> src, std::pair<int,RegisterType> dest)
         : Op(src, std::make_pair(-1, EMPTY), dest) {};
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
+  // TODO: How are we going to do fcopy??
   class Fcopy : Op {
   public:
     Fcopy(std::pair<int,RegisterType> src, std::pair<int,RegisterType> dest)
         : Op(src, std::make_pair(-1, EMPTY), dest) {};
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
@@ -159,6 +136,12 @@ namespace ir {
   public:
     Conv(std::pair<int,RegisterType> src, std::pair<int,RegisterType> dest)
       : Op(src, std::make_pair(-1,EMPTY), dest) {};
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
@@ -166,6 +149,12 @@ namespace ir {
   public:
     Fconv(std::pair<int,RegisterType> src, std::pair<int,RegisterType> dest)
       : Op(src, std::make_pair(-1,EMPTY), dest) {};
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
@@ -173,6 +162,19 @@ namespace ir {
   public:
     LoadI(std::pair<int,RegisterType> base, int offset, std::pair<int,RegisterType> dest)
       : Op(base, std::make_pair(offset, CONSTANT), dest) {};
+
+      // Load Base
+      int getLoadBaseRegister() { return src1.first; }
+      RegisterType getLoadBaseSize() { return src1.second; }
+      void setLoadBaseRegister(int reg) { src1.first = reg; }
+      void setLoadBaseSize(RegisterType type) { src1.second = type; }
+
+      // Load Offset
+      int getLoadOffsetRegister() { return src2.first; }
+      RegisterType getLoadOffsetSize() { return src2.second; }
+      void setLoadOffsetRegister(int reg) { src2.first = reg; }
+      void setLoadOffsetSize(RegisterType type) { src2.second = type; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
@@ -180,6 +182,19 @@ namespace ir {
   public:
     LoadO(std::pair<int,RegisterType> base, std::pair<int,RegisterType> regOffset, std::pair<int,RegisterType> dest)
       : Op(base, regOffset, dest) {};
+
+    // Load Base
+    int getLoadBaseRegister() { return src1.first; }
+    RegisterType getLoadBaseSize() { return src1.second; }
+    void setLoadBaseRegister(int reg) { src1.first = reg; }
+    void setLoadBaseSize(RegisterType type) { src1.second = type; }
+
+    // Load Offset
+    int getLoadOffsetRegister() { return src2.first; }
+    RegisterType getLoadOffsetSize() { return src2.second; }
+    void setLoadOffsetRegister(int reg) { src2.first = reg; }
+    void setLoadOffsetSize(RegisterType type) { src2.second = type; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
@@ -187,6 +202,24 @@ namespace ir {
   public:
     StoreI(std::pair<int,RegisterType> src, std::pair<int,RegisterType> base, int offset)
         : Op(src, base, std::make_pair(offset, CONSTANT)) { };
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
+    // Store Base
+    int getStoreBaseRegister() { return src2.first; }
+    RegisterType getStoreBaseSize() { return src2.second; }
+    void setStoreBaseRegister(int reg) { src2.first = reg; }
+    void setStoreBaseSize(RegisterType type) { src2.second = type; }
+
+    // Store Offset
+    int gestStoreOffsetRegister() { return dest.first; }
+    RegisterType gestStoreOffsetSize() { return dest.second; }
+    void sestStoreOffsetRegister(int reg) { dest.first = reg; }
+    void sestStoreOffsetSize(RegisterType type) { dest.second = type; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
@@ -194,6 +227,24 @@ namespace ir {
   public:
     StoreO(std::pair<int,RegisterType> src, std::pair<int,RegisterType> base, std::pair<int,RegisterType> regOffset)
       : Op(src, base, regOffset) { };
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
+    // Store Base
+    int getStoreBaseRegister() { return src2.first; }
+    RegisterType getStoreBaseSize() { return src2.second; }
+    void setStoreBaseRegister(int reg) { src2.first = reg; }
+    void setStoreBaseSize(RegisterType type) { src2.second = type; }
+
+    // Store Offset
+    int gestStoreOffsetRegister() { return dest.first; }
+    RegisterType gestStoreOffsetSize() { return dest.second; }
+    void sestStoreOffsetRegister(int reg) { dest.first = reg; }
+    void sestStoreOffsetSize(RegisterType type) { dest.second = type; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
@@ -249,6 +300,12 @@ namespace ir {
   public:
     Cbr(std::pair<int,RegisterType> src)
       : Op(src,std::make_pair(-1, EMPTY),std::make_pair(-1, EMPTY)) { };
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
@@ -256,27 +313,69 @@ namespace ir {
   class Call : Op {
   public:
     virtual void accept(IrVisitor* v) { v->visit(this); }
+
+    // Function Offset
+    int getFunctionOffsetRegister() { return src1.first; }
+    RegisterType getFunctionOffsetSize() { return src1.second; }
+    void setFunctionOffsetRegister(int reg) { src1.first = reg; }
+    void setFunctionOffsetSize(RegisterType type) { src1.second = type; }
   };
 
   class Dcall : Op {
   public:
     virtual void accept(IrVisitor* v) { v->visit(this); }
+
+    // Function Offset
+    int getFunctionOffsetRegister() { return src1.first; }
+    RegisterType getFunctionOffsetSize() { return src1.second; }
+    void setFunctionOffsetRegister(int reg) { src1.first = reg; }
+    void setFunctionOffsetSize(RegisterType type) { src1.second = type; }
+
+    // Object Offset
+    int getObjectOffsetRegister() { return src2.first; }
+    RegisterType getObjectOffsetSize() { return src2.second; }
+    void setObjectOffsetRegister(int reg) { src2.first = reg; }
+    void setObjectOffsetSize(RegisterType type) { src2.second = type; }
   };
 
   class Fcall : Op {
   public:
     virtual void accept(IrVisitor* v) { v->visit(this); }
+
+    // Function Offset
+    int getFunctionOffsetRegister() { return src1.first; }
+    RegisterType getFunctionOffsetSize() { return src1.second; }
+    void setFunctionOffsetRegister(int reg) { src1.first = reg; }
+    void setFunctionOffsetSize(RegisterType type) { src1.second = type; }
   };
 
   class Dfcall : Op {
   public:
     virtual void accept(IrVisitor* v) { v->visit(this); }
+
+    // Function Offset
+    int getFunctionOffsetRegister() { return src1.first; }
+    RegisterType getFunctionOffsetSize() { return src1.second; }
+    void setFunctionOffsetRegister(int reg) { src1.first = reg; }
+    void setFunctionOffsetSize(RegisterType type) { src1.second = type; }
+
+    // Object Offset
+    int getObjectOffsetRegister() { return src2.first; }
+    RegisterType getObjectOffsetSize() { return src2.second; }
+    void setObjectOffsetRegister(int reg) { src2.first = reg; }
+    void setObjectOffsetSize(RegisterType type) { src2.second = type; }
   };
 
   class Push : Op {
   public:
     Push(std::pair<int,RegisterType> src)
       : Op(src, std::make_pair(-1,EMPTY), std::make_pair(-1,EMPTY)) {};
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
      virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
@@ -284,6 +383,12 @@ namespace ir {
   public:
     Fpush(std::pair<int,RegisterType> src)
       : Op(src, std::make_pair(-1,EMPTY), std::make_pair(-1,EMPTY)) {};
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
