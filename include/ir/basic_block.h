@@ -27,7 +27,7 @@ namespace ir {
     std::vector<Op*> ops;
   };
 
-  class Method {
+  class Method : BasicBlock{
   public:
     Method(std::string name) : name(name) {  }
 
