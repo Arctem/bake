@@ -103,6 +103,13 @@ void ir::IrPrint::visit(Sub* n) {
 }
 
 /**
+ * Pretty print the IR for Add
+ */
+void ir::IrPrint::visit(Add* n) {
+
+}
+
+/**
  * Pretty print the IR for Mul
  */
 void ir::IrPrint::visit(Mul* n) {

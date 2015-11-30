@@ -19,3 +19,9 @@ class Main inherits IO {
     4 + 4;
   }};
 };
+
+class Baz inherits Main {
+  bar(k : Float, z : Bool) : Int {{
+    out_string("Baz\n");
+  }};
+};
