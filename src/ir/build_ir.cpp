@@ -17,18 +17,7 @@ ir::BuildIR::BuildIR(bake_ast::ClassList* ast_root) {
   classlist = offset_visitor.getClassList();
 
   /* Build the IR */
-  // visit(ast_root);
-}
-
-/**
- * Update the class we're currently in. Also sets the current scope to the correct class
- */
-void ir::BuildIR::setCurrClass(ClassDef* cls) {
-  curr_class = cls;
-
-  // if(cls != nullptr) {
-  //   curScope = symbol_tree->getClasses()[cls->getName()];
-  // }
+  visit(ast_root);
 }
 
 /******************/
@@ -275,8 +264,7 @@ void ir::BuildIR::visit(bake_ast::ClassStatement* n) {
   n->getType()->accept(this);
 
   std::string class_name = *n->getType()->getName();
-  ir::ClassDef* this_class = classlist->getClasses()[class_name];
-  setCurrClass(this_class);
+  curr_class = classlist->getClasses()[class_name];
 
   if(n->getInheritType() != nullptr) {
     n->getInheritType()->accept(this);

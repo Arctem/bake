@@ -12,9 +12,6 @@ namespace ir {
     BuildIR(bake_ast::ClassList* ast_root);
 
     ClassList* getClassList() { return classlist; }
-    ClassDef* getCurrClass() { return curr_class; }
-
-    void setCurrClass(ClassDef* cls);
 
     // Terminal nodes
     void visit(bake_ast::IntegerVal*);
