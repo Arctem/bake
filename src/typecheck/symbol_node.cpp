@@ -3,6 +3,7 @@
 #include <sstream>
 using namespace std;
 
+#include "ast/ast.h"
 #include "typecheck/symbol_node.h"
 using namespace typecheck;
 
@@ -145,6 +146,20 @@ Groot* ClassNode::getLexParent() {
  */
 void ClassNode::setLexParent(Groot* groot) {
   this->lex_parent = groot;
+}
+
+/**
+ * Get the AST node corresponding to this class
+ */
+bake_ast::ClassStatement* ClassNode::getAst() {
+  return ast;
+}
+
+/**
+ * Set the AST node corresponding to this class
+ */
+void ClassNode::setAst(bake_ast::ClassStatement* class_ast) {
+  ast = class_ast;
 }
 
 /**

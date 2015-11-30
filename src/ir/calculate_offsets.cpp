@@ -11,6 +11,19 @@ void ir::CalcOffsets::visit(bake_ast::ClassList* n) {
   class_list = new ir::ClassList();
 
   for(auto child : n->getChildren()) {
+    /* Get class info (name) */
+    std::string id = *child->getType()->getName();
+
+    /* Create class definition */
+    ir::ClassDef* cls = new ir::ClassDef(id);
+    class_list->addClass(id, cls);
+    cls->setAst(child);
+
+    /* State that we are currently inspecting a class */
+    scope_type = INCLASS;
+    cur_class = cls;
+
+    /* Forward to the actual class */
     child->accept(this);
   }
 }
@@ -19,17 +32,14 @@ void ir::CalcOffsets::visit(bake_ast::ClassList* n) {
  * Assign virtual offsets for definitions in ClassStatement nodes
  */
 void ir::CalcOffsets::visit(bake_ast::ClassStatement* n) {
-  /* Get class info (name) */
-  std::string id = *n->getType()->getName();
+  /* Copy superclass into this class */
+  if(n->getScope()->getSuper() != nullptr) {
+    n->getScope()->getSuperObj()->getAst()->accept(this); // Forward this visitor back up to the super class
+                                                          // Note that because cur_class is the new class, the visitor will
+                                                          // save into this class, not the super. Not efficient, but easy.
+  }
 
-  /* Create class definition */
-  ir::ClassDef* cls = new ir::ClassDef(id);
-  class_list->addClass(id, cls);
-  cls->setAst(n);
-
-  /* State that we are currently inspecting a class */
   scope_type = INCLASS;
-  cur_class = cls;
 
   /* Forward visitor */
   if(n->getList() != nullptr) {
@@ -52,7 +62,6 @@ void ir::CalcOffsets::visit(bake_ast::Feature* n) {
 
   /* Add to list of methods */
   cur_class->addMethod(method);
-  cur_class->getAst()->getScope()->setMethodOffset(id, cur_class->getMethods().size());
 
   /* Forward to parameter list */
   if(n->getList() != nullptr) {

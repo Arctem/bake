@@ -20,6 +20,7 @@ void BuildST::visit(ClassList* classes) {
 void BuildST::visit(ClassStatement* cls) {
   /** Add class to Groot **/
   ClassNode* nnode = new ClassNode(cls->cantExtend());
+  nnode->setAst(cls);
 
   // Set class this inherits from 
   if(cls->getInheritType() != nullptr) {

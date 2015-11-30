@@ -9,6 +9,11 @@ using namespace std;
 #include "symbol_table_print.h"
 using namespace typecheck;
 
+/* Need this because we can't just include ast/ast.h due to circular dependencies. */
+namespace bake_ast {
+  class ClassStatement;
+}
+
 namespace typecheck {
   class Groot;
   class ClassNode;
@@ -90,6 +95,7 @@ namespace typecheck {
     void setLexParent(Groot* groot);
     
     string* getSuper() { return super; };
+    ClassNode* getSuperObj() { return lex_parent->getClasses()[*getSuper()]; } // Convert from the plain-text super name to the actual ClassNode object corresponding to the super.
     void setSuper(const string cls);
     bool cantExtend() { return nonExtend; }
 
@@ -101,6 +107,9 @@ namespace typecheck {
 
     unordered_map<string, int> getMethodOffsets() { return method_offsets; }
     void setMethodOffset(string method_name, int offset);
+
+    bake_ast::ClassStatement* getAst();
+    void setAst(bake_ast::ClassStatement*);
 
     bool hasAncestor(string* parent); // Check whether this class is a subclass of parent
 
@@ -114,6 +123,7 @@ namespace typecheck {
     unordered_map<string, int> attr_offsets; // map from attribute names to the index into the IR's vector of attributes for this class
     unordered_map<string, SymbolMethod*> methods; // Methods in this class
     unordered_map<string, int> method_offsets; // map from method name to the index into the IR's vector of methods for this class
+    bake_ast::ClassStatement* ast; // Reference to the AST node for this class
     bool nonExtend;
   };
 

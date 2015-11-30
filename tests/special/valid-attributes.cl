@@ -21,7 +21,21 @@ class Main inherits IO {
 };
 
 class Baz inherits Main {
+  antiZombieSquad : String;
+
   bar(k : Float, z : Bool) : Int {{
+
+    let theZombie : Int in { 4; };
+
     out_string("Baz\n");
+    4;
+  }};
+};
+
+class ATaleOfAMouseAndAClock {
+  story : String <- "The mouse ran up the clock\n";
+
+  bar(j : Bool) : String {{
+    story;
   }};
 };
