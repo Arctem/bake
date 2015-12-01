@@ -33,6 +33,7 @@ namespace ir {
   class ClassDef {
   public:
     ClassDef(std::string name) : name(name) {  };
+    virtual ~ClassDef();
 
     void addMethod(Method*); // Add a method to this class. Returns the virtual offset into the vector of methods where this method is stored.
     void addAttr(int); // Add an attribute to this class. Returns the virtual offset for the attr.

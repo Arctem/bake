@@ -1,5 +1,11 @@
 #include "ir/class_list.h"
 
+ir::ClassDef::~ClassDef() {
+  for(auto method : getMethods()) {
+    delete method;
+  }
+}
+
 /**
  * Add a class to the class list
  */
