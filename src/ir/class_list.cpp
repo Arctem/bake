@@ -33,3 +33,16 @@ void ir::ClassDef::addMethod(ir::Method* method) {
 void ir::ClassDef::addAttr(int attr_size) {
   attrs.push_back(attr_size);
 }
+
+/**
+ * Calculates the number of bytes to allocate for this object in each object record
+ */
+int ir::ClassDef::recordSize() {
+  int sum = 0;
+
+  for(auto attr : getAttrs()) {
+    sum += attr;
+  }
+
+  return sum;
+}

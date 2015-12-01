@@ -43,6 +43,8 @@ namespace ir {
     std::string getName() { return name; }
     bake_ast::ClassStatement* getAst() { return ast; } // Return the AST node corresponding to this class
 
+    int recordSize(); // Calculates the number of bytes to allocate for this object in each object record
+
     virtual void accept(IrVisitor* v) { v->visit(this); }
 
   private:

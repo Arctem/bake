@@ -71,6 +71,12 @@ void ir::IrPrint::visit(Method* n) {
     std::cout << var << " ";
   }
   std::cout << ")" << std::endl;
+
+  level++;
+  for(auto op : n->getOps()) {
+    op->accept(this);
+  }
+  level--;
 }
 
 /**
@@ -337,7 +343,11 @@ void ir::IrPrint::visit(Ccall* n) {
  * Pretty print the IR for Alloc
  */
 void ir::IrPrint::visit(Alloc* n) {
-
+  level++;
+  preops();
+  std::cout << "| alloc " << n->getSrc1Register(); // Print size to allocate
+  std::cout << " -> r" << n->getDestRegister() << "(" << n->getDestSize() << ")" << std::endl;
+  level--;
 }
 
 /**

@@ -279,6 +279,16 @@ void ir::BuildIR::visit(bake_ast::ClassStatement* n) {
  * Generate IR code for ClassList
  */
 void ir::BuildIR::visit(bake_ast::ClassList* n) {
+  /* Get main class and main method */
+  ir::ClassDef* main_class = classlist->getClasses()["Main"];
+  int virtual_offset = main_class->getAst()->getScope()->getMethodOffsets()["main"];
+  ir::Method* main_method = main_class->getMethods()[virtual_offset];
+
+  /* Allocate space for the instance of the Main class */
+  int size = main_class->recordSize();
+  ir::Alloc* alloc = new Alloc(size, std::make_pair(reg_count, INT8));
+  main_method->addOp(alloc);
+
   for(auto child : n->getChildren()) {
     child->accept(this);
   }
