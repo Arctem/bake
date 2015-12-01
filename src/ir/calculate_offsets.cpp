@@ -105,14 +105,14 @@ void ir::CalcOffsets::visit(bake_ast::FormalDeclare* n) {
   }
 
   if(scope_type == INCLASS) {
-    cur_class->addAttr(size);
     cur_class->getAst()->getScope()->setAttrOffset(id, cur_class->getAttrs().size());
+    cur_class->addAttr(size);
   } else if(scope_type == INMETHOD) {
-    cur_method->addStackVar(size);
     cur_method->getAst()->getScope()->setStackOffset(id, cur_method->getStackVars().size());
-  } else if(scope_type == INLET) {
     cur_method->addStackVar(size);
+  } else if(scope_type == INLET) {
     cur_let->getScope()->setLVarOffset(id, cur_method->getStackVars().size());
+    cur_method->addStackVar(size);
   }
 }
 

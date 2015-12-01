@@ -23,8 +23,8 @@ void ir::ClassDef::addMethod(ir::Method* method) {
     }
   }
 
-  methods.push_back(method);
   this->getAst()->getScope()->setMethodOffset(method->getName(), this->getMethods().size()); // Set method offset
+  methods.push_back(method);
 }
 
 /**
