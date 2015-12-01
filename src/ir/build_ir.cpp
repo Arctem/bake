@@ -84,7 +84,7 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
     ir::Copy* copy = new Copy(std::make_pair((int) chr, CONSTANT), std::make_pair(charReg, INT8));
     curr_bb->addOp(copy);
 
-    ir::StoreI* schar = new ir::StoreI(std::make_pair(strLoc, INT8), std::make_pair(charReg, INT8), offset);
+    ir::StoreI* schar = new ir::StoreI(std::make_pair(charReg, INT8), std::make_pair(strLoc, INT8), offset);
     curr_bb->addOp(schar);
 
     offset += 8;

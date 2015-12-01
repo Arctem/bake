@@ -207,9 +207,10 @@ void ir::IrPrint::visit(LoadO* n) {
  * Pretty print the IR for StoreI
  */
 void ir::IrPrint::visit(StoreI* n) {
-  // preops();
-  // std::cout << "| storeI " << (char) n->getSrcRegister(); // Print source value
-  // std::cout << " -> r" << n->getDestRegister() << "(" << n->getDestSize() << ")" << std::endl;
+  preops();
+  std::cout << "| storeI r" << n->getSrcRegister() << "(" << n->getSrcSize() << ")"; // Print source
+  std::cout << " -> r" << n->getStoreBaseRegister() << "(" << n->getStoreBaseSize() << ")"; // Print base address
+  std::cout << " + " << n->getStoreOffsetRegister() << std::endl; // Print offset
 }
 
 /**
