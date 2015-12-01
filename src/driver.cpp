@@ -41,6 +41,7 @@ void add_nums() {
 /* Build Object */
 ClassStatement* buildObject() {
   FeatureList* methods = new FeatureList();
+  methods->add(new FeatureOption(new FormalDeclare(new Id(new string("vtable")), new Type(new string("Int64")))));
   methods->add(new FeatureOption(new Feature(new Id(new string("abort")), new ListFormalDeclare(), new Type(new string("Object")), new ExprList())));
   methods->add(new FeatureOption(new Feature(new Id(new string("type_name")), new ListFormalDeclare(), new Type(new string("SELF_TYPE")), new ExprList())));
   methods->add(new FeatureOption(new Feature(new Id(new string("copy")), new ListFormalDeclare(), new Type(new string("SELF_TYPE")), new ExprList())));
