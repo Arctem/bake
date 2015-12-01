@@ -114,6 +114,7 @@ namespace ir {
   class IrPrint : IrVisitor {
   public:
     void preops();
+    void printRegPair(std::pair<int, int>);
 
     virtual void visit(ClassList*);
     virtual void visit(ClassDef*);

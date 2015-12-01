@@ -12,6 +12,13 @@ void ir::IrPrint::preops() {
 }
 
 /**
+ * Defines the standard way to print a register pair (iow, virtual register ID and size specifier)
+ */
+void ir::IrPrint::printRegPair(std::pair<int, int> reg) {
+  std::cout << "r" << reg.first << "(" << reg.second << ")";
+}
+
+/**
  * Pretty print the IR for ClassList
  */
 void ir::IrPrint::visit(ClassList* n) {
@@ -165,7 +172,9 @@ void ir::IrPrint::visit(Fdiv* n) {
 void ir::IrPrint::visit(Copy* n) {
   preops();
   std::cout << "| copy " << (char) n->getSrcRegister(); // Print source value
-  std::cout << " -> r" << n->getDestRegister() << "(" << n->getDestSize() << ")" << std::endl;
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << std::endl;
 }
 
 /**
@@ -208,8 +217,10 @@ void ir::IrPrint::visit(LoadO* n) {
  */
 void ir::IrPrint::visit(StoreI* n) {
   preops();
-  std::cout << "| storeI r" << n->getSrcRegister() << "(" << n->getSrcSize() << ")"; // Print source
-  std::cout << " -> r" << n->getStoreBaseRegister() << "(" << n->getStoreBaseSize() << ")"; // Print base address
+  std::cout << "| storeI ";
+  printRegPair(n->getSrc1Pair());
+  std::cout << " -> ";
+  printRegPair(n->getSrc2Pair());
   std::cout << " + " << n->getStoreOffsetRegister() << std::endl; // Print offset
 }
 
@@ -345,7 +356,9 @@ void ir::IrPrint::visit(Ccall* n) {
 void ir::IrPrint::visit(Alloc* n) {
   preops();
   std::cout << "| alloc " << n->getSrc1Register(); // Print size to allocate
-  std::cout << " -> r" << n->getDestRegister() << "(" << n->getDestSize() << ")" << std::endl;
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << std::endl;
 }
 
 /**

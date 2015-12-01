@@ -18,6 +18,10 @@ namespace ir {
       : src1(src1), src2(src2), dest(dest), op_type(ot) { };
     Op(OpType ot) : op_type(ot) { };
 
+    std::pair<int, RegisterType> getSrc1Pair() { return src1; }
+    std::pair<int, RegisterType> getSrc2Pair() { return src2; }
+    std::pair<int, RegisterType> getDestPair() { return dest; }
+
     int getSrc1Register() { return src1.first; }
     int getSrc2Register() { return src2.first; }
     int getDestRegister() { return dest.first; }
