@@ -1,7 +1,6 @@
 class Main inherits IO {
   x : Int32 <- 34;
   y : Bool <- true;
-  z : Float <- 34;
 
   bar(k : Float, z : Bool) : Int {{
     let a : Float, z : Int64 <- 12, c : Float in {
@@ -14,6 +13,8 @@ class Main inherits IO {
       out_string("Hi World!\n");
     }
   };
+
+  z : Float <- 34;
 
   foo(k : Float) : Int {{
     4 + 4;

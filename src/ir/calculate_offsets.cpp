@@ -69,6 +69,7 @@ void ir::CalcOffsets::visit(bake_ast::Feature* n) {
   }
 
   n->getExpr()->accept(this);
+  scope_type = INCLASS;
 }
 
 /**
