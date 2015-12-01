@@ -28,7 +28,7 @@ void add_builtins() {
 }
 
 void add_nums() {
-  ast->add(new ClassStatement(new Type(new string("_Num")), nullptr, nullptr, false));
+  ast->add(new ClassStatement(new Type(new string("_Num")), new Type(new string("Object")), nullptr, false));
   ast->add(new ClassStatement(new Type(new string("Int")), new Type(new string("_Num")), nullptr, true));
 
   // Add the extended built ins: Float, Int8, Int32, Int64
@@ -59,7 +59,7 @@ ClassStatement* buildIO() {
   methods->add(new FeatureOption(new Feature(new Id(new string("out_int")),outIntList, new Type(new string("SELF_TYPE")), new ExprList())));
   methods->add(new FeatureOption(new Feature(new Id(new string("in_string")), new ListFormalDeclare(), new Type(new string("String")), new ExprList())));
   methods->add(new FeatureOption(new Feature(new Id(new string("in_int")), new ListFormalDeclare(), new Type(new string("Int")), new ExprList())));
-  return new ClassStatement(new Type(new string("IO")), nullptr, methods);
+  return new ClassStatement(new Type(new string("IO")), new Type(new string("Object")), methods);
 }
 
 ClassStatement* buildString() {
@@ -75,11 +75,11 @@ ClassStatement* buildString() {
   methods->add(new FeatureOption(new Feature(new Id(new string("length")), new ListFormalDeclare(), new Type(new string("Int")), new ExprList())));
   methods->add(new FeatureOption(new Feature(new Id(new string("concat")), concatParam, new Type(new string("String")), new ExprList())));
   methods->add(new FeatureOption(new Feature(new Id(new string("substr")), substrParam, new Type(new string("String")), new ExprList())));
-  return new ClassStatement(new Type(new string("String")), nullptr, methods, true);
+  return new ClassStatement(new Type(new string("String")), new Type(new string("Object")), methods, true);
 }
 
 ClassStatement* buildBool() {
-  return new ClassStatement(new Type(new string("Bool")), nullptr, nullptr, true);
+  return new ClassStatement(new Type(new string("Bool")), new Type(new string("Object")), nullptr, true);
 }
 
 ClassStatement* buildConvert() {
@@ -90,7 +90,7 @@ ClassStatement* buildConvert() {
     methods->add(buildConvertFunc(type));
   }
 
-  return new ClassStatement(new Type(new string("Convert")), nullptr, methods, true);
+  return new ClassStatement(new Type(new string("Convert")), new Type(new string("Object")), methods, true);
 }
 
 FeatureOption* buildConvertFunc(string name) {

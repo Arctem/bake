@@ -171,7 +171,7 @@ void ir::IrPrint::visit(Fdiv* n) {
  */
 void ir::IrPrint::visit(Copy* n) {
   preops();
-  std::cout << "| copy " << (char) n->getSrcRegister(); // Print source value
+  std::cout << "| copy " << n->getSrcRegister(); // Print source value
   std::cout << " -> ";
   printRegPair(n->getDestPair());
   std::cout << std::endl;

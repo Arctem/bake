@@ -176,13 +176,13 @@ class : CLASS TYPE INHERIT TYPE '{' commandList '}'               {printDebug("c
                                                                          new bake_ast::Type($2), new bake_ast::Type($4), $6);}
       | CLASS TYPE '{' commandList '}'                            {printDebug("class type { commandlist }\n");
                                                                     $$ = new bake_ast::ClassStatement(
-                                                                         new bake_ast::Type($2), nullptr, $4);}
+                                                                         new bake_ast::Type($2), new bake_ast::Type(new string("Object")), $4);}
       | CLASS TYPE INHERIT TYPE '{'  '}'                          {printDebug("class type inherit type {  }\n");
                                                                     $$ = new bake_ast::ClassStatement(
                       new bake_ast::Type($2), new bake_ast::Type($4));}
       | CLASS TYPE '{'  '}'                                       {printDebug("class type {  }\n");
                                                                     $$ = new bake_ast::ClassStatement(
-                                                                      new bake_ast::Type($2));}
+                                                                      new bake_ast::Type($2), new bake_ast::Type(new string("Object")));}
 
 commandList : command ';'  commandList                            {printDebug("command ; commandlist\n");
                                                                     $3->add($1); $$ = $3;}
