@@ -35,10 +35,9 @@ ir::BuildIR::BuildIR(bake_ast::ClassList* ast_root) {
 /**
  * Generate IR code for IntegerVal
  */
-void ir::BuildIR::visit(bake_ast::IntegerVal*) {
-    // reg_count++;
-    // throwup = reg_count;
-    //curr_bb.addOp(new Copy(std::make_pair(1,FLOAT)));
+void ir::BuildIR::visit(bake_ast::IntegerVal* n) {
+    throwup = getRegCount();
+    curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), std::make_pair(throwup, INT)));
 }
 
 /**
