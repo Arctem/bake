@@ -72,11 +72,11 @@ void ir::IrPrint::visit(Method* n) {
   }
   std::cout << ")" << std::endl;
 
-  level++;
+  level += 2;
   for(auto op : n->getOps()) {
     op->accept(this);
   }
-  level--;
+  level -= 2;
 }
 
 /**
@@ -163,7 +163,9 @@ void ir::IrPrint::visit(Fdiv* n) {
  * Pretty print the IR for Copy
  */
 void ir::IrPrint::visit(Copy* n) {
-
+  preops();
+  std::cout << "| copy " << (char) n->getSrcRegister(); // Print source value
+  std::cout << " -> r" << n->getDestRegister() << "(" << n->getDestSize() << ")" << std::endl;
 }
 
 /**
@@ -205,7 +207,9 @@ void ir::IrPrint::visit(LoadO* n) {
  * Pretty print the IR for StoreI
  */
 void ir::IrPrint::visit(StoreI* n) {
-
+  // preops();
+  // std::cout << "| storeI " << (char) n->getSrcRegister(); // Print source value
+  // std::cout << " -> r" << n->getDestRegister() << "(" << n->getDestSize() << ")" << std::endl;
 }
 
 /**
@@ -338,11 +342,9 @@ void ir::IrPrint::visit(Ccall* n) {
  * Pretty print the IR for Alloc
  */
 void ir::IrPrint::visit(Alloc* n) {
-  level++;
   preops();
   std::cout << "| alloc " << n->getSrc1Register(); // Print size to allocate
   std::cout << " -> r" << n->getDestRegister() << "(" << n->getDestSize() << ")" << std::endl;
-  level--;
 }
 
 /**

@@ -29,8 +29,6 @@ ir::BuildIR::BuildIR(bake_ast::ClassList* ast_root) {
    }
  }
 
-
-
 /******************/
 /* Terminal nodes */
 
@@ -73,11 +71,23 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
   int str_len = value.length();
 
   /* Allocate for the string */
-  ir::Alloc* alloc = new Alloc(str_len * 8, std::make_pair(getRegCount(), INT8));
+  int strLoc = reserverReg();
+  ir::Alloc* alloc = new Alloc(str_len * 8, std::make_pair(strLoc, INT8));
   curr_bb->addOp(alloc);
 
-  for(auto chr : value) { 
-    // ir::StoreI schar = new ir::StoreI(std::make_pair());
+  /* Reserve register for storing character to save to memory. */
+  int charReg = reserverReg();
+
+  /* Copy each character into memory */
+  int offset = 0;
+  for(auto chr : value) {
+    ir::Copy* copy = new Copy(std::make_pair((int) chr, CONST), std::make_pair(charReg, INT8));
+    curr_bb->addOp(copy);
+
+    ir::StoreI* schar = new ir::StoreI(std::make_pair(strLoc, INT8), std::make_pair(charReg, INT8), offset);
+    curr_bb->addOp(schar);
+
+    offset += 8;
   }
 }
 
@@ -307,7 +317,7 @@ void ir::BuildIR::visit(bake_ast::ClassList* n) {
 
   /* Allocate space for the instance of the Main class */
   int size = main_class->recordSize();
-  ir::Alloc* alloc = new Alloc(size, std::make_pair(getRegCount(), INT8));
+  ir::Alloc* alloc = new Alloc(size, std::make_pair(reserverReg(), INT8));
   curr_bb->addOp(alloc);
 
   for(auto child : n->getChildren()) {

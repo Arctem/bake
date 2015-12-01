@@ -232,10 +232,10 @@ namespace ir {
     void setStoreBaseSize(RegisterType type) { src2.second = type; }
 
     // Store Offset
-    int gestStoreOffsetRegister() { return dest.first; }
-    RegisterType gestStoreOffsetSize() { return dest.second; }
-    void sestStoreOffsetRegister(int reg) { dest.first = reg; }
-    void sestStoreOffsetSize(RegisterType type) { dest.second = type; }
+    int getStoreOffsetRegister() { return dest.first; }
+    RegisterType getStoreOffsetSize() { return dest.second; }
+    void setStoreOffsetRegister(int reg) { dest.first = reg; }
+    void setStoreOffsetSize(RegisterType type) { dest.second = type; }
 
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
