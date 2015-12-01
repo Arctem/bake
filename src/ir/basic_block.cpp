@@ -25,7 +25,7 @@ ir::BasicBlock::~BasicBlock(){
    }
 
    for(auto op : getOps()){
-      //delete op;
+      delete op;
    }
 }
 
