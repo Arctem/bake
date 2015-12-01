@@ -71,6 +71,7 @@ ClassStatement* buildString() {
   substrParam->add(new FormalDeclare(new Id(new string("i")), new Type(new string("Int")), nullptr));
   substrParam->add(new FormalDeclare(new Id(new string("l")), new Type(new string("Int")), nullptr));
 
+  methods->add(new FeatureOption(new FormalDeclare(new Id(new string("theString")), new Type(new string("Bool")))));
   methods->add(new FeatureOption(new Feature(new Id(new string("length")), new ListFormalDeclare(), new Type(new string("Int")), new ExprList())));
   methods->add(new FeatureOption(new Feature(new Id(new string("concat")), concatParam, new Type(new string("String")), new ExprList())));
   methods->add(new FeatureOption(new Feature(new Id(new string("substr")), substrParam, new Type(new string("String")), new ExprList())));

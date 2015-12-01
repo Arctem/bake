@@ -49,7 +49,6 @@ namespace bake_ast {
     Id* id;
     Type* type;
     Node* expr = nullptr;
-
   };
 
   /*** IfStatement ***/

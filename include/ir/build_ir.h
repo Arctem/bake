@@ -58,8 +58,9 @@ namespace ir {
     void visit(bake_ast::FeatureList*);
 
   private:
-    ClassList* classlist;
+    void visitOutstring(bake_ast::Feature* n);
 
+    ClassList* classlist;
     ClassDef* curr_class; // Reference to the current class being compiled
     BasicBlock* curr_bb; // Reference to the current basic block being compiled
     int reg_count = 0; // Number of virtual registers that have been created. The next register that should be created is reg_count + 1

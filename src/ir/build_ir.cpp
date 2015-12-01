@@ -67,8 +67,11 @@ void ir::BuildIR::visit(bake_ast::FloatVal*) {
 /**
  * Generate IR code for StringVal
  */
-void ir::BuildIR::visit(bake_ast::StringVal*) {
+void ir::BuildIR::visit(bake_ast::StringVal* n) {
+  string value = *n->getValue();
+  int str_len = value.length();
 
+  
 }
 
 /**
@@ -337,7 +340,10 @@ void ir::BuildIR::visit(bake_ast::ListFormalDeclare* n) {
  * Generate IR code for Feature
  */
 void ir::BuildIR::visit(bake_ast::Feature* n) {
-  n->getID()->accept(this);
+  string id = *n->getID()->getName();
+  if(id == "out_string") {
+    visitOutstring(n);
+  }
 
   if(n->getList() != nullptr) {
     n->getList()->accept(this);
@@ -345,6 +351,13 @@ void ir::BuildIR::visit(bake_ast::Feature* n) {
 
   n->getType()->accept(this);
   n->getExpr()->accept(this);
+}
+
+/**
+ * Generate IR code for printing a string
+ */
+void ir::BuildIR::visitOutstring(bake_ast::Feature* n) {
+
 }
 
 /**
