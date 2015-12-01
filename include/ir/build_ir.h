@@ -59,6 +59,7 @@ namespace ir {
 
   private:
     void visitOutstring(bake_ast::Feature* n);
+    int getRegCount() { return reg_count++; } // Gets the current number of used virtual registers and increments the counter
 
     ClassList* classlist;
     ClassDef* curr_class; // Reference to the current class being compiled

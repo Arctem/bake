@@ -38,8 +38,8 @@ ir::BuildIR::BuildIR(bake_ast::ClassList* ast_root) {
  * Generate IR code for IntegerVal
  */
 void ir::BuildIR::visit(bake_ast::IntegerVal*) {
-    reg_count++;
-    throwup = reg_count;
+    // reg_count++;
+    // throwup = reg_count;
     //curr_bb.addOp(new Copy(std::make_pair(1,FLOAT)));
 }
 
@@ -68,10 +68,17 @@ void ir::BuildIR::visit(bake_ast::FloatVal*) {
  * Generate IR code for StringVal
  */
 void ir::BuildIR::visit(bake_ast::StringVal* n) {
+  /* Get the string itself */
   string value = *n->getValue();
   int str_len = value.length();
 
-  
+  /* Allocate for the string */
+  ir::Alloc* alloc = new Alloc(str_len * 8, std::make_pair(getRegCount(), INT8));
+  curr_bb->addOp(alloc);
+
+  for(auto chr : value) { 
+    // ir::StoreI schar = new ir::StoreI(std::make_pair());
+  }
 }
 
 /**
@@ -296,12 +303,12 @@ void ir::BuildIR::visit(bake_ast::ClassList* n) {
   /* Get main class and main method */
   ir::ClassDef* main_class = classlist->getClasses()["Main"];
   int virtual_offset = main_class->getAst()->getScope()->getMethodOffsets()["main"];
-  ir::Method* main_method = main_class->getMethods()[virtual_offset];
+  curr_bb = main_class->getMethods()[virtual_offset];
 
   /* Allocate space for the instance of the Main class */
   int size = main_class->recordSize();
-  ir::Alloc* alloc = new Alloc(size, std::make_pair(reg_count, INT8));
-  main_method->addOp(alloc);
+  ir::Alloc* alloc = new Alloc(size, std::make_pair(getRegCount(), INT8));
+  curr_bb->addOp(alloc);
 
   for(auto child : n->getChildren()) {
     child->accept(this);
