@@ -20,6 +20,7 @@ namespace ir {
    */
   class CalcOffsets : bake_ast::Visitor {
   public:
+
     /* AST node corresponding to the root of the IR */
     virtual void visit(bake_ast::ClassList*);
 

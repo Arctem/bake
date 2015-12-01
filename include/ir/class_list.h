@@ -17,6 +17,8 @@ namespace ir {
    */
   class ClassList {
   public:
+    virtual ~ClassList();
+
     void addClass(std::string, ClassDef*);
     std::unordered_map<std::string, ClassDef*> getClasses() { return classes; }
 
@@ -38,7 +40,7 @@ namespace ir {
     void addMethod(Method*); // Add a method to this class. Returns the virtual offset into the vector of methods where this method is stored.
     void addAttr(int); // Add an attribute to this class. Returns the virtual offset for the attr.
     void setAst(bake_ast::ClassStatement* n) { ast = n; } // Set the AST node corresponding to this class
-    
+
     std::vector<Method*> getMethods() { return methods; }
     std::vector<int> getAttrs() { return attrs; } // get the list of sizes of attributes
     std::string getName() { return name; }

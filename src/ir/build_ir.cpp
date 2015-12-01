@@ -20,6 +20,17 @@ ir::BuildIR::BuildIR(bake_ast::ClassList* ast_root) {
   visit(ast_root);
 }
 
+/**
+ * Deconstructor
+ */
+ ir::BuildIR::~BuildIR(){
+   if(classlist != nullptr){
+     delete classlist;
+   }
+ }
+
+
+
 /******************/
 /* Terminal nodes */
 

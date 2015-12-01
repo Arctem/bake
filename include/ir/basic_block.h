@@ -11,6 +11,8 @@
 namespace ir {
   class BasicBlock {
   public:
+    virtual ~BasicBlock();
+
     BasicBlock* getBrOnTrue() { return brOnTrue; }
     BasicBlock* getBrOnFalse() { return brOnFalse; }
     std::vector<Op*> getOps() { return ops; }
@@ -19,6 +21,7 @@ namespace ir {
     void setBrOnTrue(BasicBlock* block) { brOnTrue = block; }
     void setBrOnFalse(BasicBlock* block) { brOnFalse = block; }
     void addOp(Op* op, int pos = -1);
+
 
     virtual void accept(IrVisitor* v) { v->visit(this); }
 
@@ -32,6 +35,7 @@ namespace ir {
   class Method : public BasicBlock {
   public:
     Method(std::string name) : name(name) {  }
+    virtual ~Method() {};
 
     void setAst(bake_ast::Feature* n) { ast = n; } // Set the AST node corresponding to this class
     void addStackVar(int);

@@ -12,7 +12,27 @@ void ir::BasicBlock::addOp(Op* op, int pos) {
 string* ir::BasicBlock::getLabel() {
   return label = new string("L" + std::to_string((unsigned long int) this));
 }
+/**
+ * Deconstructor
+ */
+ir::BasicBlock::~BasicBlock(){
+   if(brOnTrue != nullptr){
+     delete brOnTrue;
+   }
 
+   if(brOnFalse != nullptr){
+     delete brOnFalse;
+   }
+
+   for(auto op : getOps()){
+      //delete op;
+   }
+}
+
+
+/**
+ * Add Stack Var
+ */
 void ir::Method::addStackVar(int size) {
   stack_vars.push_back(size);
 }

@@ -1,8 +1,20 @@
 #include "ir/class_list.h"
 
+/**
+ * Deconstructor
+ */
 ir::ClassDef::~ClassDef() {
   for(auto method : getMethods()) {
     delete method;
+  }
+}
+
+/**
+ * Deconstructor
+ */
+ir::ClassList::~ClassList() {
+  for(auto class_kv : getClasses()){
+    delete class_kv.second;
   }
 }
 

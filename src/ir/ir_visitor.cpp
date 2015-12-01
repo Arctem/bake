@@ -32,7 +32,7 @@ void ir::IrPrint::visit(ClassDef* n) {
   } else {
     std::cout << " ";
   }
-  
+
   for(auto attr : n->getAttrs()) {
     preops();
     std::cout << attr << " ";
@@ -108,12 +108,7 @@ void ir::IrPrint::visit(Sub* n) {
 
 }
 
-/**
- * Pretty print the IR for Add
- */
-void ir::IrPrint::visit(Add* n) {
 
-}
 
 /**
  * Pretty print the IR for Mul

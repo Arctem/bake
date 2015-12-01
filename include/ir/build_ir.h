@@ -10,6 +10,7 @@ namespace ir {
   class BuildIR : bake_ast::Visitor {
   public:
     BuildIR(bake_ast::ClassList* ast_root);
+    virtual ~BuildIR();
 
     ClassList* getClassList() { return classlist; }
 
@@ -58,10 +59,10 @@ namespace ir {
 
   private:
     ClassList* classlist;
-    
+
     ClassDef* curr_class; // Reference to the current class being compiled
     BasicBlock* curr_bb; // Reference to the current basic block being compiled
     int reg_count = 0; // Number of virtual registers that have been created. The next register that should be created is reg_count + 1
-    int throwup = reg_count; // Used to specify which register the result of an operation is stored in. 
+    int throwup = reg_count; // Used to specify which register the result of an operation is stored in.
   };
 }
