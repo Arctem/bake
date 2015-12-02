@@ -54,6 +54,7 @@ namespace ir {
   class Length;
   class Concat;
   class Substr;
+  class CreateObj;
 
   class IrVisitor {
   public:
@@ -109,6 +110,7 @@ namespace ir {
     virtual void visit(Length*) = 0;
     virtual void visit(Concat*) = 0;
     virtual void visit(Substr*) = 0;
+    virtual void visit(CreateObj*) = 0;
   };
 
   class IrPrint : IrVisitor {
@@ -168,6 +170,7 @@ namespace ir {
     virtual void visit(Length*);
     virtual void visit(Concat*);
     virtual void visit(Substr*);
+    virtual void visit(CreateObj*);
 
   private:
     int level = 0;

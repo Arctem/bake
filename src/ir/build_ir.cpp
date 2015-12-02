@@ -74,12 +74,12 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
   size -= 64; // Remove excess space due to placeholder variable in the AST
 
   /* Allocate for the string */
-  int strLoc = reserverReg();
-  ir::Alloc* alloc = new Alloc(size, std::make_pair(strLoc, INT8));
-  curr_bb->addOp(alloc);
+  int strLoc = reserveReg();
+  ir::CreateObj* cobj = new ir::CreateObj("String", size, std::make_pair(strLoc, INT64));
+  curr_bb->addOp(cobj);
 
   /* Reserve register for storing character to save to memory. */
-  int charReg = reserverReg();
+  int charReg = reserveReg();
 
   /* Copy each character into memory */
   int offset = 0;
@@ -324,11 +324,6 @@ void ir::BuildIR::visit(bake_ast::ClassList* n) {
   ir::ClassDef* main_class = classlist->getClasses()["Main"];
   int virtual_offset = main_class->getAst()->getScope()->getMethodOffsets()["main"];
   curr_bb = main_class->getMethods()[virtual_offset];
-
-  /* Allocate space for the instance of the Main class */
-  int size = main_class->recordSize();
-  ir::Alloc* alloc = new Alloc(size, std::make_pair(reserverReg(), INT8));
-  curr_bb->addOp(alloc);
 
   for(auto child : n->getChildren()) {
     child->accept(this);

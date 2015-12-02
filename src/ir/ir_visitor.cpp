@@ -437,3 +437,11 @@ void ir::IrPrint::visit(Concat* n) {
 void ir::IrPrint::visit(Substr* n) {
 
 }
+
+/**
+ * Pretty print the IR for CreateObj
+ */
+void ir::IrPrint::visit(CreateObj* n) {
+  preops();
+  std::cout << "| createobj " << n->getClassName() << ", " << n->getNumBits() << " -> " << "r" << n->getSrc1Register() << std::endl; // Print size to allocate
+}

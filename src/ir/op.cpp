@@ -147,5 +147,8 @@ void ir::Op::accept(IrVisitor* v) {
   case SUBSTR:
     ((Substr*) this)->accept(v);
     break;
+  case CREATEOBJ:
+    ((CreateObj*) this)->accept(v);
+    break;
   }
 }

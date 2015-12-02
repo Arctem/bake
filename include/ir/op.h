@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <string>
 #include "ir/ir_visitor.h"
 
 namespace ir {
@@ -10,7 +11,7 @@ namespace ir {
   enum OpType { NOP, FNOP, ADD, SUB, MUL, DIV, MOD, FADD, FSUB, FMUL, FDIV, COPY, FCOPY, CONV, FCONV,
                 LOADI, LOADO, STOREI, STOREO, CMPLT, CMPLE, CMPEQ, FCMPLT, FCMPLE, FCMPEQ, BR, CBR,
                 CALL, DCALL, FCALL, DFCALL, PUSH, FPUSH, POP, FPOP, CCALL, ALLOC, FREE, ABORT, TYPENAME,
-                SHALLOWCOPY, OUTSTRING, OUTINT, INSTRING, ININT, LENGTH, CONCAT, SUBSTR };
+                SHALLOWCOPY, OUTSTRING, OUTINT, INSTRING, ININT, LENGTH, CONCAT, SUBSTR, CREATEOBJ };
 
   class Op {
   public:
@@ -479,7 +480,6 @@ namespace ir {
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
-  // TODO figure out if the register can do strints
   class OutString : public Op {
   public:
     OutString(std::pair<int,RegisterType> src, std::pair<int,RegisterType> dest)
@@ -494,7 +494,6 @@ namespace ir {
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
-  // TODO make sure this is how to return strings
   class InString : public Op {
   public:
     InString(std::pair<int,RegisterType> dest)
@@ -509,7 +508,6 @@ namespace ir {
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
-  // TODO : check strings
   class Length : public Op {
   public:
     Length(std::pair<int,RegisterType> dest)
@@ -517,7 +515,6 @@ namespace ir {
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
-  // TODO : Check strings
   class Concat : public Op {
   public:
     Concat(std::pair<int,RegisterType> src, std::pair<int,RegisterType> dest)
@@ -525,11 +522,31 @@ namespace ir {
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 
-  // TODO : Check strings
   class Substr : public Op {
   public:
     Substr(std::pair<int,RegisterType> src1, std::pair<int,RegisterType> src2, std::pair<int,RegisterType> dest)
       : Op(SUBSTR, src1, src2, dest) {};
     virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class CreateObj : public Op {
+  public:
+    CreateObj(std::string class_name, int num_bits, std::pair<int,RegisterType> src1)
+      : Op(CREATEOBJ, src1, std::make_pair(-1, EMPTY), std::make_pair(-1, EMPTY)), class_name(class_name), num_bits(num_bits) { };
+
+    int getBase() { return src1.first; }
+    void setBase(int reg) { src1.first = reg; }
+
+    std::string getClassName() { return class_name; }
+    void setClassName(std::string name) { class_name = name; }
+
+    int getNumBits() { return num_bits; }
+    void setNumBits(int num) { num_bits = num; }
+
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+
+  private:
+    std::string class_name;
+    int num_bits;
   };
 }
