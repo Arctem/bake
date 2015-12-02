@@ -43,22 +43,24 @@ void ir::BuildIR::visit(bake_ast::IntegerVal* n) {
 /**
  * Generate IR code for Int8Val
  */
-void ir::BuildIR::visit(bake_ast::Int8Val*) {
- // TODO Isn't this not used
+void ir::BuildIR::visit(bake_ast::Int8Val* n) {
+  throwup = getRegCount();
+  curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), std::make_pair(throwup, INT8)));
 }
 
 /**
  * Generate IR code for Int64Val
  */
-void ir::BuildIR::visit(bake_ast::Int64Val*) {
-
+void ir::BuildIR::visit(bake_ast::Int64Val* n) {
+  throwup = getRegCount();
+  curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), std::make_pair(throwup, INT64)));
 }
 
 /**
  * Generate IR code for FloatVal
  */
-void ir::BuildIR::visit(bake_ast::FloatVal*) {
-
+void ir::BuildIR::visit(bake_ast::FloatVal* n) {
+  // TODO Float away
 }
 
 /**
@@ -104,21 +106,28 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
 /**
  * Generate IR code for BoolVal
  */
-void ir::BuildIR::visit(bake_ast::BoolVal*) {
+void ir::BuildIR::visit(bake_ast::BoolVal* n) {
+  throwup = getRegCount();
+
+  if(n->getValue() == true){
+    curr_bb->addOp(new Copy(std::make_pair(1, CONSTANT), std::make_pair(throwup, BOOL)));
+  }else if(n->getValue() == false){
+    curr_bb->addOp(new Copy(std::make_pair(0, CONSTANT), std::make_pair(throwup, BOOL)));
+  }
 
 }
 
 /**
  * Generate IR code for Id
  */
-void ir::BuildIR::visit(bake_ast::Id*) {
+void ir::BuildIR::visit(bake_ast::Id* n) {
 
 }
 
 /**
  * Generate IR code for Type
  */
-void ir::BuildIR::visit(bake_ast::Type*) {
+void ir::BuildIR::visit(bake_ast::Type* n) {
 
 }
 
