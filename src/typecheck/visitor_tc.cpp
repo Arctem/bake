@@ -1045,11 +1045,11 @@ void TypeCheck::checkDispatchParameters(Dispatch* node, SymbolMethod* methodObj)
   } else {
     for(int i = 0; i < given.size(); i++) {
       if(!canAssign(&expected[i], given[i])) {
-	stringstream msg;
-	msg << "Error: Method " << node->getID() << " expected " << expected[i] <<
-	  " but received " << *given[i] << " for parameter #" << i;
+        stringstream msg;
+        msg << "Error: Method " << node->getID() << " expected " << expected[i] <<
+          " but received " << *given[i] << " for parameter #" << i;
 
-	throw TypeErr(msg.str().c_str());
+        throw TypeErr(msg.str().c_str());
       }
     }
   }

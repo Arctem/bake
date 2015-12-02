@@ -94,10 +94,10 @@ void typecheck::CheckScope::checkForMains(Groot* groot) {
   }
 
   /* Check if our main has no arguments */
-  if(mainMethod->getParamNames().size() != 0) {
+  if(mainMethod->getParamNames().size() != 1) {
     std::stringstream msg;
     msg << "Error: Method 'main()' in class 'Main' has " <<
-      mainMethod->getParamNames().size() << " (0 expected)." << std::endl;
+      mainMethod->getParamNames().size() - 1<< " (0 expected)." << std::endl;
 
     throw ScopeCheckErr(msg.str().c_str());
   }

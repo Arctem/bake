@@ -21,6 +21,7 @@ namespace bake_ast {
     virtual ~ExprList();
 
     void add(Node* n);
+    void addToFront(Node* n);
     vector<Node*> getChildren() { return children; }
     virtual void accept(Visitor* v) { v->visit(this); };
 
@@ -55,6 +56,7 @@ namespace bake_ast {
     virtual ~ListFormalDeclare();
 
     void add(FormalDeclare* n);
+    void addToFront(FormalDeclare* n);
     vector<FormalDeclare*> getList() { return list; }
 
     virtual void accept(Visitor* v) { v->visit(this); }
@@ -150,7 +152,7 @@ namespace bake_ast {
 
   class Dispatch : public Node {
   public:
-    Dispatch() : Node(DISPATCH) { };
+    Dispatch();
     Dispatch(Node* e, Type* t, Id* id, ExprList* exprList);
     virtual ~Dispatch();
 
@@ -178,7 +180,7 @@ namespace bake_ast {
   /*** Feature - Contains ListFormalDeclare ***/
   class Feature : public Node {
   public:
-    Feature() : Node(FEATURE) { };
+    Feature();
     Feature(Id* i, ListFormalDeclare* l, Type* t, Node* e);
     virtual ~Feature();
 

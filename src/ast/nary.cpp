@@ -16,6 +16,10 @@ void ExprList::add(Node* n) {
   children.insert(it, n);
 }
 
+void ExprList::addToFront(Node* n) {
+  children.push_back(n);
+}
+
 /******* ClassList methods *******/
 
 ClassList::~ClassList() {
@@ -52,6 +56,10 @@ ListFormalDeclare::~ListFormalDeclare() {
 void ListFormalDeclare::add(FormalDeclare* n) {
   vector<FormalDeclare *>::iterator it = list.begin();
   list.insert(it, n);
+}
+
+void ListFormalDeclare::addToFront(FormalDeclare* n) {
+  list.push_back(n);
 }
 
 /******* CaseList methods *******/
@@ -107,11 +115,22 @@ CaseStatement::~CaseStatement() {
 }
 
 /******* Feature methods *******/
+Feature::Feature() : Node(FEATURE) {
+  list = new ListFormalDeclare();
+  list->addToFront(new FormalDeclare(new Id(new string("self")), new Type(new string("SELF_TYPE"))));
+};
+
 Feature::Feature(Id* id, ListFormalDeclare* l, Type* type, Node* e) : Node (FEATURE) {
   this->id = id;
   list = l;
   this->type = type;
   expr = e;
+
+  if(list == nullptr) {
+    list = new ListFormalDeclare();
+  }
+
+  list->addToFront(new FormalDeclare(new Id(new string("self")), new Type(new string("SELF_TYPE"))));
 }
 
 Feature::~Feature() {
@@ -148,11 +167,24 @@ void ClassStatement::add(FeatureOption* n) {
 
 /******* Dispatch methods *******/
 
+Dispatch::Dispatch() : Node(DISPATCH) {
+  FormalDeclare* self_var = new FormalDeclare(new Id(new std::string("self")), new Type(new std::string("SELF_TYPE")));
+
+  setExprList(new ExprList());
+  getExprList()->add(self_var);
+};
+
 Dispatch::Dispatch(Node* e, Type* t, Id* id, ExprList* exprList) : Node(DISPATCH) {
   setExpr(e);
   setType(t);
   setID(id);
   setExprList(exprList);
+
+  if(getExprList() == nullptr) {
+    setExprList(new ExprList());
+  }
+  FormalDeclare* self_var = new FormalDeclare(new Id(new std::string("self")), new Type(new std::string("SELF_TYPE")));
+  getExprList()->addToFront(self_var);
 }
 
 Dispatch::~Dispatch() {
