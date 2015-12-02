@@ -128,7 +128,7 @@ void ir::BuildIR::visit(bake_ast::Id* n) {
  * Generate IR code for Type
  */
 void ir::BuildIR::visit(bake_ast::Type* n) {
-
+  // These are calculated in calculated_offsets, do nothing
 }
 
 /*******************/
@@ -153,13 +153,23 @@ void ir::BuildIR::visit(bake_ast::BitNot* n) {
  */
 void ir::BuildIR::visit(bake_ast::Isvoid* n) {
   n->get()->accept(this);
+
+  // just check if null, return 1 if true, 0 if false
+  // coordinate this with the while loop though
 }
 
 /**
  * Generate IR code for New
  */
 void ir::BuildIR::visit(bake_ast::New* n) {
-  n->get()->accept(this);
+
+  // gather TYPE name by hand (one down on the AST)
+  // getClasses()
+  // index this off the name of the TYPE
+  // Call recordSize, this returns number of bits for the object
+  // createObj to instruction list
+  // create register, throwup, blah, blah, blah
+
 }
 
 /********************/
@@ -171,6 +181,11 @@ void ir::BuildIR::visit(bake_ast::New* n) {
 void ir::BuildIR::visit(bake_ast::Plus* n) {
   n->getLhs()->accept(this);
   n->getRhs()->accept(this);
+
+  // grab registers from both sides
+  // If address, load it
+  // do binary op
+  // throwup the registers
 }
 
 /**
@@ -179,6 +194,12 @@ void ir::BuildIR::visit(bake_ast::Plus* n) {
 void ir::BuildIR::visit(bake_ast::Minus* n) {
   n->getLhs()->accept(this);
   n->getRhs()->accept(this);
+
+  // grab registers from both sides
+  // If address, load it
+  // do binary op
+  // throwup the registers
+
 }
 
 /**
@@ -187,6 +208,11 @@ void ir::BuildIR::visit(bake_ast::Minus* n) {
 void ir::BuildIR::visit(bake_ast::Multiply* n) {
   n->getLhs()->accept(this);
   n->getRhs()->accept(this);
+
+  // grab registers from both sides
+  // If address, load it
+  // do binary op
+  // throwup the registers
 }
 
 /**
@@ -195,6 +221,10 @@ void ir::BuildIR::visit(bake_ast::Multiply* n) {
 void ir::BuildIR::visit(bake_ast::Divide* n) {
   n->getLhs()->accept(this);
   n->getRhs()->accept(this);
+  // grab registers from both sides
+  // If address, load it
+  // do binary op
+  // throwup the registers
 }
 
 /**
@@ -203,6 +233,13 @@ void ir::BuildIR::visit(bake_ast::Divide* n) {
 void ir::BuildIR::visit(bake_ast::LessThan* n) {
   n->getLhs()->accept(this);
   n->getRhs()->accept(this);
+
+  // grab registers from both sides
+  // If address, load it
+  // add the cmp to op
+  // throwup the registers
+
+
 }
 
 /**
@@ -211,6 +248,11 @@ void ir::BuildIR::visit(bake_ast::LessThan* n) {
 void ir::BuildIR::visit(bake_ast::LessThanEqual* n) {
   n->getLhs()->accept(this);
   n->getRhs()->accept(this);
+
+  // grab registers from both sides
+  // If address, load it
+  // add the cmp to op
+  // throwup the registers
 }
 
 /**
@@ -219,6 +261,17 @@ void ir::BuildIR::visit(bake_ast::LessThanEqual* n) {
 void ir::BuildIR::visit(bake_ast::Equal* n) {
   n->getLhs()->accept(this);
   n->getRhs()->accept(this);
+
+  // grab registers from both sides
+  // do a reverse lookup from address to variable type in ST
+  // if TYPE is bool or _Num (ignore floats for now)
+    // load values from thrown up registers
+    // cmp with values
+  // if Type is String
+    // Figure out later
+  // If Type is anything else
+    // cmp with throwun up registers (memory address)
+  // throwup the registers
 }
 
 /**
@@ -227,6 +280,10 @@ void ir::BuildIR::visit(bake_ast::Equal* n) {
 void ir::BuildIR::visit(bake_ast::Assign* n) {
   n->getLhs()->accept(this);
   n->getRhs()->accept(this);
+
+  // check if rhs register is a constant or an address
+  // if address load the value
+  // store rhs in lhs (using register address)
 }
 
 /********/
@@ -247,6 +304,15 @@ void ir::BuildIR::visit(bake_ast::ExprList* n) {
 void ir::BuildIR::visit(bake_ast::WhileLoop* n) {
   n->getCond()->accept(this);
   n->getBody()->accept(this);
+
+  // we will need two BB due to while loops conditions at top
+    // one BB to the bod
+
+  // create a new BB
+  // br on false itself
+  // br on true goes to next basic BasicBlock
+  // set curr_bb to the next basic block here
+  // visit ccurr_bb
 }
 
 /**
@@ -262,6 +328,9 @@ void ir::BuildIR::visit(bake_ast::IfStatement* n) {
  * Generate IR code for LetStatement
  */
 void ir::BuildIR::visit(bake_ast::LetStatement* n) {
+
+  // change curr_scope
+
   n->getList()->accept(this); // Forward the visitor
   n->getExpr()->accept(this); // Forward to substatements
 }
@@ -305,6 +374,10 @@ void ir::BuildIR::visit(bake_ast::FormalDeclare* n) {
   if(n->getExpr() != nullptr) {
     n->getExpr()->accept(this);
   }
+
+  // TODO how to deal with initliation i.e. x : Int <- 1
+    // throwup the register address
+    // But, how do we do this for every new object
 }
 
 /**
