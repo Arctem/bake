@@ -393,7 +393,11 @@ void ir::IrPrint::visit(ShallowCopy* n) {
  * Pretty print the IR for OutString
  */
 void ir::IrPrint::visit(OutString* n) {
-
+  preops();
+  std::cout << "| out_string r" << n->getSrc1Register(); // Print size to allocate
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << std::endl;
 }
 
 /**

@@ -6,7 +6,7 @@
 
 namespace ir {
 
-  enum RegisterType { INT8 = 8, INT = 32, INT64 = 64, FLOAT = 64, BOOL = 8, EMPTY = -1, CONSTANT = -2};
+  enum RegisterType { INT8 = 8, INT = 32, INT64 = 64, FLOAT = 64, BOOL = 8, REF = 64, EMPTY = -1, CONSTANT = -2 };
 
   enum OpType { NOP, FNOP, ADD, SUB, MUL, DIV, MOD, FADD, FSUB, FMUL, FDIV, COPY, FCOPY, CONV, FCONV,
                 LOADI, LOADO, STOREI, STOREO, CMPLT, CMPLE, CMPEQ, FCMPLT, FCMPLE, FCMPEQ, BR, CBR,

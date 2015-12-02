@@ -343,19 +343,30 @@ void ir::BuildIR::visit(bake_ast::ClassList* n) {
  * Generate IR code for Dispatch
  */
 void ir::BuildIR::visit(bake_ast::Dispatch* n) {
-  n->getID()->accept(this);
+  string id = *n->getID()->getName();
+  if(id == "out_string") {
+    visitOutstring(n);
+    return;
+  }
 
   if(n->getExpr() != nullptr) {
     n->getExpr()->accept(this);
   }
 
-  if(n->getType() != nullptr) {
-    n->getType()->accept(this);
-  }
-
   if(n->getExprList() != nullptr) {
     n->getExprList()->accept(this);
   }
+}
+
+/**
+ * Generate IR code for printing a string
+ */
+void ir::BuildIR::visitOutstring(bake_ast::Dispatch* n) {
+  n->getExprList()->accept(this); // First, forward to the parameter list to get the string we need to print
+  int string_reg = throwup;
+
+  ir::OutString* os = new ir::OutString(std::make_pair(string_reg, REF), std::make_pair(-1, EMPTY));
+  curr_bb->addOp(os);
 }
 
 /**
@@ -371,24 +382,12 @@ void ir::BuildIR::visit(bake_ast::ListFormalDeclare* n) {
  * Generate IR code for Feature
  */
 void ir::BuildIR::visit(bake_ast::Feature* n) {
-  string id = *n->getID()->getName();
-  if(id == "out_string") {
-    visitOutstring(n);
-  }
-
   if(n->getList() != nullptr) {
     n->getList()->accept(this);
   }
 
   n->getType()->accept(this);
   n->getExpr()->accept(this);
-}
-
-/**
- * Generate IR code for printing a string
- */
-void ir::BuildIR::visitOutstring(bake_ast::Feature* n) {
-
 }
 
 /**

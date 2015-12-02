@@ -151,26 +151,26 @@ namespace bake_ast {
   class Dispatch : public Node {
   public:
     Dispatch() : Node(DISPATCH) { };
-    Dispatch(Node* e, Node* t, Node* id, ExprList* exprList);
+    Dispatch(Node* e, Type* t, Id* id, ExprList* exprList);
     virtual ~Dispatch();
 
     Node* getExpr() { return this->expr; }
-    Node* getType() { return this->type; }
-    Node* getID() { return this->id; }
+    Type* getType() { return this->type; }
+    Id* getID() { return this->id; }
     ExprList* getExprList() { return this->exprList; }
 
     void setExpr(Node* n) { this->expr = n; }
-    void setType(Node* n) { this->type = n; }
-    void setID(Node* n) { this->id = n; }
+    void setType(Type* n) { this->type = n; }
+    void setID(Id* n) { this->id = n; }
     void setExprList(ExprList* e) { this->exprList = e; }
 
     virtual void accept(Visitor* v) { v->visit(this); }
 
   private:
     Node* expr = nullptr; // optional
-    Node* type = nullptr; // optional
+    Type* type = nullptr; // optional
 
-    Node* id;
+    Id* id;
     ExprList* exprList = nullptr; // optional
   };
 

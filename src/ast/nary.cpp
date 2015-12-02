@@ -148,7 +148,7 @@ void ClassStatement::add(FeatureOption* n) {
 
 /******* Dispatch methods *******/
 
-Dispatch::Dispatch(Node* e, Node* t, Node* id, ExprList* exprList) : Node(DISPATCH) {
+Dispatch::Dispatch(Node* e, Type* t, Id* id, ExprList* exprList) : Node(DISPATCH) {
   setExpr(e);
   setType(t);
   setID(id);

@@ -58,7 +58,7 @@ namespace ir {
     void visit(bake_ast::FeatureList*);
 
   private:
-    void visitOutstring(bake_ast::Feature* n);
+    void visitOutstring(bake_ast::Dispatch* n);
     int reserveReg() { return reg_count++; } // Gets the current number of used virtual registers and increments the counter
     int getRegCount() { return reg_count++; } //  increments the counter and Gets the current number of used virtual registers
 
