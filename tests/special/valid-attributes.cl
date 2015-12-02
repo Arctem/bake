@@ -34,6 +34,7 @@ class Baz inherits Main {
 };
 
 class ATaleOfAMouseAndAClock {
+  baz : Baz <- new Baz;
   story : String <- "The mouse ran up the clock\n";
 
   bar(j : Bool) : String {{

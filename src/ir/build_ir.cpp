@@ -69,9 +69,13 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
   string value = *n->getValue();
   int str_len = value.length();
 
+  /* Find string size */
+  int size = classlist->getClasses()["String"]->recordSize() + str_len * 8; // Get string size
+  size -= 64; // Remove excess space due to placeholder variable in the AST
+
   /* Allocate for the string */
   int strLoc = reserverReg();
-  ir::Alloc* alloc = new Alloc(str_len * 8, std::make_pair(strLoc, INT8));
+  ir::Alloc* alloc = new Alloc(size, std::make_pair(strLoc, INT8));
   curr_bb->addOp(alloc);
 
   /* Reserve register for storing character to save to memory. */
@@ -88,6 +92,13 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
 
     offset += 8;
   }
+
+  /* Add null terminator */
+  ir::Copy* copy = new Copy(std::make_pair(0, CONSTANT), std::make_pair(charReg, INT8));
+  curr_bb->addOp(copy);
+
+  ir::StoreI* schar = new ir::StoreI(std::make_pair(charReg, INT8), std::make_pair(strLoc, INT8), offset);
+  curr_bb->addOp(schar);
 }
 
 /**

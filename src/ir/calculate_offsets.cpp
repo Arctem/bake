@@ -100,7 +100,7 @@ void ir::CalcOffsets::visit(bake_ast::FormalDeclare* n) {
 
   int size; // Will hold the size that this variable needs to have allocated
   if(type_sizes.find(type) == type_sizes.end()) { // If not found in list of explicit sizes, assume pointer
-    size = 8;
+    size = type_sizes["_ref"];
   } else {
     size = type_sizes[type];
   }

@@ -12,7 +12,8 @@ namespace ir {
                                                           {std::string("Int"), 32},
                                                           {std::string("Int64"), 64},
                                                           {std::string("Float"), 64},
-                                                          {std::string("Bool"), 8}
+                                                          {std::string("Bool"), 8},
+                                                          {std::string("_ref"), 64} // Size for an object reference. Use if none of the above types match
                                                          });
 
   /**
