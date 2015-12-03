@@ -79,6 +79,6 @@ namespace ir {
 
 
     int reg_count = 0; // Number of virtual registers that have been created. The next register that should be created is reg_count + 1
-    int throwup = reg_count; // Used to specify which register the result of an operation is stored in.
+    std::pair <int,RegisterType>  throwup; // Used to specify which register the result of an operation is stored in.
   };
 }

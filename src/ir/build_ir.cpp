@@ -38,8 +38,9 @@ ir::BuildIR::BuildIR(bake_ast::ClassList* ast_root) {
 void ir::BuildIR::visit(bake_ast::IntegerVal* n) {
 
     /* Updates to the next register and copies constant to the register */
-    throwup = getRegCount();
-    curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), std::make_pair(throwup, INT)));
+    int reg = getRegCount();
+    throwup = std::make_pair(reg, INT);
+    curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), throwup));
 }
 
 /**
@@ -48,8 +49,9 @@ void ir::BuildIR::visit(bake_ast::IntegerVal* n) {
 void ir::BuildIR::visit(bake_ast::Int8Val* n) {
 
   /* Updates to the next register and copies constant to the register */
-  throwup = getRegCount();
-  curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), std::make_pair(throwup, INT8)));
+  int reg = getRegCount();
+  throwup = std::make_pair(reg, INT8);
+  curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), throwup));
 }
 
 /**
@@ -58,8 +60,9 @@ void ir::BuildIR::visit(bake_ast::Int8Val* n) {
 void ir::BuildIR::visit(bake_ast::Int64Val* n) {
 
   /* Updates to the next register and copies constant to the register */
-  throwup = getRegCount();
-  curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), std::make_pair(throwup, INT64)));
+  int reg = getRegCount();
+  throwup = std::make_pair(reg, INT64);
+  curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), throwup));
 }
 
 /**
@@ -113,13 +116,13 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
  * Generate IR code for BoolVal
  */
 void ir::BuildIR::visit(bake_ast::BoolVal* n) {
-  throwup = getRegCount();    // Updates to the next register, and sends up to next node
-
+  int reg = getRegCount();    // Updates to the next register, and sends up to next node
+  throwup = std::make__pair(throwup, BOOL);
   /* Converts boolean ot c-style boolean and copies to a register */
   if(n->getValue() == true){
-    curr_bb->addOp(new Copy(std::make_pair(1, CONSTANT), std::make_pair(throwup, BOOL)));
+    curr_bb->addOp(new Copy(std::make_pair(1, CONSTANT), throwup);
   }else if(n->getValue() == false){
-    curr_bb->addOp(new Copy(std::make_pair(0, CONSTANT), std::make_pair(throwup, BOOL)));
+    curr_bb->addOp(new Copy(std::make_pair(0, CONSTANT), throwup);
   }
 
 }
@@ -131,6 +134,7 @@ void ir::BuildIR::visit(bake_ast::Id* n) {
 
     int voff;                            // virtual offset
     string var = *n->getName();          // name of the variable
+    int reg;
 
     // Check to see if the method has a SymbolAnon (let or a case) that we are in
     if(scopeFlag == ANON){
@@ -142,8 +146,9 @@ void ir::BuildIR::visit(bake_ast::Id* n) {
           // If var is in this scope, copy to a register and throwup
           if(temp_scope->getMembers().find(var) != temp_scope->getMembers().end()){
               voff = temp_scope->getLVarOffsets()[var];
-              throwup = getRegCount();    // Updates to the next register, and sends up to next node
-              curr_bb->addOp(new Copy(std::make_pair(voff, INT64), std::make_pair(throwup, LOCALADDR)));
+              reg = getRegCount();    // Updates to the next register, and sends up to next node
+              throwup = std::make_pair(reg, LOCALADDR);
+              curr_bb->addOp(new Copy(std::make_pair(voff, INT64), throwup));
               return;
             }
 
@@ -154,16 +159,18 @@ void ir::BuildIR::visit(bake_ast::Id* n) {
     // If var is in the Method Parameter, copy to a register and throwup
     if(symbolMethod->getParams().find(var) != symbolMethod->getParams().end()){
         voff = symbolMethod->getStackOffsets()[var];
-        throwup = getRegCount();    // Updates to the next register, and sends up to next node
-        curr_bb->addOp(new Copy(std::make_pair(voff, INT64), std::make_pair(throwup, LOCALADDR)));
+        reg = getRegCount();    // Updates to the next register, and sends up to next node
+        throwup = std::make_pair(reg, LOCALADDR);
+        curr_bb->addOp(new Copy(std::make_pair(voff, INT64), throwup));
         return;
     }
 
     // If var is in the Class Attribute Scope, copy to a register and throwup
     if(classNode->getMembers().find(var) != classNode->getMembers().end()){
         voff = classNode->getAttrOffsets()[var];
-        throwup = getRegCount();    // Updates to the next register, and sends up to next node
-        curr_bb->addOp(new Copy(std::make_pair(voff, INT64), std::make_pair(throwup, ATTRADDR)));
+        reg = getRegCount();    // Updates to the next register, and sends up to next node
+        throwup = std::make_pair(reg, ATTRADDR);
+        curr_bb->addOp(new Copy(std::make_pair(voff, INT64), throwup));
         return;
     }
 
@@ -184,6 +191,8 @@ void ir::BuildIR::visit(bake_ast::Type* n) {
  */
 void ir::BuildIR::visit(bake_ast::LogicalNot* n) {
   n->get()->accept(this);
+
+
 }
 
 /**
@@ -476,9 +485,6 @@ void ir::BuildIR::visit(bake_ast::Dispatch* n) {
   if(id == "out_string") {
     visitOutstring(n);
     return;
-  } else if(id == "out_int") {
-    visitOutint(n);
-    return;
   }
 
   if(n->getExpr() != nullptr) {
@@ -498,17 +504,6 @@ void ir::BuildIR::visitOutstring(bake_ast::Dispatch* n) {
   int string_reg = throwup;
 
   ir::OutString* os = new ir::OutString(std::make_pair(string_reg, REF), std::make_pair(-1, EMPTY));
-  curr_bb->addOp(os);
-}
-
-/**
- * Generate IR code for printing an int
- */
-void ir::BuildIR::visitOutint(bake_ast::Dispatch* n) {
-  n->getExprList()->accept(this); // First, forward to the parameter list to get the string we need to print
-  int out_reg = throwup;
-
-  ir::OutInt* os = new ir::OutInt(std::make_pair(out_reg, REF), std::make_pair(-1, EMPTY));
   curr_bb->addOp(os);
 }
 
