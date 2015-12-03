@@ -171,7 +171,29 @@ void ir::IrPrint::visit(Fdiv* n) {
  */
 void ir::IrPrint::visit(Copy* n) {
   preops();
-  std::cout << "| copy " << n->getSrcRegister(); // Print source value
+
+  int src_value = n->getSrcRegister();
+  RegisterType dest_type = n->getDestSize();
+
+  // if it is a char for a string
+  if(dest_type == INT8){
+    std::cout << "| copy char \"" << (char) src_value; // Print source value
+    std::cout << "\" -> ";
+    printRegPair(n->getDestPair());
+    std::cout << std::endl;
+    return;
+
+  // Checks for an address
+  } else if (dest_type == LOCALADDR || dest_type == ATTRADDR){
+    std::cout << "| copy voff " << src_value; // Print source value
+    std::cout << " -> ";
+    printRegPair(n->getDestPair());
+    std::cout << std::endl;
+    return;
+  }
+
+  // All other copies are integers
+  std::cout << "| copy " << src_value; // Print source value
   std::cout << " -> ";
   printRegPair(n->getDestPair());
   std::cout << std::endl;

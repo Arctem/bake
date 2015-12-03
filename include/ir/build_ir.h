@@ -68,12 +68,13 @@ namespace ir {
     ClassList* classlist;
     ClassDef* curr_class; // Reference to the current class being compiled
     Method*  curr_method; // Reference to the current method being compilerd
-    BasicBlock* curr_bb; // Reference to the current basic block being compiled
+    BasicBlock* curr_bb;  // Reference to the current basic block being compiled
 
     // Current basic-hacky solution to the last minute problem of referencing hte ST in the IR
-    typecheck::ClassNode* classNode; // Referense to our current scope in the ST
-    typecheck::SymbolAnon* symbolAnon;
-    typecheck::SymbolMethod* symbolMethod;
+    ScopeType scopeFlag;                    // This flag tells us which of the next three to use
+    typecheck::ClassNode* classNode;        // Use if in class scope
+    typecheck::SymbolAnon* symbolAnon;      // Use if in a symbolAnon (i.e. case, let)
+    typecheck::SymbolMethod* symbolMethod;  // Use if in method scope
 
 
     int reg_count = 0; // Number of virtual registers that have been created. The next register that should be created is reg_count + 1

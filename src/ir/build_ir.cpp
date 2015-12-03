@@ -36,6 +36,8 @@ ir::BuildIR::BuildIR(bake_ast::ClassList* ast_root) {
  * Generate IR code for IntegerVal
  */
 void ir::BuildIR::visit(bake_ast::IntegerVal* n) {
+
+    /* Updates to the next register and copies constant to the register */
     throwup = getRegCount();
     curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), std::make_pair(throwup, INT)));
 }
@@ -44,6 +46,8 @@ void ir::BuildIR::visit(bake_ast::IntegerVal* n) {
  * Generate IR code for Int8Val
  */
 void ir::BuildIR::visit(bake_ast::Int8Val* n) {
+
+  /* Updates to the next register and copies constant to the register */
   throwup = getRegCount();
   curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), std::make_pair(throwup, INT8)));
 }
@@ -52,6 +56,8 @@ void ir::BuildIR::visit(bake_ast::Int8Val* n) {
  * Generate IR code for Int64Val
  */
 void ir::BuildIR::visit(bake_ast::Int64Val* n) {
+
+  /* Updates to the next register and copies constant to the register */
   throwup = getRegCount();
   curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), std::make_pair(throwup, INT64)));
 }
@@ -60,7 +66,7 @@ void ir::BuildIR::visit(bake_ast::Int64Val* n) {
  * Generate IR code for FloatVal
  */
 void ir::BuildIR::visit(bake_ast::FloatVal* n) {
-  // TODO Float away
+  // TODO Floats will be implemented as a feature in a later version
 }
 
 /**
@@ -107,8 +113,9 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
  * Generate IR code for BoolVal
  */
 void ir::BuildIR::visit(bake_ast::BoolVal* n) {
-  throwup = getRegCount();
+  throwup = getRegCount();    // Updates to the next register, and sends up to next node
 
+  /* Converts boolean ot c-style boolean and copies to a register */
   if(n->getValue() == true){
     curr_bb->addOp(new Copy(std::make_pair(1, CONSTANT), std::make_pair(throwup, BOOL)));
   }else if(n->getValue() == false){
@@ -121,6 +128,44 @@ void ir::BuildIR::visit(bake_ast::BoolVal* n) {
  * Generate IR code for Id
  */
 void ir::BuildIR::visit(bake_ast::Id* n) {
+
+    int voff;                            // virtual offset
+    string var = *n->getName();          // name of the variable
+
+    // Check to see if the method has a SymbolAnon (let or a case) that we are in
+    if(scopeFlag == ANON){
+      SymbolAnon* temp_scope = symbolAnon;  // if so get the current scope
+
+      // Check each scope for the variable until we hit the top of the method (no more lets or cases)
+      do {
+
+          // If var is in this scope, copy to a register and throwup
+          if(temp_scope->getMembers().find(var) != temp_scope->getMembers().end()){
+              voff = temp_scope->getLVarOffsets()[var];
+              throwup = getRegCount();    // Updates to the next register, and sends up to next node
+              curr_bb->addOp(new Copy(std::make_pair(voff, INT64), std::make_pair(throwup, LOCALADDR)));
+              return;
+            }
+
+            // Other wise move up the scope
+      } while(temp_scope->getLexParent() != symbolMethod);
+    }
+
+    // If var is in the Method Parameter, copy to a register and throwup
+    if(symbolMethod->getParams().find(var) != symbolMethod->getParams().end()){
+        voff = symbolMethod->getStackOffsets()[var];
+        throwup = getRegCount();    // Updates to the next register, and sends up to next node
+        curr_bb->addOp(new Copy(std::make_pair(voff, INT64), std::make_pair(throwup, LOCALADDR)));
+        return;
+    }
+
+    // If var is in the Class Attribute Scope, copy to a register and throwup
+    if(classNode->getMembers().find(var) != classNode->getMembers().end()){
+        voff = classNode->getAttrOffsets()[var];
+        throwup = getRegCount();    // Updates to the next register, and sends up to next node
+        curr_bb->addOp(new Copy(std::make_pair(voff, INT64), std::make_pair(throwup, ATTRADDR)));
+        return;
+    }
 
 }
 
@@ -329,7 +374,9 @@ void ir::BuildIR::visit(bake_ast::IfStatement* n) {
  */
 void ir::BuildIR::visit(bake_ast::LetStatement* n) {
 
-  // change curr_scope
+  /* Change the scope to this method */
+  scopeFlag = ANON;
+  symbolAnon = n->getScope();
 
   n->getList()->accept(this); // Forward the visitor
   n->getExpr()->accept(this); // Forward to substatements
@@ -356,7 +403,13 @@ void ir::BuildIR::visit(bake_ast::CaseList* n) {
  * Generate IR code for Case
  */
 void ir::BuildIR::visit(bake_ast::Case* n) {
-  n->getID()->accept(this);
+
+  //TODO - this code wasn't implemented int eh AST
+  /* Change the scope to this method */
+  //scopeFlag = ANON;
+  //symbolAnon = n->getScope();
+
+  //n->getID()->accept(this);
   n->getType()->accept(this);
 
   if(n->getExpr() != nullptr) {
@@ -368,7 +421,7 @@ void ir::BuildIR::visit(bake_ast::Case* n) {
  * Generate IR code for FormalDeclare
  */
 void ir::BuildIR::visit(bake_ast::FormalDeclare* n) {
-  n->getID()->accept(this);
+  //n->getID()->accept(this);
   n->getType()->accept(this);
 
   if(n->getExpr() != nullptr) {
@@ -384,7 +437,10 @@ void ir::BuildIR::visit(bake_ast::FormalDeclare* n) {
  * Generate IR code for ClassStatement
  */
 void ir::BuildIR::visit(bake_ast::ClassStatement* n) {
-  n->getType()->accept(this);
+
+  /* Change the scope to this class */
+  scopeFlag = CLASS;
+  classNode = n->getScope();
 
   std::string class_name = *n->getType()->getName();
   curr_class = classlist->getClasses()[class_name];
@@ -455,12 +511,21 @@ void ir::BuildIR::visit(bake_ast::ListFormalDeclare* n) {
  * Generate IR code for Feature
  */
 void ir::BuildIR::visit(bake_ast::Feature* n) {
+
+  /* Change the scope to this method */
+  scopeFlag = METHOD;
+  symbolMethod = n->getScope();
+
+  string name = *n->getID()->getName();
+  int voff = curr_class->getAst()->getScope()->getMethodOffsets()[name];
+  curr_method = curr_class->getMethods()[voff];
+
   if(n->getList() != nullptr) {
-    n->getList()->accept(this);
+    n->getList()->accept(this);       // Method Parameters
   }
 
-  n->getType()->accept(this);
-  n->getExpr()->accept(this);
+  n->getType()->accept(this);         // Return TYPE TODO: This is wasted code here i believe
+  n->getExpr()->accept(this);         // Body of the method
 }
 
 /**

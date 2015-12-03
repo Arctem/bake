@@ -135,7 +135,7 @@ void typecheck::CheckScope::checkClass(typecheck::ClassNode* cls) {
       if(superClass->getMembers().count(attr_kv.first) >= 1) {
         std::stringstream msg;
         msg << "Error: Instance variable '" << attr_kv.first << "' already exists in a super class '" << *superName << "'" << endl;
-  
+
         throw ScopeCheckErr(msg.str().c_str());
       }
 
@@ -226,7 +226,7 @@ void typecheck::CheckScope::checkValidInherit(ClassNode* cls) {
  */
 string typecheck::CheckScope::getMethodSig(ClassNode* cls, string methodName) {
   std::stringstream sig;
-  sig << methodName; 
+  sig << methodName;
 
   SymbolMethod* method = cls->getMethods()[methodName];
 

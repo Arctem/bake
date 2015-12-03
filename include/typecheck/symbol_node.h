@@ -87,13 +87,13 @@ namespace typecheck {
 
     unordered_map<string, string> getMembers();
     void addMember(string, string);
-    
+
     unordered_map<string, SymbolMethod*> getMethods();
     void addMethod(string, SymbolMethod*);
-    
+
     Groot* getLexParent();
     void setLexParent(Groot* groot);
-    
+
     string* getSuper() { return super; };
     ClassNode* getSuperObj() { return lex_parent->getClasses()[*getSuper()]; } // Convert from the plain-text super name to the actual ClassNode object corresponding to the super.
     void setSuper(const string cls);
@@ -181,13 +181,13 @@ namespace typecheck {
 
     unordered_map<string, int> getLVarOffsets() { return lvar_offsets; }
     void setLVarOffset(string, int);
-    
+
     vector<SymbolAnon*> getSubs() { return subs; };
     void addSub(SymbolAnon* sub);
-    
+
     SymbolNode* getLexParent();
     void setLexParent(SymbolNode* parent);
-    
+
     SymbolAnon* nextMem() { return subs[curMem++]; }
 
     virtual void accept(SymbolVisitor* v) { v->visit(this); }
