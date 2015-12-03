@@ -7,6 +7,9 @@
 #include "typecheck/symbol_node.h"
 
 namespace ir {
+
+  enum ScopeType{ANON, METHOD, CLASS};
+
   class BuildIR : bake_ast::Visitor {
   public:
     BuildIR(bake_ast::ClassList* ast_root);
@@ -64,7 +67,15 @@ namespace ir {
 
     ClassList* classlist;
     ClassDef* curr_class; // Reference to the current class being compiled
+    Method*  curr_method; // Reference to the current method being compilerd
     BasicBlock* curr_bb; // Reference to the current basic block being compiled
+
+    // Current basic-hacky solution to the last minute problem of referencing hte ST in the IR
+    typecheck::ClassNode* classNode; // Referense to our current scope in the ST
+    typecheck::SymbolAnon* symbolAnon;
+    typecheck::SymbolMethod* symbolMethod;
+
+
     int reg_count = 0; // Number of virtual registers that have been created. The next register that should be created is reg_count + 1
     int throwup = reg_count; // Used to specify which register the result of an operation is stored in.
   };
