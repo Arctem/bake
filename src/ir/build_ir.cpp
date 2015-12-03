@@ -476,6 +476,9 @@ void ir::BuildIR::visit(bake_ast::Dispatch* n) {
   if(id == "out_string") {
     visitOutstring(n);
     return;
+  } else if(id == "out_int") {
+    visitOutint(n);
+    return;
   }
 
   if(n->getExpr() != nullptr) {
@@ -495,6 +498,17 @@ void ir::BuildIR::visitOutstring(bake_ast::Dispatch* n) {
   int string_reg = throwup;
 
   ir::OutString* os = new ir::OutString(std::make_pair(string_reg, REF), std::make_pair(-1, EMPTY));
+  curr_bb->addOp(os);
+}
+
+/**
+ * Generate IR code for printing an int
+ */
+void ir::BuildIR::visitOutint(bake_ast::Dispatch* n) {
+  n->getExprList()->accept(this); // First, forward to the parameter list to get the string we need to print
+  int out_reg = throwup;
+
+  ir::OutInt* os = new ir::OutInt(std::make_pair(out_reg, REF), std::make_pair(-1, EMPTY));
   curr_bb->addOp(os);
 }
 

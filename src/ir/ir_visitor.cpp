@@ -417,8 +417,6 @@ void ir::IrPrint::visit(ShallowCopy* n) {
 void ir::IrPrint::visit(OutString* n) {
   preops();
   std::cout << "| out_string r" << n->getSrc1Register(); // Print size to allocate
-  std::cout << " -> ";
-  printRegPair(n->getDestPair());
   std::cout << std::endl;
 }
 
@@ -426,7 +424,9 @@ void ir::IrPrint::visit(OutString* n) {
  * Pretty print the IR for OutInt
  */
 void ir::IrPrint::visit(OutInt* n) {
-
+  preops();
+  std::cout << "| out_int r" << n->getSrc1Register(); // Print size to allocate
+  std::cout << std::endl;
 }
 
 /**
