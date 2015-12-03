@@ -47,10 +47,6 @@ int main(int argc, char** argv) {
 
   add_builtins();
 
-  // Prints the AST
-  PrettyPrint pp;
-  ast->accept(&pp);
-
   //  Builds the scope table
   BuildST build;
   try {
@@ -80,6 +76,10 @@ int main(int argc, char** argv) {
 
   // Build the IR
   ir::BuildIR bir(ast);
+
+  // Prints the AST
+  PrettyPrint pp;
+  ast->accept(&pp);
 
   cout << endl << "################" << endl << endl;
 

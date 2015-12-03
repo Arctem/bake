@@ -1028,12 +1028,16 @@ void TypeCheck::checkDispatchParameters(Dispatch* node, SymbolMethod* methodObj)
   vector<string*> given;
   vector<string> expected;
 
-  for(auto param : node->getExprList()->getChildren()) {
-    given.push_back(param->getInfType());
+  /* Get the inferred type of every parameter but the first one (which is the implicit self) */
+  vector<Node*> children = node->getExprList()->getChildren();
+  for(int i = 0; i < children.size() - 1; i++) {
+    given.push_back(children[i]->getInfType());
   }
 
-  for(auto param_name : methodObj->getParamNames()) {
-    expected.push_back(methodObj->getParams()[param_name]);
+  /* Get the inferred type of every parameter but the first one (which is the implicit self) */
+  vector<std::string> expected_params = methodObj->getParamNames();
+  for(int i = 0; i < expected_params.size() - 1; i++) {
+    expected.push_back(methodObj->getParams()[expected_params[i]]);
   }
 
   if(given.size() != expected.size()) {
