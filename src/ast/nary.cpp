@@ -130,7 +130,7 @@ Feature::Feature(Id* id, ListFormalDeclare* l, Type* type, Node* e) : Node (FEAT
     list = new ListFormalDeclare();
   }
 
-  list->addToFront(new FormalDeclare(new Id(new string("self")), new Type(new string("SELF_TYPE"))));
+  list->add(new FormalDeclare(new Id(new string("self")), new Type(new string("SELF_TYPE"))));
 }
 
 Feature::~Feature() {
@@ -184,7 +184,7 @@ Dispatch::Dispatch(Node* e, Type* t, Id* id, ExprList* exprList) : Node(DISPATCH
     setExprList(new ExprList());
   }
   FormalDeclare* self_var = new FormalDeclare(new Id(new std::string("self")), new Type(new std::string("SELF_TYPE")));
-  getExprList()->addToFront(self_var);
+  getExprList()->add(self_var);
 }
 
 Dispatch::~Dispatch() {
