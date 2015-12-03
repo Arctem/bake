@@ -532,6 +532,14 @@ void ir::BuildIR::visit(bake_ast::WhileLoop* n) {
   n->getCond()->accept(this);
   n->getBody()->accept(this);
 
+  /* Set up new basic block for where to jump when the condition is true */
+  ir::BasicBlock* on_true = new ir::BasicBlock();
+  curr_bb->setBrOnTrue(on_true);
+
+  /* Set up new basic block for where to jump when the condition is false */
+  ir::BasicBlock* on_false = new ir::BasicBlock();
+  curr_bb->setBrOnFalse(on_true);
+
   // we will need two BB due to while loops conditions at top
     // one BB to the bod
 
