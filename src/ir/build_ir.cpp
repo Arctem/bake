@@ -117,12 +117,12 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
  */
 void ir::BuildIR::visit(bake_ast::BoolVal* n) {
   int reg = getRegCount();    // Updates to the next register, and sends up to next node
-  throwup = std::make__pair(throwup, BOOL);
+  throwup = std::make_pair(throwup, BOOL);
   /* Converts boolean ot c-style boolean and copies to a register */
   if(n->getValue() == true){
-    curr_bb->addOp(new Copy(std::make_pair(1, CONSTANT), throwup);
+    curr_bb->addOp(new Copy(std::make_pair(1, CONSTANT), throwup));
   }else if(n->getValue() == false){
-    curr_bb->addOp(new Copy(std::make_pair(0, CONSTANT), throwup);
+    curr_bb->addOp(new Copy(std::make_pair(0, CONSTANT), throwup));
   }
 
 }
