@@ -117,7 +117,7 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
  */
 void ir::BuildIR::visit(bake_ast::BoolVal* n) {
   int reg = getRegCount();    // Updates to the next register, and sends up to next node
-  throwup = std::make_pair(throwup, BOOL);
+  throwup = std::make_pair(reg, BOOL);
   /* Converts boolean ot c-style boolean and copies to a register */
   if(n->getValue() == true){
     curr_bb->addOp(new Copy(std::make_pair(1, CONSTANT), throwup));
@@ -504,7 +504,7 @@ void ir::BuildIR::visit(bake_ast::Dispatch* n) {
  */
 void ir::BuildIR::visitOutstring(bake_ast::Dispatch* n) {
   n->getExprList()->accept(this); // First, forward to the parameter list to get the string we need to print
-  int string_reg = throwup;
+  int string_reg = throwup.first;
 
   ir::OutString* os = new ir::OutString(std::make_pair(string_reg, REF), std::make_pair(-1, EMPTY));
   curr_bb->addOp(os);
@@ -515,7 +515,7 @@ void ir::BuildIR::visitOutstring(bake_ast::Dispatch* n) {
  */
 void ir::BuildIR::visitOutint(bake_ast::Dispatch* n) {
   n->getExprList()->accept(this); // First, forward to the parameter list to get the string we need to print
-  int out_reg = throwup;
+  int out_reg = throwup.first;
 
   ir::OutInt* os = new ir::OutInt(std::make_pair(out_reg, REF), std::make_pair(-1, EMPTY));
   curr_bb->addOp(os);
