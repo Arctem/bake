@@ -36,11 +36,11 @@ ir::BuildIR::BuildIR(bake_ast::ClassList* ast_root) {
  * Generate IR code for IntegerVal
  */
 void ir::BuildIR::visit(bake_ast::IntegerVal* n) {
-
     /* Updates to the next register and copies constant to the register */
     int reg = getRegCount();
     throwup = std::make_pair(reg, INT);
     curr_bb->addOp(new Copy(std::make_pair(n->getValue(), CONSTANT), throwup));
+
 }
 
 /**
@@ -196,6 +196,8 @@ void ir::BuildIR::visit(bake_ast::LogicalNot* n) {
   n->get()->accept(this);     // Travel to child nodes
   reg = throwup;
 
+
+
   // Decide what the register holds
   if(throwup.second == LOCALADDR || throwup.second == ATTRADDR){
 
@@ -268,67 +270,180 @@ void ir::BuildIR::visit(bake_ast::New* n) {
  * Generate IR code for Plus
  */
 void ir::BuildIR::visit(bake_ast::Plus* n) {
+  std::pair<int, RegisterType> lhs_reg;     // Register from lhs
+  std::pair<int, RegisterType> rhs_reg;     // Register from rhs
+
+  // Get the value from the lhs
   n->getLhs()->accept(this);
+  lhs_reg = throwup;
 
+  // Decide what the register holds
+  if(lhs_reg.second == LOCALADDR || lhs_reg.second == ATTRADDR){
 
+    // Load the value of the variable from memeory
+    lhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, lhs_reg));
+  }
+
+  // Get the value from the rhs
   n->getRhs()->accept(this);
+  rhs_reg = throwup;
 
-  // grab registers from both sides
-  // If address, load it
-  // do binary op
-  // throwup the registers
+  // Decide what the register holds
+  if(rhs_reg.second == LOCALADDR || rhs_reg.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    rhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, rhs_reg));
+  }
+
+  // Create the register to save it into
+  throwup = std::make_pair(reserveReg(), INT);
+  curr_bb->addOp(new Add(lhs_reg, rhs_reg,throwup));
 }
 
 /**
  * Generate IR code for Minus
  */
 void ir::BuildIR::visit(bake_ast::Minus* n) {
+  std::pair<int, RegisterType> lhs_reg;     // Register from lhs
+  std::pair<int, RegisterType> rhs_reg;     // Register from rhs
+
+  // Get the value from the lhs
   n->getLhs()->accept(this);
+  lhs_reg = throwup;
+
+  // Decide what the register holds
+  if(lhs_reg.second == LOCALADDR || lhs_reg.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    lhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, lhs_reg));
+  }
+
+  // Get the value from the rhs
   n->getRhs()->accept(this);
+  rhs_reg = throwup;
 
-  // grab registers from both sides
-  // If address, load it
-  // do binary op
-  // throwup the registers
+  // Decide what the register holds
+  if(rhs_reg.second == LOCALADDR || rhs_reg.second == ATTRADDR){
 
+    // Load the value of the variable from memeory
+    rhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, rhs_reg));
+  }
+
+  // Create the register to save it into
+  throwup = std::make_pair(reserveReg(), INT);
+  curr_bb->addOp(new Sub(lhs_reg, rhs_reg,throwup));
 }
 
 /**
  * Generate IR code for Multiply
  */
 void ir::BuildIR::visit(bake_ast::Multiply* n) {
-  n->getLhs()->accept(this);
-  n->getRhs()->accept(this);
+  std::pair<int, RegisterType> lhs_reg;     // Register from lhs
+  std::pair<int, RegisterType> rhs_reg;     // Register from rhs
 
-  // grab registers from both sides
-  // If address, load it
-  // do binary op
-  // throwup the registers
+  // Get the value from the lhs
+  n->getLhs()->accept(this);
+  lhs_reg = throwup;
+
+  // Decide what the register holds
+  if(lhs_reg.second == LOCALADDR || lhs_reg.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    lhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, lhs_reg));
+  }
+
+  // Get the value from the rhs
+  n->getRhs()->accept(this);
+  rhs_reg = throwup;
+
+  // Decide what the register holds
+  if(rhs_reg.second == LOCALADDR || rhs_reg.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    rhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, rhs_reg));
+  }
+
+  // Create the register to save it into
+  throwup = std::make_pair(reserveReg(), INT);
+  curr_bb->addOp(new Mul(lhs_reg, rhs_reg,throwup));
 }
 
 /**
  * Generate IR code for Divide
  */
 void ir::BuildIR::visit(bake_ast::Divide* n) {
+  std::pair<int, RegisterType> lhs_reg;     // Register from lhs
+  std::pair<int, RegisterType> rhs_reg;     // Register from rhs
+
+  // Get the value from the lhs
   n->getLhs()->accept(this);
+  lhs_reg = throwup;
+
+  // Decide what the register holds
+  if(lhs_reg.second == LOCALADDR || lhs_reg.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    lhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, lhs_reg));
+  }
+
+  // Get the value from the rhs
   n->getRhs()->accept(this);
-  // grab registers from both sides
-  // If address, load it
-  // do binary op
-  // throwup the registers
+  rhs_reg = throwup;
+
+  // Decide what the register holds
+  if(rhs_reg.second == LOCALADDR || rhs_reg.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    rhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, rhs_reg));
+  }
+
+  // Create the register to save it into
+  throwup = std::make_pair(reserveReg(), INT);
+  curr_bb->addOp(new Div(lhs_reg, rhs_reg,throwup));
 }
 
 /**
  * Generate IR code for LessThan
  */
 void ir::BuildIR::visit(bake_ast::LessThan* n) {
-  n->getLhs()->accept(this);
-  n->getRhs()->accept(this);
+  std::pair<int, RegisterType> lhs_reg;     // Register from lhs
+  std::pair<int, RegisterType> rhs_reg;     // Register from rhs
 
-  // grab registers from both sides
-  // If address, load it
-  // add the cmp to op
-  // throwup the registers
+  // Get the value from the lhs
+  n->getLhs()->accept(this);
+  lhs_reg = throwup;
+
+  // Decide what the register holds
+  if(lhs_reg.second == LOCALADDR || lhs_reg.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    lhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, lhs_reg));
+  }
+
+  // Get the value from the rhs
+  n->getRhs()->accept(this);
+  rhs_reg = throwup;
+
+  // Decide what the register holds
+  if(rhs_reg.second == LOCALADDR || rhs_reg.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    rhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, rhs_reg));
+  }
+
+  // Create the register to save it into
+  throwup = std::make_pair(reserveReg(), INT);
+  curr_bb->addOp(new CmpLT(lhs_reg, rhs_reg,throwup));
 
 
 }
@@ -337,13 +452,36 @@ void ir::BuildIR::visit(bake_ast::LessThan* n) {
  * Generate IR code for LessThanEqual
  */
 void ir::BuildIR::visit(bake_ast::LessThanEqual* n) {
-  n->getLhs()->accept(this);
-  n->getRhs()->accept(this);
+  std::pair<int, RegisterType> lhs_reg;     // Register from lhs
+  std::pair<int, RegisterType> rhs_reg;     // Register from rhs
 
-  // grab registers from both sides
-  // If address, load it
-  // add the cmp to op
-  // throwup the registers
+  // Get the value from the lhs
+  n->getLhs()->accept(this);
+  lhs_reg = throwup;
+
+  // Decide what the register holds
+  if(lhs_reg.second == LOCALADDR || lhs_reg.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    lhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, lhs_reg));
+  }
+
+  // Get the value from the rhs
+  n->getRhs()->accept(this);
+  rhs_reg = throwup;
+
+  // Decide what the register holds
+  if(rhs_reg.second == LOCALADDR || rhs_reg.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    rhs_reg = std::make_pair(reserveReg(), INT);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, rhs_reg));
+  }
+
+  // Create the register to save it into
+  throwup = std::make_pair(reserveReg(), INT);
+  curr_bb->addOp(new CmpLE(lhs_reg, rhs_reg,throwup));
 }
 
 /**
@@ -372,9 +510,7 @@ void ir::BuildIR::visit(bake_ast::Assign* n) {
   n->getLhs()->accept(this);
   n->getRhs()->accept(this);
 
-  // check if rhs register is a constant or an address
-  // if address load the value
-  // store rhs in lhs (using register address)
+
 }
 
 /********/

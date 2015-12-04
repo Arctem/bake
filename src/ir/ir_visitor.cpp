@@ -90,7 +90,8 @@ void ir::IrPrint::visit(Method* n) {
  * Pretty print the IR for Nop
  */
 void ir::IrPrint::visit(Nop* n) {
-
+  preops();
+  std::cout << "| nop" << std::endl;
 }
 
 /**
@@ -103,16 +104,31 @@ void ir::IrPrint::visit(Fnop* n) {
 /**
  * Pretty print the IR for Add
  */
-void ir::IrPrint::visit(Add* n) {
 
+void ir::IrPrint::visit(Sub* n) {
+  preops();
+  std::cout << "| sub ";
+  printRegPair(n->getSrc1Pair());
+  std::cout << " , ";
+  printRegPair(n->getSrc2Pair());
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << "\n";
 }
 
 
 /**
  * Pretty print the IR for Sub
  */
-void ir::IrPrint::visit(Sub* n) {
-
+void ir::IrPrint::visit(Add* n) {
+  preops();
+  std::cout << "| add ";
+  printRegPair(n->getSrc1Pair());
+  std::cout << " , ";
+  printRegPair(n->getSrc2Pair());
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << "\n";
 }
 
 
@@ -121,14 +137,28 @@ void ir::IrPrint::visit(Sub* n) {
  * Pretty print the IR for Mul
  */
 void ir::IrPrint::visit(Mul* n) {
-
+  preops();
+  std::cout << "| mul ";
+  printRegPair(n->getSrc1Pair());
+  std::cout << " , ";
+  printRegPair(n->getSrc2Pair());
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << "\n";
 }
 
 /**
  * Pretty print the IR for Div
  */
 void ir::IrPrint::visit(Div* n) {
-
+  preops();
+  std::cout << "| div ";
+  printRegPair(n->getSrc1Pair());
+  std::cout << " , ";
+  printRegPair(n->getSrc2Pair());
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << "\n";
 }
 
 /**
@@ -256,14 +286,21 @@ void ir::IrPrint::visit(Fconv* n) {
  * Pretty print the IR for LoadI
  */
 void ir::IrPrint::visit(LoadI* n) {
-
+  preops();
+  std::cout << "| loadI r" << (n->getLoadOffsetRegister());
+  std::cout << " -> " << (n->getDestSize());
+  std::cout << std::endl; // Print offset
 }
 
 /**
  * Pretty print the IR for LoadO
  */
 void ir::IrPrint::visit(LoadO* n) {
-
+  preops();
+  std::cout << "| loadO r" << (n->getLoadOffsetRegister());
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << std::endl; // Print offset
 }
 
 /**
@@ -289,14 +326,28 @@ void ir::IrPrint::visit(StoreO* n) {
  * Pretty print the IR for CmpLT
  */
 void ir::IrPrint::visit(CmpLT* n) {
-
+  preops();
+  std::cout << "| cmpLT ";
+  printRegPair(n->getSrc1Pair());
+  std::cout << " , ";
+  printRegPair(n->getSrc2Pair());
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << "\n";
 }
 
 /**
  * Pretty print the IR for CmpLE
  */
 void ir::IrPrint::visit(CmpLE* n) {
-
+  preops();
+  std::cout << "| cmpLE ";
+  printRegPair(n->getSrc1Pair());
+  std::cout << " , ";
+  printRegPair(n->getSrc2Pair());
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << "\n";
 }
 
 /**
