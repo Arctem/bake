@@ -68,6 +68,9 @@ namespace codegen {
     virtual void visit(Length*);
     virtual void visit(Concat*);
     virtual void visit(Substr*);
+    virtual void visit(CreateObj*) {};
+    virtual void visit(ir::BitNot*) {};
+    virtual void visit(LogNot*) {};
 
     ~CodegenVisitIr() { delete gen; }
 
