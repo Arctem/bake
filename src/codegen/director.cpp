@@ -47,7 +47,7 @@ void codegen::Director::writeFile(string filename) {
   // generate definitions
   file << *Generator::generateBuiltInMethods() << std::endl;
   
-  file << ".globl start\n_start:\n.globl main\nmain:" << std::endl;
+  file << ".globl start\n_start:\n.globl main\nmain:\njmp Main.main" << std::endl;
 
   for (std::string* block : blockList) {
     file << *block << std::endl;
