@@ -176,7 +176,7 @@ void ir::IrPrint::visit(Copy* n) {
   RegisterType dest_type = n->getDestSize();
 
   // if it is a char for a string
-  if(dest_type == INT8){
+  if(dest_type == CHAR){
     std::cout << "| copy char \"" << (char) src_value; // Print source value
     std::cout << "\" -> ";
     printRegPair(n->getDestPair());
@@ -190,7 +190,15 @@ void ir::IrPrint::visit(Copy* n) {
     printRegPair(n->getDestPair());
     std::cout << std::endl;
     return;
-  }
+
+    // Checks boolean
+    } else if (dest_type == BOOL){
+      std::cout << "| copy bool " << src_value; // Print source value
+      std::cout << " -> ";
+      printRegPair(n->getDestPair());
+      std::cout << std::endl;
+      return;
+    }
 
   // All other copies are integers
   std::cout << "| copy " << src_value; // Print source value

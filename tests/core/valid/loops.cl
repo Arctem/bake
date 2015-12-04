@@ -14,7 +14,7 @@ class Loops{
 
   loops() : Bool {{
     x <- while false
-         loop a.concat("a")
+         loop a.concat("hello")
          pool;
 
     b <- isvoid x;
