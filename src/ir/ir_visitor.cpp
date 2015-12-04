@@ -389,7 +389,9 @@ void ir::IrPrint::visit(Br* n) {
  * Pretty print the IR for Cbr
  */
 void ir::IrPrint::visit(Cbr* n) {
-
+  preops();
+  std::cout << "| cbr r" << n->getSrc1Register(); // Print size to allocate
+  std::cout << std::endl;
 }
 
 /**
