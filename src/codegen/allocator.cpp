@@ -193,7 +193,6 @@ namespace codegen {
 
       //Start at op 1 if first block because 0 is the alloc.
       for(int i = (curBlock == this->method ? 1 : 0); i < curBlock->getOps().size(); i++) {
-        std::cout << i << " " << curBlock->getOps().size() << std::endl;
         ir::Op* op = curBlock->getOps()[i];
 
         int src1 = -1, src2 = -1, dest = -1;
@@ -211,8 +210,6 @@ namespace codegen {
           dest = op->getDestRegister();
           //          method->addOp(, i); //push current thing in the register we're gonna use
         }
-
-        std::cout << src1 << " " << src2 << " -> " << dest << std::endl;
 
         /**
          * In this section I actually determine which registers to use temporarily
@@ -260,13 +257,14 @@ namespace codegen {
         if(src2 == op->getSrc1Register() && src1 != -1) {
           src2 = src1;
           //Nothing to do, src1 already did it
-        } else if(src2 == op->getDestRegister() && dest != -1) {
+        } else if(src2 == op->getDestRegister() && dest != -1 && src2 >= regAmt) {
           src2 = dest;
 
           //Don't need to Push/Pop because dest's block already did
           curBlock->addOp(new ir::LoadI(std::pair<int, ir::RegisterType>(0, ir::INT),
                                       op->getSrc2Register() - regAmt,
                                       std::pair<int, ir::RegisterType>(src1, ir::INT)), i);
+          i++;
         } else if(src2 >= regAmt) {
           src2 = 1;
           while(src2 == dest || src2 == src1) {
@@ -281,8 +279,6 @@ namespace codegen {
           i++;
           curBlock->addOp(new ir::Pop(std::pair<int, ir::RegisterType>(src2, ir::INT)), i + 1);
         }
-
-        std::cout << src1 << " " << src2 << " -> " << dest << std::endl;
 
         //Finally, adjust op with these changes.
         if(op->getSrc1Size() > 0) {

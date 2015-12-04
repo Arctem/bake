@@ -9,7 +9,7 @@ protected:
     dev = codegen::Director::getInstance();
 
     testIR->addClass(testClass->getName(), testClass);
-    testClass->addMethod(testMeth);
+    testClass->addMethod(testMeth, false);
   }
 
   virtual void TearDown() {
