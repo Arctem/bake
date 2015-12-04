@@ -529,30 +529,38 @@ void ir::BuildIR::visit(bake_ast::ExprList* n) {
  * Generate IR code for WhileLoop
  */
 void ir::BuildIR::visit(bake_ast::WhileLoop* n) {
-  /* Set up new basic block for where to jump when the condition is true */
-  // ir::BasicBlock* on_true = new ir::BasicBlock();
-  // curr_bb->setBrOnTrue(on_true);
+  /* TODO: Implement flow control inside the conditional */
 
-  /* Set up new basic block for where to jump when the condition is false */
-  // ir::BasicBlock* on_false = new ir::BasicBlock();
-  // curr_bb->setBrOnFalse(on_true);
+  /* Store previous exit_to node */
+  ir::BasicBlock* prev_exit = exit_to;
 
-  /* Add the conditional to the end of the current basic block */
-  std::cout << "Adding conditional" << std::endl;
+  /* Set up while-loop graph */
+  ir::BasicBlock* body = new ir::BasicBlock(); // Create the BB for the main body of the while loop
+  body->addOp(new ir::Nop());
+  curr_bb->setBrOnTrue(body); // If condition is true at the first iteration of the loop, enter the while loop
+
+  ir::BasicBlock* conditional = new ir::BasicBlock(); // Create BB that checks the loop's condition
+  body->setBrOnTrue(conditional);
+  exit_to = conditional; // The final BB(s) in the body should exit to the conditional
+
+  ir::BasicBlock* end = new ir::BasicBlock(); // Create BB that defines what to do after the while loop exits
+  conditional->setBrOnFalse(end);
+  curr_bb->setBrOnFalse(end);
+
+  /* First, append a copy of the conditional onto the end of the BB preceding the while loop */
   n->getCond()->accept(this);
-  curr_bb->addOp(new Cbr(throwup));
+  curr_bb->addOp(new ir::Cbr(throwup));
 
-  /* Generate the body */
+  /* Generate the conditional block */
+  curr_bb = conditional;
+  n->getCond()->accept(this);
+
+  /* Generate body */
+  curr_bb = body;
   n->getBody()->accept(this);
 
-  // we will need two BB due to while loops conditions at top
-    // one BB to the bod
-
-  // create a new BB
-  // br on false itself
-  // br on true goes to next basic BasicBlock
-  // set curr_bb to the next basic block here
-  // visit ccurr_bb
+  /* Reset previous exit block */
+  exit_to = prev_exit;
 }
 
 /**
@@ -657,6 +665,7 @@ void ir::BuildIR::visit(bake_ast::ClassList* n) {
   ir::ClassDef* main_class = classlist->getClasses()["Main"];
   int virtual_offset = main_class->getAst()->getScope()->getMethodOffsets()["main"];
   curr_bb = main_class->getMethods()[virtual_offset];
+  exit_to = curr_bb;
 
   for(auto child : n->getChildren()) {
     child->accept(this);

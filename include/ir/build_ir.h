@@ -70,6 +70,7 @@ namespace ir {
     ClassDef* curr_class; // Reference to the current class being compiled
     Method*  curr_method; // Reference to the current method being compilerd
     BasicBlock* curr_bb;  // Reference to the current basic block being compiled
+    BasicBlock* exit_to;  // Reference to the basic block that the current basic block should exit to
 
     // Current basic-hacky solution to the last minute problem of referencing hte ST in the IR
     ScopeType scopeFlag;                    // This flag tells us which of the next three to use

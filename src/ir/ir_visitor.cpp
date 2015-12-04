@@ -57,7 +57,9 @@ void ir::IrPrint::visit(ClassDef* n) {
  * Pretty print the IR for BasicBlock
  */
 void ir::IrPrint::visit(BasicBlock* n) {
-
+  for(auto op : n->getOps()) {
+    op->accept(this);
+  }
 }
 
 /**
@@ -83,6 +85,24 @@ void ir::IrPrint::visit(Method* n) {
   for(auto op : n->getOps()) {
     op->accept(this);
   }
+
+  /* Forward to other BBs */
+  if(n->getBrOnTrue() != nullptr) {
+    preops();
+    std::cout << "| " << std::endl;
+    preops();
+    std::cout << "BrOnTrue: " << std::endl;
+    n->getBrOnTrue()->accept(this);
+  }
+
+  if(n->getBrOnFalse() != nullptr) {
+    preops();
+    std::cout << "| " << std::endl;
+    preops();
+    std::cout << "BrOnFalse: " << std::endl;
+    n->getBrOnFalse()->accept(this);
+  }
+
   level -= 2;
 }
 

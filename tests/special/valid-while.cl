@@ -1,9 +1,11 @@
 class Main inherits IO {
   x : Bool <- true;
 
-  main() : Object {
+  main() : Object {{
     while x loop
       x <- false
-    pool
-  };
+    pool;
+
+    x <- true;
+  }};
 };
