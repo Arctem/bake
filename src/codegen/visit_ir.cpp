@@ -452,7 +452,8 @@ namespace codegen {
     // the arguments are the self and the integer value.
 
     gen->genPush("%rbp");
-    gen->genPush(Allocator::getRegister(n->getDestRegister()));
+    std::cout << "Register: " << n->getSrc1Register() << std::endl;
+    gen->genPush(Allocator::getRegister(n->getSrc1Register()));
     
 
     // call outint HARDCODED!!! TODO: Not hard coded lol
@@ -461,7 +462,7 @@ namespace codegen {
     
 
     // pop the arguments
-    gen->genPop(Allocator::getRegister(n->getDestRegister()));
+    gen->genPop(Allocator::getRegister(n->getSrc1Register()));
     gen->genPop("%rbp");
 
 

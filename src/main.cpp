@@ -77,6 +77,12 @@ int main(int argc, char** argv) {
   // Build the IR
   ir::BuildIR bir(ast);
 
+  codegen::Director* d = codegen::Director::getInstance();
+
+
+  d->generateCode(bir.getClassList());
+  d->writeFile("compout.s");
+
   // Prints the AST
   PrettyPrint pp;
   ast->accept(&pp);

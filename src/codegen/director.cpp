@@ -39,7 +39,7 @@ void codegen::Director::writeFile(string filename) {
   file.open(filename);
 
   // generate declarations
-  file << *Generator::generateBuiltInClassList() << std::endl;
+  //file << *Generator::generateBuiltInClassList() << std::endl;
   for (auto data : dataList) {
     file << *data << std::endl;
   }
