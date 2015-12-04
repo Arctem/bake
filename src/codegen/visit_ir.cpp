@@ -19,6 +19,11 @@ namespace codegen {
     std::string tmp;
     std::string tmp2;
 
+    // if it is main class, store it!
+    if (n->getName() == "Main") {
+      mainClass = n;
+    }
+
     table.push_back(new std::string(".globl " + name + "..vtable\n" + name + "..vtable:"));
 
     for (auto method : n->getMethods()) {
@@ -68,7 +73,18 @@ namespace codegen {
     std::cout << "Visiting methods" << std::endl; // TEST
     Allocator alloc = Allocator(m);
 
+    // check if it is Main.main
+    if (m->getName() == "main") {
+      for (auto i : mainClass->getMethods()) {
+        if (i == m) {
+          // yay! found the Main.main!
+          gen->genLabel("Main.main");
+        }
+      }
+    }
+
     gen->genLabel(*m->getLabel());
+
 
     for (auto op : m->getOps()) {
       op->accept(this);

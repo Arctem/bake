@@ -4,8 +4,8 @@ class CodeGenTest : public ::testing::Test {
 protected:
   virtual void SetUp() {
     testIR = new ir::ClassList();
-    testClass = new ir::ClassDef("Test");
-    testMeth = new ir::Method("DoesStuff");
+    testClass = new ir::ClassDef("Main");
+    testMeth = new ir::Method("main");
     dev = codegen::Director::getInstance();
 
     testIR->addClass(testClass->getName(), testClass);
