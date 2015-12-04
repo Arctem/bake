@@ -1106,7 +1106,15 @@ namespace codegen {
   }
   // end misc ops
 
-  // begin function ops
+  // begin control flow ops
+  void Generator::genJmp(std::string label) {
+    Director* d = Director::getInstance();
+    std::cout << "generating br" << std::endl; // TEST
+
+    string* s = new string("jmp " + label);
+    d->addToBlockList(s);
+  }
+
   void Generator::genCall(std::string func) {
     Director* d = Director::getInstance();
     std::cout << "generating call" << std::endl; // TEST

@@ -34,6 +34,7 @@ namespace codegen {
     void genPush(std::string src);
     void genPop(std::string dest);
 
+    void genJmp(std::string label);
     void genCall(std::string func);
     void genXchg(std::string r1, std::string r2);
   };

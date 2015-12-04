@@ -1,7 +1,6 @@
 #include "codegen/visit_ir.h"
 
 namespace codegen {
-
   CodegenVisitIr::CodegenVisitIr() { gen = new Generator(); }
   
   void CodegenVisitIr::visit(ir::ClassList* c) {
@@ -56,6 +55,20 @@ namespace codegen {
       op->accept(this);
     }
 
+    //both null == return
+    //only true == jmp
+    //both == conditional jump
+
+    if(bb->getBrOnTrue() == nullptr && bb->getBrOnFalse() == nullptr) {
+      //TODO: return (how does that work? lol I dunno)
+    } else if(bb->getBrOnFalse() == nullptr) {
+      //Only True exists
+      gen->genJmp(*bb->getBrOnTrue()->getLabel());
+    } else {
+      //Both exist
+      //gen->genCbr(*bb->getBrOnTrue()->getLabel(), *bb->getBrOnFalse()->getLabel());
+    }
+
     if(bb->getBrOnTrue() != nullptr) {
       bb->getBrOnTrue()->accept(this);
     }
@@ -72,6 +85,16 @@ namespace codegen {
 
     for (auto op : m->getOps()) {
       op->accept(this);
+    }
+
+    if(m->getBrOnTrue() == nullptr && m->getBrOnFalse() == nullptr) {
+      //TODO: return (how does that work? lol I dunno)
+    } else if(m->getBrOnFalse() == nullptr) {
+      //Only True exists
+      gen->genJmp(*m->getBrOnTrue()->getLabel());
+    } else {
+      //Both exist
+      //gen->genCbr(*bb->getBrOnTrue()->getLabel(), *bb->getBrOnFalse()->getLabel());
     }
 
     if(m->getBrOnTrue() != nullptr) {
