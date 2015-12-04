@@ -13,8 +13,35 @@ namespace codegen {
   
   void CodegenVisitIr::visit(ClassDef* n) {
     std::cout << "Visiting classdef" << std::endl; // TEST
+
+    std::vector<std::string*> table;
+    std::string name = n->getName();
+    std::string tmp;
+    std::string tmp2;
+
+    table.push_back(new std::string(".globl " + name + "..vtable\n" + name + "..vtable:"));
+
     for (auto method : n->getMethods()) {
+      tmp = ".quad ";
+
+      // call function for built-in information
+      if ((tmp2 = getMethClass(method->getName())) == "") {
+        table.push_back(new std::string(".quad " + *method->getLabel()));
+      }
+      else {
+        tmp += tmp2 + ".";
+
+        tmp += method->getName();
+        // add to the vector
+        table.push_back(new string(tmp));
+      }
+
       method->accept(this);
+    }
+
+    // add them all to the data list
+    for (auto s : table) {
+      gen->addToDataList(s);
     }
   }
   
@@ -22,6 +49,9 @@ namespace codegen {
   // visits the next block after done.
   void CodegenVisitIr::visit(BasicBlock* bb) {
     std::cout << "Visiting BB" << std::endl; // TEST 
+
+    gen->genLabel(*bb->getLabel());
+
     for (auto op : bb->getOps()) {
       op->accept(this);
     }
@@ -37,6 +67,9 @@ namespace codegen {
   void CodegenVisitIr::visit(Method* m) {
     std::cout << "Visiting methods" << std::endl; // TEST
     Allocator alloc = Allocator(m);
+
+    gen->genLabel(*m->getLabel());
+
     for (auto op : m->getOps()) {
       op->accept(this);
     }
@@ -440,5 +473,46 @@ namespace codegen {
   
   void CodegenVisitIr::visit(Substr*) {
 
+  }
+
+  // determine if a class is a built-in or not and yeah
+  std::string CodegenVisitIr::getMethClass(std::string s) {
+    // object
+    if (s == "abort") {
+      return "Object";
+    }
+    else if (s == "copy") {
+      return "Object";
+    }
+    else if (s == "type_name") {
+      return "Object";
+    }
+
+    // IO
+    else if (s == "in_int") {
+      return "IO";
+    }
+    else if (s == "in_string") {
+      return "IO";
+    }
+    else if (s == "out_int") {
+      return "IO";
+    }
+    else if (s == "out_string") {
+      return "IO";
+    }
+
+    // string
+    else if (s == "concat") {
+      return "String";
+    }
+    else if (s == "length") {
+      return "String";
+    }
+    else if (s == "substr") {
+      return "String";
+    }
+    
+    return "";
   }
 }

@@ -12,11 +12,15 @@ namespace codegen {
     static std::string* generateBuiltInClassList();
     static std::string* generateBuiltInMethods();
 
+    void addToDataList(std::string* s);
+
     void pushAll();
     void popAll();
 
     void genNoOp();
     void fnop();
+
+    void genLabel(std::string label);
 
     void genMov(std::string r1, std::string r2);
     void genCopy(std::string r1, std::string r2);

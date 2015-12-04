@@ -961,14 +961,21 @@ namespace codegen {
   std::string* Generator::generateBuiltInClassList() { return new std::string(BICL); }
   std::string* Generator::generateBuiltInMethods() { return new std::string(BICD); }
 
+  void Generator::addToDataList(std::string* s) {
+    Director* d = Director::getInstance();
+
+    std::cout << "adding to data list" << std::endl; // TEST
+    d->addToDataList(s);
+  }
+
   void Generator::pushAll() {
-    for(int i = 0; i < Allocator::regNum; i++) {
+    for (int i = 0; i < Allocator::regNum; i++) {
       this->genPush(Allocator::getRegister(i));
     }
   }
 
   void Generator::popAll() {
-    for(int i = Allocator::regNum - 1; i >= 0; i--) {
+    for (int i = Allocator::regNum - 1; i >= 0; i--) {
       this->genPop(Allocator::getRegister(i));
     }
   }
@@ -985,6 +992,14 @@ namespace codegen {
 
     std::cout << "generating fnop" << std::endl; // TEST
     d->addToBlockList(new string("fnop"));
+  }
+
+  void Generator::genLabel(std::string label) {
+    Director* d = Director::getInstance();
+    std::cout << "generating label" << std::endl; // TEST
+    string* s = new string(label + ":");
+
+    d->addToBlockList(s);
   }
 
   // start of data movement
@@ -1025,11 +1040,11 @@ namespace codegen {
   }
 
   /**
-   * This is a weird command to generate. It needs to be done precisely with the register allocator.
-   * It multiplies the argument register given with RAX. "mulq %r8" multiplies RAX * R8.
-   * It then stores the lower part of the multiplication (odds are the result is larger than 64 bits) in RAX.
-   * The higher part is stored in RDX.
-   **/
+  * This is a weird command to generate. It needs to be done precisely with the register allocator.
+  * It multiplies the argument register given with RAX. "mulq %r8" multiplies RAX * R8.
+  * It then stores the lower part of the multiplication (odds are the result is larger than 64 bits) in RAX.
+  * The higher part is stored in RDX.
+  **/
   void Generator::genMul(std::string r1) {
     Director* d = Director::getInstance();
     std::cout << "generatring mul" << std::endl; // TEST
@@ -1039,9 +1054,9 @@ namespace codegen {
   }
 
   /**
-   * This is very similar to multiplication. "div %r8" performs RAX/R8.
-   * The quotient is stored in RAX. The remainder is stored in RDX.
-   **/
+  * This is very similar to multiplication. "div %r8" performs RAX/R8.
+  * The quotient is stored in RAX. The remainder is stored in RDX.
+  **/
   void Generator::genDiv(std::string r1) {
     Director* d = Director::getInstance();
     std::cout << "generatring div" << std::endl; // TEST
@@ -1051,8 +1066,8 @@ namespace codegen {
   }
 
   /**
-   * This just negates the value of the register.
-   */
+  * This just negates the value of the register.
+  */
   void Generator::genNeg(std::string r1) {
     Director* d = Director::getInstance();
     std::cout << "generating neg" << std::endl; // TEST

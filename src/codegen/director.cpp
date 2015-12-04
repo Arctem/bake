@@ -38,9 +38,15 @@ void codegen::Director::writeFile(string filename) {
   std::ofstream file;
   file.open(filename);
 
+  // generate declarations
   file << *Generator::generateBuiltInClassList() << std::endl;
-  file << *Generator::generateBuiltInMethods() << std::endl;
+  for (auto data : dataList) {
+    file << *data << std::endl;
+  }
 
+  // generate definitions
+  file << *Generator::generateBuiltInMethods() << std::endl;
+  
   file << ".globl start\n_start:\n.globl main\nmain:" << std::endl;
 
   for (std::string* block : blockList) {

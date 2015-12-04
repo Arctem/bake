@@ -1,4 +1,3 @@
-
 #include "ir/basic_block.h"
 
 void ir::BasicBlock::addOp(Op* op, int pos) {
@@ -8,6 +7,10 @@ void ir::BasicBlock::addOp(Op* op, int pos) {
   } else {
     ops.insert(ops.begin() + pos, op);
   }
+}
+
+string* ir::BasicBlock::getLabel() {
+  return label = new string("L" + std::to_string((unsigned long int) this));
 }
 
 void ir::Method::addStackVar(int size) {

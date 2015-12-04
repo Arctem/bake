@@ -12,8 +12,12 @@ namespace codegen {
     void generateBlocksFromIR(ir::ClassList* classes);
     void generateDataFromIR(ir::ClassList* classes);
     void generateBuiltInClassList();
+
     std::vector<std::string*> getBlockList() { return blockList; }
     void addToBlockList(std::string* s) { blockList.push_back(s); }
+
+    std::vector<std::string*> getDataList() { return dataList; }
+    void addToDataList(std::string* s) { dataList.push_back(s); }
 
     void writeFile(string filename);
 
@@ -25,6 +29,7 @@ namespace codegen {
 
   private:
     Director() {};
+    std::vector<std::string*> dataList;
     std::vector<std::string*> blockList;
     static Director* instance;
   };

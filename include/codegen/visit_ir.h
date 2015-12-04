@@ -73,5 +73,7 @@ namespace codegen {
 
   private:
     Generator* gen;
+
+    std::string getMethClass(std::string s);
   };
 }

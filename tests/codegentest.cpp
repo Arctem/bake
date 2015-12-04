@@ -87,14 +87,14 @@ TEST_F(CodeGenTest, MulTest) {
   //1 - 0 -> 0
   //0 - 1 -> 2
   testMeth->addOp(new ir::Mul(std::pair<int, ir::RegisterType>(0, ir::INT),
-    std::pair<int, ir::RegisterType>(1, ir::INT),
-    std::pair<int, ir::RegisterType>(0, ir::INT)));
+                              std::pair<int, ir::RegisterType>(1, ir::INT),
+                              std::pair<int, ir::RegisterType>(0, ir::INT)));
   testMeth->addOp(new ir::Mul(std::pair<int, ir::RegisterType>(1, ir::INT),
-    std::pair<int, ir::RegisterType>(0, ir::INT),
-    std::pair<int, ir::RegisterType>(1, ir::INT)));
+                              std::pair<int, ir::RegisterType>(0, ir::INT),
+                              std::pair<int, ir::RegisterType>(1, ir::INT)));
   testMeth->addOp(new ir::Mul(std::pair<int, ir::RegisterType>(2, ir::INT),
-    std::pair<int, ir::RegisterType>(1, ir::INT),
-    std::pair<int, ir::RegisterType>(0, ir::INT)));
+                              std::pair<int, ir::RegisterType>(1, ir::INT),
+                              std::pair<int, ir::RegisterType>(0, ir::INT)));
 
   dev->generateCode(testIR);
 

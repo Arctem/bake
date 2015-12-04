@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -13,6 +14,7 @@ namespace ir {
     BasicBlock* getBrOnTrue() { return brOnTrue; }
     BasicBlock* getBrOnFalse() { return brOnFalse; }
     std::vector<Op*> getOps() { return ops; }
+    string* getLabel();
 
     void setBrOnTrue(BasicBlock* block) { brOnTrue = block; }
     void setBrOnFalse(BasicBlock* block) { brOnFalse = block; }
@@ -24,6 +26,7 @@ namespace ir {
     BasicBlock* brOnTrue = nullptr;
     BasicBlock* brOnFalse = nullptr;
     std::vector<Op*> ops;
+    string* label;
   };
 
   class Method : public BasicBlock {
