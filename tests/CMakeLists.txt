@@ -1,7 +1,7 @@
 macro(create_test target)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${bake_SOURCE_DIR}/bin)
   add_executable(${target} ${target}.cpp test_help.cpp)
-  target_link_libraries(${target} gtest gtest_main ast driver flex typecheck ir codegen)
+  target_link_libraries(${target} gtest gtest_main ast codegen driver ir flex typecheck)
   if(DEFINED ENV{CIRCLE_TEST_REPORTS})
     add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}> --gtest_output=xml:$ENV{CIRCLE_TEST_REPORTS}/${target}/ WORKING_DIRECTORY ${bake_SOURCE_DIR})
   else()
