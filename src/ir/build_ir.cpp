@@ -269,6 +269,8 @@ void ir::BuildIR::visit(bake_ast::New* n) {
  */
 void ir::BuildIR::visit(bake_ast::Plus* n) {
   n->getLhs()->accept(this);
+
+
   n->getRhs()->accept(this);
 
   // grab registers from both sides
@@ -577,6 +579,7 @@ void ir::BuildIR::visit(bake_ast::Feature* n) {
   string name = *n->getID()->getName();
   int voff = curr_class->getAst()->getScope()->getMethodOffsets()[name];
   curr_method = curr_class->getMethods()[voff];
+  curr_bb = curr_method;
 
   if(n->getList() != nullptr) {
     n->getList()->accept(this);       // Method Parameters
