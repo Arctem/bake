@@ -55,6 +55,8 @@ namespace ir {
   class Concat;
   class Substr;
   class CreateObj;
+  class LogNot;
+  class BitNot;
 
   class IrVisitor {
   public:
@@ -111,6 +113,8 @@ namespace ir {
     virtual void visit(Concat*) = 0;
     virtual void visit(Substr*) = 0;
     virtual void visit(CreateObj*) = 0;
+    virtual void visit(BitNot*) = 0;
+    virtual void visit(LogNot*) = 0;
   };
 
   class IrPrint : IrVisitor {
@@ -171,6 +175,8 @@ namespace ir {
     virtual void visit(Concat*);
     virtual void visit(Substr*);
     virtual void visit(CreateObj*);
+    virtual void visit(BitNot*);
+    virtual void visit(LogNot*);
 
   private:
     int level = 0;

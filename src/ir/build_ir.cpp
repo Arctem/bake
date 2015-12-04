@@ -98,7 +98,7 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
     ir::Copy* copy = new Copy(std::make_pair((int) chr, CONSTANT), std::make_pair(charReg, CHAR));
     curr_bb->addOp(copy);
 
-    ir::StoreI* schar = new ir::StoreI(std::make_pair(charReg, CHAR), std::make_pair(strLoc, CHAR), offset);
+    ir::StoreI* schar = new ir::StoreI(std::make_pair(charReg, CHAR), std::make_pair(strLoc, REF), offset);
     curr_bb->addOp(schar);
 
     offset += 8;
@@ -108,7 +108,7 @@ void ir::BuildIR::visit(bake_ast::StringVal* n) {
   ir::Copy* copy = new Copy(std::make_pair(0, CONSTANT), std::make_pair(charReg, CHAR));
   curr_bb->addOp(copy);
 
-  ir::StoreI* schar = new ir::StoreI(std::make_pair(charReg, CHAR), std::make_pair(strLoc, CHAR), offset);
+  ir::StoreI* schar = new ir::StoreI(std::make_pair(charReg, CHAR), std::make_pair(strLoc, REF), offset);
   curr_bb->addOp(schar);
 }
 
@@ -190,8 +190,25 @@ void ir::BuildIR::visit(bake_ast::Type* n) {
  * Generate IR code for LogicalNot
  */
 void ir::BuildIR::visit(bake_ast::LogicalNot* n) {
-  n->get()->accept(this);
+  std::pair<int, RegisterType> reg;
+  int curr_reg;
 
+  n->get()->accept(this);     // Travel to child nodes
+  reg = throwup;
+
+  // Decide what the register holds
+  if(throwup.second == LOCALADDR || throwup.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    curr_reg = getRegCount();
+    reg = std::make_pair(curr_reg, BOOL);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, reg));
+  }
+
+  // Perform a logical not on the value
+  curr_reg = getRegCount();
+  throwup = std::make_pair(curr_reg,BOOL);
+  curr_bb->addOp(new LogNot(reg, throwup));
 
 }
 
@@ -199,7 +216,25 @@ void ir::BuildIR::visit(bake_ast::LogicalNot* n) {
  * Generate IR code for BitNot
  */
 void ir::BuildIR::visit(bake_ast::BitNot* n) {
-  n->get()->accept(this);
+  std::pair<int, RegisterType> reg;
+  int curr_reg;
+
+  n->get()->accept(this);     // Travel to child nodes
+  reg = throwup;
+
+  // Decide what the register holds
+  if(throwup.second == LOCALADDR || throwup.second == ATTRADDR){
+
+    // Load the value of the variable from memeory
+    curr_reg = getRegCount();
+    reg = std::make_pair(curr_reg, BOOL);
+    curr_bb->addOp(new LoadO(std::make_pair(-1,EMPTY), throwup, reg));
+  }
+
+  // Perform a logical not on the value
+  curr_reg = getRegCount();
+  throwup = std::make_pair(curr_reg,BOOL);
+  curr_bb->addOp(new BitNot(reg, throwup));
 }
 
 /**

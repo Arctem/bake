@@ -11,7 +11,7 @@ namespace ir {
   enum OpType { NOP, FNOP, ADD, SUB, MUL, DIV, MOD, FADD, FSUB, FMUL, FDIV, COPY, FCOPY, CONV, FCONV,
                 LOADI, LOADO, STOREI, STOREO, CMPLT, CMPLE, CMPEQ, FCMPLT, FCMPLE, FCMPEQ, BR, CBR,
                 CALL, DCALL, FCALL, DFCALL, PUSH, FPUSH, POP, FPOP, CCALL, ALLOC, FREE, ABORT, TYPENAME,
-                SHALLOWCOPY, OUTSTRING, OUTINT, INSTRING, ININT, LENGTH, CONCAT, SUBSTR, CREATEOBJ };
+                SHALLOWCOPY, OUTSTRING, OUTINT, INSTRING, ININT, LENGTH, CONCAT, SUBSTR, CREATEOBJ, BITNOT, LOGNOT};
 
   class Op {
   public:
@@ -139,6 +139,7 @@ namespace ir {
 
     virtual void accept(IrVisitor* v) { v->visit(this); }
   };
+
 
   // TODO: How are we going to do fcopy??
   class Fcopy : public Op {
@@ -548,5 +549,31 @@ namespace ir {
   private:
     std::string class_name;
     int num_bits;
+  };
+
+  class LogNot : public Op {
+  public:
+    LogNot(std::pair<int,RegisterType> src, std::pair<int,RegisterType> dest)
+        : Op(LOGNOT, src, std::make_pair(-1, EMPTY), dest) {};
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
+    virtual void accept(IrVisitor* v) { v->visit(this); }
+  };
+
+  class BitNot : public Op {
+  public:
+    BitNot(std::pair<int,RegisterType> src, std::pair<int,RegisterType> dest)
+        : Op(BITNOT, src, std::make_pair(-1, EMPTY), dest) {};
+
+    int getSrcRegister() { return src1.first; }
+    RegisterType getSrcSize() { return src1.second; }
+    void setSrcRegister(int reg) { src1.first = reg; }
+    void setSrcSize(RegisterType type) { src1.second = type; }
+
+    virtual void accept(IrVisitor* v) { v->visit(this); }
   };
 }

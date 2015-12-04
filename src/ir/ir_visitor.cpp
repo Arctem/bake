@@ -167,6 +167,30 @@ void ir::IrPrint::visit(Fdiv* n) {
 }
 
 /**
+ * Pretty print the IR for BitNot
+ */
+void ir::IrPrint::visit(BitNot* n) {
+  preops();
+  std::cout << "| bitNot ";
+  printRegPair(n->getSrc1Pair());
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << "\n";
+}
+
+/**
+ * Pretty print the IR for LogNot
+ */
+void ir::IrPrint::visit(LogNot* n) {
+  preops();
+  std::cout << "| logNot ";
+  printRegPair(n->getSrc1Pair());
+  std::cout << " -> ";
+  printRegPair(n->getDestPair());
+  std::cout << "\n";
+}
+
+/**
  * Pretty print the IR for Copy
  */
 void ir::IrPrint::visit(Copy* n) {

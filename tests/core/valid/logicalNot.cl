@@ -13,7 +13,7 @@ class Loops{
   b : Bool;
 
   loops() : Bool {{
-    x <- while false
+    x <- while not true
          loop a.concat("hello")
          pool;
 

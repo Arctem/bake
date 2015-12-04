@@ -1,7 +1,7 @@
 
 #include "ir/op.h"
 
-void ir::Op::accept(IrVisitor* v) { 
+void ir::Op::accept(IrVisitor* v) {
   switch(getOpType()) {
   case NOP:
     ((Nop*) this)->accept(v);
@@ -149,6 +149,12 @@ void ir::Op::accept(IrVisitor* v) {
     break;
   case CREATEOBJ:
     ((CreateObj*) this)->accept(v);
+    break;
+  case BITNOT:
+    ((BitNot*) this)->accept(v);
+    break;
+  case LOGNOT:
+    ((LogNot*) this)->accept(v);
     break;
   }
 }
