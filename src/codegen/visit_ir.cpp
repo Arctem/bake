@@ -237,11 +237,11 @@ namespace codegen {
     std::string dest = Allocator::getRegister(op->getDestRegister());
 
     if(offset == "$0") {
-      gen->genMov("[" + base + "]", dest);
+      gen->genMov("(" + base + ")", dest);
     } else {
       gen->genMov(base, dest);
       gen->genAdd(offset, dest);
-      gen->genMov("[" + dest + "]", dest);
+      gen->genMov("(" + dest + ")", dest);
     }
   }
   
@@ -257,7 +257,7 @@ namespace codegen {
     std::string offset = "$" + std::to_string(op->getDestRegister());
 
     gen->genAdd(offset, dest);
-    gen->genMov(src, "[" + dest + "]");
+    gen->genMov(src, "(" + dest + ")");
     gen->genSub(offset, dest);
   }
   
@@ -397,16 +397,13 @@ namespace codegen {
   
   void CodegenVisitIr::visit(OutInt* n) {
     // push r12, r13, r14 to save them
-    gen->genPush("%r12");
-    gen->genPush("%r13");
-    gen->genPush("%r14");
+    gen->pushAll();
 
-    // push "self"
+    // push the arguments in reverse order
+    // the arguments are the self and the integer value.
+
     gen->genPush("%rbp");
-
-    // push the argument.
-    // the argument is the integer value.
-    gen->genPush(Allocator::getRegister(n->getSrc1Register()));
+    gen->genPush(Allocator::getRegister(n->getDestRegister()));
     
 
     // call outint HARDCODED!!! TODO: Not hard coded lol
@@ -415,13 +412,12 @@ namespace codegen {
     
 
     // pop the arguments
-    gen->genPop(Allocator::getRegister(n->getSrc1Register()));
+    gen->genPop(Allocator::getRegister(n->getDestRegister()));
     gen->genPop("%rbp");
 
+
     // pop r12, r13, r14
-    gen->genPop("%r12");
-    gen->genPop("%r13");
-    gen->genPop("%r14");
+    gen->popAll();
 
     // win
   }

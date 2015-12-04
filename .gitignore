@@ -39,3 +39,4 @@ cool
 *.cl-ast
 *~
 .vscode
+*.s

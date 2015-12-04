@@ -15,7 +15,7 @@ namespace codegen {
     std::vector<std::string*> getBlockList() { return blockList; }
     void addToBlockList(std::string* s) { blockList.push_back(s); }
 
-    void writeFile();
+    void writeFile(string filename);
 
     static Director* getInstance();
     static void generateCode(ir::ClassList* classes);

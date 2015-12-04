@@ -19,6 +19,7 @@ namespace codegen {
     Allocator(ir::Method* method);
 
     static const char * getRegister(int registerNum) { return registers[registerNum]; };
+    static const int regNum;
 
     void reduceRegisters();
     bool usedInFuture(int regNum, ir::BasicBlock *block, int opNum);

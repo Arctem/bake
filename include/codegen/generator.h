@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "codegen/allocator.h"
 
 namespace codegen {
   class Generator {
@@ -10,6 +11,9 @@ namespace codegen {
   public:
     static std::string* generateBuiltInClassList();
     static std::string* generateBuiltInMethods();
+
+    void pushAll();
+    void popAll();
 
     void genNoOp();
     void fnop();

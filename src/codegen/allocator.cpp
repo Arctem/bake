@@ -4,6 +4,7 @@ namespace codegen {
   //registers in order of preferred usage
   const char * Allocator::registers[] = { "%rax", "%rbx", "%rcx", "%rdx", "%r8", "%r9", "%r10", "%r11", "%r12", "%r13", "%r14", "%r15" };
   const char * Allocator::stack_ptr = "%rsp";
+  const int Allocator::regNum = sizeof(registers) / sizeof(*registers);
 
   Allocator::Allocator(ir::Method* method) {
     this->method = method;
@@ -191,7 +192,8 @@ namespace codegen {
       }
 
       //Start at op 1 if first block because 0 is the alloc.
-      for(int i = curBlock == this->method ? 1 : 0; i < curBlock->getOps().size(); i++) {
+      for(int i = (curBlock == this->method ? 1 : 0); i < curBlock->getOps().size(); i++) {
+        std::cout << i << " " << curBlock->getOps().size() << std::endl;
         ir::Op* op = curBlock->getOps()[i];
 
         int src1 = -1, src2 = -1, dest = -1;
@@ -223,12 +225,12 @@ namespace codegen {
           while(dest == src1 || dest == src2) {
             dest++;
           }
-          method->addOp(new ir::Push(std::pair<int, ir::RegisterType>(dest, ir::INT)), i);
+          curBlock->addOp(new ir::Push(std::pair<int, ir::RegisterType>(dest, ir::INT)), i);
           i++; //Keep it pointing directly at the current op
-          method->addOp(new ir::StoreI(std::pair<int, ir::RegisterType>(dest, ir::INT),
+          curBlock->addOp(new ir::StoreI(std::pair<int, ir::RegisterType>(dest, ir::INT),
                                        std::pair<int, ir::RegisterType>(0, ir::INT),
                                        op->getDestRegister() - regAmt), i + 1);
-          method->addOp(new ir::Pop(std::pair<int, ir::RegisterType>(dest, ir::INT)), i + 2);
+          curBlock->addOp(new ir::Pop(std::pair<int, ir::RegisterType>(dest, ir::INT)), i + 2);
         }
 
         //Find register to use for parameter 1
@@ -236,7 +238,7 @@ namespace codegen {
           src1 = dest;
 
           //Don't need to Push/Pop because dest's block already did
-          method->addOp(new  ir::LoadI(std::pair<int, ir::RegisterType>(0, ir::INT),
+          curBlock->addOp(new  ir::LoadI(std::pair<int, ir::RegisterType>(0, ir::INT),
                                        op->getSrc1Register() - regAmt,
                                        std::pair<int, ir::RegisterType>(src1, ir::INT)), i);
           i++;
@@ -245,13 +247,13 @@ namespace codegen {
           while(src1 == dest || src1 == src2) {
             src1++;
           }
-          method->addOp(new ir::Push(std::pair<int, ir::RegisterType>(src1, ir::INT)), i);
+          curBlock->addOp(new ir::Push(std::pair<int, ir::RegisterType>(src1, ir::INT)), i);
           i++;
-          method->addOp(new ir::LoadI(std::pair<int, ir::RegisterType>(0, ir::INT),
+          curBlock->addOp(new ir::LoadI(std::pair<int, ir::RegisterType>(0, ir::INT),
                                       op->getSrc1Register() - regAmt,
                                       std::pair<int, ir::RegisterType>(src1, ir::INT)), i);
           i++;
-          method->addOp(new ir::Pop(std::pair<int, ir::RegisterType>(src1, ir::INT)), i + 1);
+          curBlock->addOp(new ir::Pop(std::pair<int, ir::RegisterType>(src1, ir::INT)), i + 1);
         }
 
         //Find register to use for parameter 2
@@ -262,7 +264,7 @@ namespace codegen {
           src2 = dest;
 
           //Don't need to Push/Pop because dest's block already did
-          method->addOp(new ir::LoadI(std::pair<int, ir::RegisterType>(0, ir::INT),
+          curBlock->addOp(new ir::LoadI(std::pair<int, ir::RegisterType>(0, ir::INT),
                                       op->getSrc2Register() - regAmt,
                                       std::pair<int, ir::RegisterType>(src1, ir::INT)), i);
         } else if(src2 >= regAmt) {
@@ -271,14 +273,16 @@ namespace codegen {
             src2++;
           }
 
-          method->addOp(new ir::Push(std::pair<int, ir::RegisterType>(src2, ir::INT)), i);
+          curBlock->addOp(new ir::Push(std::pair<int, ir::RegisterType>(src2, ir::INT)), i);
           i++;
-          method->addOp(new ir::LoadI(std::pair<int, ir::RegisterType>(0, ir::INT),
+          curBlock->addOp(new ir::LoadI(std::pair<int, ir::RegisterType>(0, ir::INT),
                                       op->getSrc2Register() - regAmt,
                                       std::pair<int, ir::RegisterType>(src2, ir::INT)), i);
           i++;
-          method->addOp(new ir::Pop(std::pair<int, ir::RegisterType>(src2, ir::INT)), i + 1);
+          curBlock->addOp(new ir::Pop(std::pair<int, ir::RegisterType>(src2, ir::INT)), i + 1);
         }
+
+        std::cout << src1 << " " << src2 << " -> " << dest << std::endl;
 
         //Finally, adjust op with these changes.
         if(op->getSrc1Size() > 0) {

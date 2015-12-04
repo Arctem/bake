@@ -163,11 +163,14 @@ TEST_F(CodeGenTest, GenningEverything) {
   std::cout << "End blocklist Print" << std::endl;
 
   // write it to a file
-  dev->writeFile();
+  dev->writeFile("outint.s");
 }
 
 TEST_F(CodeGenTest, MultiBlockDrifting) {
-  for(int i = 2; i < 15; i++) {
+  testMeth->addOp(new ir::Copy(std::pair<int, ir::RegisterType>(1, ir::CONSTANT), std::pair<int, ir::RegisterType>(0, ir::INT)));
+  testMeth->addOp(new ir::Copy(std::pair<int, ir::RegisterType>(2, ir::CONSTANT), std::pair<int, ir::RegisterType>(1, ir::INT)));
+
+  for(int i = 2; i < codegen::Allocator::regNum + 1; i++) {
     testMeth->addOp(new ir::Add(std::pair<int, ir::RegisterType>(0, ir::INT),
                                 std::pair<int, ir::RegisterType>(1, ir::INT),
                                 std::pair<int, ir::RegisterType>(i, ir::INT)));
@@ -176,7 +179,9 @@ TEST_F(CodeGenTest, MultiBlockDrifting) {
   testMeth->setBrOnTrue(new ir::BasicBlock());
   testMeth->getBrOnTrue()->addOp(new ir::Add(std::pair<int, ir::RegisterType>(0, ir::INT),
                                              std::pair<int, ir::RegisterType>(1, ir::INT),
-                                             std::pair<int, ir::RegisterType>(15, ir::INT)));
+                                             std::pair<int, ir::RegisterType>(codegen::Allocator::regNum, ir::INT)));
+  testMeth->getBrOnTrue()->addOp(new ir::OutInt(std::pair<int, ir::RegisterType>(codegen::Allocator::regNum, ir::INT),
+                                                std::pair<int, ir::RegisterType>(codegen::Allocator::regNum, ir::INT)));
 
   dev->generateCode(testIR);
 
@@ -185,4 +190,6 @@ TEST_F(CodeGenTest, MultiBlockDrifting) {
     std::cout << *block << std::endl;
   }
   std::cout << "End blocklist Print" << std::endl;
+
+  dev->writeFile("multiblock.s");
 }

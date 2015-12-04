@@ -34,9 +34,9 @@ void codegen::Director::reset() {
   instance = nullptr;
 }
 
-void codegen::Director::writeFile() {
+void codegen::Director::writeFile(string filename) {
   std::ofstream file;
-  file.open("test.s");
+  file.open(filename);
 
   file << *Generator::generateBuiltInClassList() << std::endl;
   file << *Generator::generateBuiltInMethods() << std::endl;

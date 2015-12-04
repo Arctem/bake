@@ -961,6 +961,18 @@ namespace codegen {
   std::string* Generator::generateBuiltInClassList() { return new std::string(BICL); }
   std::string* Generator::generateBuiltInMethods() { return new std::string(BICD); }
 
+  void Generator::pushAll() {
+    for(int i = 0; i < Allocator::regNum; i++) {
+      this->genPush(Allocator::getRegister(i));
+    }
+  }
+
+  void Generator::popAll() {
+    for(int i = Allocator::regNum - 1; i >= 0; i--) {
+      this->genPop(Allocator::getRegister(i));
+    }
+  }
+
   void Generator::genNoOp() {
     Director* d = Director::getInstance();
 
