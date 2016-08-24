@@ -1,7 +1,7 @@
 # Bake
 Compiler for CSE423.
 Cake Whisperers:
-  Andrew (A to the J) Burns, Melanie Palmer, William Rosenberger, Russell White
+  Andrew (A to the J) Burns, Melanie Burns (Palmer), William Rosenberger, Russell White
 
 ## Overview
 Bake currently has the following three parts of compilation implemented: 
