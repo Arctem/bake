@@ -56,9 +56,9 @@ The first step in checking for type validity is to build a symbol table for each
 
 ## How to use COOL Reference Interpreter
 - Make sure you have executable permission on the "cool" executable.
-  - chmod a+x cool
-- Run ./cool [file.cl]
-  - Run with "--lex" for the lexer
+  - `chmod a+x cool`
+- Run `./cool [file.cl]`
+  - Run with `--lex` for the lexer
 
 ## Division of Labor
 - Andrew Burns:  
