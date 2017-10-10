@@ -9,13 +9,13 @@ Bake currently has the following three parts of compilation implemented:
 * Parsing
 * Type checking
 
-####Lexical analysis
+#### Lexical analysis
 Utilizing FLEX, Bake reads in a .cl file and converts it to line seperated tokens. It ignores comments and extra whitespace while reading the file. The conversion is done as per the COOL specification.
 
-####Parsing
+#### Parsing
 After lexical analysis, Bake interfaces with BISON to match our grammar from the tokens returned from flex. As it matches the grammar in BISON, it builds the AST for our grammar. The AST can be pretty printed for testing.
 
-####Type checking
+#### Type checking
 The first step in checking for type validity is to build a symbol table for each scope. Each of these scope tables are stored in a tree structure, allowing Bake to easily determine whether a requested feature is visible in the current scope. We call this tree of scope tables the scope tree. There are four types of nodes in the scope tree:
 * Groot 
   * Global Root. See also: A magnificent tree that guards the galaxy
